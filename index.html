@@ -1,1 +1,667 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Deymoon Club</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    :root {
+      --main-bg: #111;
+      --main-red: #e53935;
+      --main-neon: #ff1744;
+      --text-color: #fff;
+      --menu-bg: #1a1a1a;
+      --menu-active: var(--main-neon);
+    }
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', Arial, sans-serif;
+      background: var(--main-bg);
+      color: var(--text-color);
+      min-height: 100vh;
+    }
+    nav {
+      background: var(--menu-bg);
+      display: flex;
+      justify-content: center;
+      padding: 0.5em 0;
+      box-shadow: 0 1px 12px #000a;
+      position: sticky;
+      top: 0;
+      z-index: 9;
+    }
+    nav a {
+      color: var(--text-color);
+      text-decoration: none;
+      padding: 1em 2em;
+      margin: 0 0.5em;
+      font-weight: bold;
+      border-bottom: 2px solid transparent;
+      transition: color 0.2s, border-bottom 0.2s;
+      font-size: 1.1em;
+      letter-spacing: 1px;
+    }
+    nav a.active, nav a:hover {
+      color: var(--main-neon);
+      border-bottom: 2.5px solid var(--main-neon);
+      text-shadow: 0 0 5px var(--main-neon), 0 0 10px var(--main-neon);
+    }
 
+    #main-content {
+      max-width: 900px;
+      margin: 2em auto;
+      padding: 2em;
+      background: rgba(20, 2, 2, 0.93);
+      border-radius: 16px;
+      box-shadow: 0 0 16px 4px var(--main-red), 0 0 40px 6px #000c;
+      min-height: 400px;
+      position: relative;
+    }
+
+    h1, h2 {
+      color: var(--main-neon);
+      text-shadow: 0 0 8px var(--main-neon), 0 0 16px var(--main-neon);
+      margin-top: 0;
+    }
+    .welcome {
+      font-size: 1.35em;
+      margin-bottom: 2em;
+      text-align: center;
+      line-height: 1.5;
+      color: #fff;
+      text-shadow: 0 0 8px var(--main-neon), 0 0 12px #e53935a0;
+    }
+    .join-btn {
+      display: inline-block;
+      padding: 0.8em 2em;
+      margin: 1.5em 0 2em 0;
+      background: linear-gradient(90deg, var(--main-neon), #ff5252, var(--main-red));
+      color: #fff;
+      font-weight: bold;
+      border: none;
+      border-radius: 32px;
+      font-size: 1.1em;
+      box-shadow: 0 0 16px 2px var(--main-neon);
+      cursor: pointer;
+      transition: transform 0.13s, box-shadow 0.13s;
+      text-shadow: 0 0 7px #fff;
+      text-decoration: none;
+      letter-spacing: 1px;
+    }
+    .join-btn:hover {
+      transform: scale(1.05);
+      box-shadow: 0 0 28px 6px var(--main-neon);
+      background: linear-gradient(90deg, #ff1744, #e53935, #ff5252);
+      color: #fff;
+    }
+    .commands-block, .tokens-block {
+      margin-bottom: 2em;
+      background: #160808e0;
+      border-radius: 12px;
+      box-shadow: 0 0 12px 2px #e5393530;
+      padding: 1.1em 1.3em;
+      font-family: monospace, monospace;
+      white-space: pre-line;
+      color: #fff;
+      font-size: 1.03em;
+      overflow-x: auto;
+    }
+
+    .token-title {
+      color: var(--main-neon);
+      margin-bottom: 0.3em;
+      font-weight: bold;
+      text-shadow: 0 0 8px var(--main-neon);
+    }
+    .token-code {
+      background: #181818;
+      color: #ff1744;
+      padding: 0.5em 1em;
+      border-radius: 12px;
+      font-size: 1.1em;
+      display: inline-block;
+      margin-bottom: 1.1em;
+      box-shadow: 0 0 8px 1px var(--main-neon) inset;
+      letter-spacing: 1.2px;
+      word-break: break-all;
+      font-family: 'Fira Mono', monospace;
+    }
+    @media (max-width: 600px) {
+      #main-content { padding: 1em; }
+      nav a {padding: 0.7em 1em; font-size: 1em;}
+    }
+  </style>
+</head>
+<body>
+  <nav>
+    <a href="/inicio" id="menu-inicio" class="active">Inicio</a>
+    <a href="/commands" id="menu-commands">Comandos</a>
+    <a href="/tokens" id="menu-tokens">Tokens</a>
+  </nav>
+  <div id="main-content"></div>
+
+  <script>
+    // Comandos en bloques (puedes copiar/editar aquí si cambian)
+    const commandsData = `
+╭ֹ┈ ⵿❀⵿ ┈╮SISTEMA
+┃ ┈➤ #formarpareja5
+┃ ┈➤ #afk [alasan]
+┃ ┈➤ #runtime
+┃ ┈➤ #blocklist
+┃ ┈➤ #owner
+┃ ┈➤ #menu
+┃ ┈➤ #menú
+╰━━━━━━━━━━━━━
+
+╭ֹ┈ ⵿❀⵿ ┈╮GRUPOS
+┃ ┈➤ #desbanearbot
+┃ ┈➤ #banearbot
+┃ ┈➤ #enable <opción>
+┃ ┈➤ #disable <opción>
+┃ ┈➤ #staff
+╰━━━━━━━━━━━━━
+
+╭ֹ┈ ⵿❀⵿ ┈╮SUB BOTS
+┃ ┈➤ #qr
+┃ ┈➤ #code
+┃ ┈➤ #setname [nombre]
+┃ ┈➤ #setbanner [link]
+┃ ┈➤ #setprimary [@Bot]
+╰━━━━━━━━━━━━━
+
+╭ֹ┈ ⵿❀⵿ ┈╮AI
+┃ ┈➤ #gemini
+┃ ┈➤ #chatgpt <texto>
+┃ ┈➤ #ia <texto>
+╰━━━━━━━━━━━━━
+
+╭ֹ┈ ⵿❀⵿ ┈╮ANIME
+┃ ┈➤ #animelink
+┃ ┈➤ #infoanime
+┃ ┈➤ #topwaifus [página]
+┃ ┈➤ #wvideo <nombre del personaje>
+┃ ┈➤ #wimage <nombre del personaje>
+┃ ┈➤ #charinfo <nombre del personaje>
+┃ ┈➤ #winfo <nombre del personaje>
+┃ ┈➤ #waifuinfo <nombre del personaje>
+┃ ┈➤ #alisa
+┃ ┈➤ #aihoshino
+┃ ┈➤ #remcham
+┃ ┈➤ #akira
+┃ ┈➤ #akiyama
+┃ ┈➤ #anna
+┃ ┈➤ #asuna
+┃ ┈➤ #ayuzawa
+┃ ┈➤ #boruto
+┃ ┈➤ #chiho
+┃ ┈➤ #chitoge
+┃ ┈➤ #deidara
+┃ ┈➤ #erza
+┃ ┈➤ #elaina
+┃ ┈➤ #eba
+┃ ┈➤ #emilia
+┃ ┈➤ #hestia
+┃ ┈➤ #hinata
+┃ ┈➤ #inori
+┃ ┈➤ #isuzu
+┃ ┈➤ #itachi
+┃ ┈➤ #itori
+┃ ┈➤ #kaga
+┃ ┈➤ #kagura
+┃ ┈➤ #kaori
+┃ ┈➤ #keneki
+┃ ┈➤ #kotori
+┃ ┈➤ #kurumitokisaki
+┃ ┈➤ #madara
+┃ ┈➤ #mikasa
+┃ ┈➤ #miku
+┃ ┈➤ #minato
+┃ ┈➤ #naruto
+┃ ┈➤ #nezuko
+┃ ┈➤ #sagiri
+┃ ┈➤ #sasuke
+┃ ┈➤ #sakura
+╰━━━━━━━━━━━━━
+
+╭ֹ┈ ⵿❀⵿ ┈╮AUDIO
+┃ ┈➤ #bass [vn]
+┃ ┈➤ #blown [vn]
+┃ ┈➤ #deep [vn]
+┃ ┈➤ #earrape [vn]
+┃ ┈➤ #fast [vn]
+┃ ┈➤ #fat [vn]
+┃ ┈➤ #nightcore [vn]
+┃ ┈➤ #reverse [vn]
+┃ ┈➤ #robot [vn]
+┃ ┈➤ #slow [vn]
+┃ ┈➤ #smooth [vn]
+┃ ┈➤ #tupai [vn]
+╰━━━━━━━━━━━━━
+
+╭ֹ┈ ⵿❀⵿ ┈╮BUSCADOR
+┃ ┈➤ #pornhubsearch
+┃ ┈➤ #githubsearch
+┃ ┈➤ #google <búsqueda>
+┃ ┈➤ #mercadolibre <búsqueda>
+┃ ┈➤ #npmjs
+┃ ┈➤ #tweetposts
+┃ ┈➤ #tiktoksearch <txt>
+┃ ┈➤ #xnxxsearch <query>
+┃ ┈➤ #imagen <query>
+╰━━━━━━━━━━━━━
+
+╭ֹ┈ ⵿❀⵿ ┈╮IMG
+┃ ┈➤ #pinterest <término>
+┃ ┈➤ #waifu
+╰━━━━━━━━━━━━━
+
+╭ֹ┈ ⵿❀⵿ ┈╮TRANSFORMADOR
+┃ ┈➤ #tovideo
+┃ ┈➤ #togifaud
+╰━━━━━━━━━━━━━
+
+╭ֹ┈ ⵿❀⵿ ┈╮STICKER
+┃ ┈➤ #toimg (reply)
+┃ ┈➤ #qc
+┃ ┈➤ #take *<nombre>|<autor>*
+┃ ┈➤ #sticker <imagen|video|url>
+┃ ┈➤ #stiker <imagen|video|url>
+┃ ┈➤ #s <imagen|video|url>
+╰━━━━━━━━━━━━━
+
+╭ֹ┈ ⵿❀⵿ ┈╮TOOLS
+┃ ┈➤ #tts <lang> <teks>
+┃ ┈➤ #fake
+┃ ┈➤ #hd
+┃ ┈➤ #ssweb
+┃ ┈➤ #ss
+┃ ┈➤ #trad
+┃ ┈➤ #spamwa <number>|<mesage>|<no of messages>
+┃ ┈➤ #IPdoxx
+┃ ┈➤ #nuevafotochannel
+┃ ┈➤ #nosilenciarcanal
+┃ ┈➤ #silenciarcanal
+┃ ┈➤ #noseguircanal
+┃ ┈➤ #seguircanal
+┃ ┈➤ #avisoschannel
+┃ ┈➤ #resiviravisos
+┃ ┈➤ #inspect
+┃ ┈➤ #inspeccionar
+┃ ┈➤ #eliminarfotochannel
+┃ ┈➤ #reactioneschannel
+┃ ┈➤ #reaccioneschannel
+┃ ┈➤ #nuevonombrecanal
+┃ ┈➤ #nuevadescchannel
+┃ ┈➤ #tourl
+┃ ┈➤ #tourl2
+╰━━━━━━━━━━━━━
+
+╭ֹ┈ ⵿❀⵿ ┈╮DESCARGAS
+┃ ┈➤ #hentai
+┃ ┈➤ #mediafire
+┃ ┈➤ #ytmp4 <url>
+┃ ┈➤ #facebook
+┃ ┈➤ #fb
+┃ ┈➤ #gitclone *<url git>*
+┃ ┈➤ #instagram
+┃ ┈➤ #ig
+┃ ┈➤ #apkmod
+┃ ┈➤ #spotify *<nombre>*
+┃ ┈➤ #imagen <query>
+╰━━━━━━━━━━━━━
+
+╭ֹ┈ ⵿❀⵿ ┈╮DOWNLOADER
+┃ ┈➤ #undefined
+┃ ┈➤ #musica *<búsqueda>*
+╰━━━━━━━━━━━━━
+
+╭ֹ┈ ⵿❀⵿ ┈╮YTMP3
+┃ ┈➤ #ytmp3
+┃ ┈➤ #ytmp3doc
+╰━━━━━━━━━━━━━
+
+╭ֹ┈ ⵿❀⵿ ┈╮DL
+┃ ┈➤ #tiktok
+╰━━━━━━━━━━━━━
+
+╭ֹ┈ ⵿❀⵿ ┈╮FUN
+┃ ┈➤ #acertijo
+┃ ┈➤ #gay <@tag> | <nombre>
+┃ ┈➤ #lesbiana <@tag> | <nombre>
+┃ ┈➤ #pajero <@tag> | <nombre>
+┃ ┈➤ #pajera <@tag> | <nombre>
+┃ ┈➤ #puto <@tag> | <nombre>
+┃ ┈➤ #puta <@tag> | <nombre>
+┃ ┈➤ #manco <@tag> | <nombre>
+┃ ┈➤ #manca <@tag> | <nombre>
+┃ ┈➤ #rata <@tag> | <nombre>
+┃ ┈➤ #prostituta <@tag> | <nombre>
+┃ ┈➤ #prostituto <@tag> | <nombre>
+┃ ┈➤ #apostar *<cantidad>*
+┃ ┈➤ #consejo
+┃ ┈➤ #dance *<@user>*
+┃ ┈➤ #doxear
+┃ ┈➤ #formarpareja5
+┃ ┈➤ #enamorada @tag
+┃ ┈➤ #math
+┃ ┈➤ #meme
+┃ ┈➤ #personalidad
+┃ ┈➤ #piropo
+┃ ┈➤ #pokedex *<pokemon>*
+┃ ┈➤ #ppt
+┃ ┈➤ #pregunta
+┃ ┈➤ #reto
+┃ ┈➤ #ruleta *<cantidad> <color>*
+┃ ┈➤ #ship
+┃ ┈➤ #love
+┃ ┈➤ #simi
+┃ ┈➤ #bot
+┃ ┈➤ #top *<texto>*
+┃ ┈➤ #zodiac *2002 02 25*
+┃ ┈➤ #amistad
+┃ ┈➤ #facto
+┃ ┈➤ #memev
+┃ ┈➤ #pajeame
+┃ ┈➤ #formartrio @usuario1 @usuario2
+┃ ┈➤ #verdad
+╰━━━━━━━━━━━━━
+
+╭ֹ┈ ⵿❀⵿ ┈╮EMOX
+┃ ┈➤ #agarrarnalgas @tag
+┃ ┈➤ #anal/culiar @tag
+┃ ┈➤ #angry/enojado @tag
+┃ ┈➤ #bath/bañarse @tag
+┃ ┈➤ #blowjob/mamada @tag
+┃ ┈➤ #blush/sonrojarse @tag
+┃ ┈➤ #chuparpata @tag
+┃ ┈➤ #cry/llorar @tag
+┃ ┈➤ #cuddle/acurrucarse @tag
+┃ ┈➤ #drunk/borracho @tag
+┃ ┈➤ #grabboobs/agarrartetas @tag
+┃ ┈➤ #hello/hola @tag
+┃ ┈➤ #hug/abrazar @tag
+┃ ┈➤ #kill/matar @tag
+┃ ┈➤ #kiss/besar @tag
+┃ ┈➤ #kiss2/besar2 @tag
+┃ ┈➤ #love2/enamorada @tag
+┃ ┈➤ #patt/acariciar @tag
+┃ ┈➤ #penetrar @user
+┃ ┈➤ #punch/golpear @tag
+┃ ┈➤ #sad/triste @tag
+┃ ┈➤ #scared/asustada @tag
+┃ ┈➤ #seduce/seducir @tag
+┃ ┈➤ #sexo/sex @tag
+┃ ┈➤ #sleep/dormir @tag
+┃ ┈➤ #violar/perra @tag
+╰━━━━━━━━━━━━━
+
+╭ֹ┈ ⵿❀⵿ ┈╮NSFWS
+┃ ┈➤ #follar @tag
+╰━━━━━━━━━━━━━
+
+╭ֹ┈ ⵿❀⵿ ┈╮GRUPO
+┃ ┈➤ #add
+┃ ┈➤ #group open / close
+┃ ┈➤ #grupo abrir / cerrar
+┃ ┈➤ #delete
+┃ ┈➤ #demote
+┃ ┈➤ #encuesta <text|text2>
+┃ ┈➤ #undefined
+┃ ┈➤ #hidetag
+┃ ┈➤ #infogrupo
+┃ ┈➤ #invite *<numero>*
+┃ ┈➤ #link
+┃ ┈➤ #listadv
+┃ ┈➤ #promote
+┃ ┈➤ #revoke
+┃ ┈➤ #tagall *<mesaje>*
+┃ ┈➤ #invocar *<mesaje>*
+┃ ┈➤ #kick
+┃ ┈➤ #rentar
+╰━━━━━━━━━━━━━
+
+╭ֹ┈ ⵿❀⵿ ┈╮INFO
+┃ ┈➤ #reglas
+┃ ┈➤ #ds
+┃ ┈➤ #fixmsgespera
+┃ ┈➤ #ping
+┃ ┈➤ #sistema
+┃ ┈➤ #speed
+┃ ┈➤ #speedtest
+┃ ┈➤ #status
+┃ ┈➤ #grupos
+┃ ┈➤ #script
+┃ ┈➤ #reportar
+╰━━━━━━━━━━━━━
+
+╭ֹ┈ ⵿❀⵿ ┈╮OWNER
+┃ ┈➤ #expired *<días>*
+┃ ┈➤ #addprem [@user] <days>
+┃ ┈➤ #autoadmin
+┃ ┈➤ #copia
+┃ ┈➤ #banuser <@tag> <razón>
+┃ ┈➤ #broadcast
+┃ ┈➤ #bc
+┃ ┈➤ #broadcastgroup
+┃ ┈➤ #bcgc
+┃ ┈➤ #bcgc2
+┃ ┈➤ #bcg
+┃ ┈➤ #cheat
+┃ ┈➤ #cleartmp
+┃ ┈➤ #delprem <@user>
+┃ ┈➤ #dsowner
+┃ ┈➤ #>
+┃ ┈➤ #=>
+┃ ┈➤ #$
+┃ ┈➤ #fetch
+┃ ┈➤ #get
+┃ ┈➤ #ip <alamat ip>
+┃ ┈➤ #join <link>
+┃ ┈➤ #grupocrear <nombre>
+┃ ┈➤ #nuevabiobot <teks>
+┃ ┈➤ #nuevafotobot *<imagen>*
+┃ ┈➤ #nuevonombrebot <teks>
+┃ ┈➤ #resetpersonajes
+┃ ┈➤ #undefined
+┃ ┈➤ #restart
+┃ ┈➤ #unbanuser <@tag>
+┃ ┈➤ #update
+┃ ┈➤ #actualizar
+┃ ┈➤ #enable <opción>
+┃ ┈➤ #disable <opción>
+┃ ┈➤ #añadirmonedas @usuario cantidad
+┃ ┈➤ #groups
+┃ ┈➤ #grouplist
+┃ ┈➤ #reunion
+┃ ┈➤ #meeting
+╰━━━━━━━━━━━━━
+
+╭ֹ┈ ⵿❀⵿ ┈╮FIX
+┃ ┈➤ #dsowner
+╰━━━━━━━━━━━━━
+
+╭ֹ┈ ⵿❀⵿ ┈╮RPG
+┃ ┈➤ #duelo @usuario <apuesta> [tuPersonaje] [personajeRival]
+┃ ┈➤ #sacrificar <nombre>
+┃ ┈➤ #cazar
+┃ ┈➤ #daily
+┃ ┈➤ #claim
+┃ ┈➤ #cambiarexp <cantidad>
+┃ ┈➤ #explorar
+┃ ┈➤ #invocacion
+┃ ┈➤ #levelup
+┃ ┈➤ #listarpersonajes
+┃ ┈➤ #logros
+┃ ┈➤ #minar
+┃ ┈➤ #miestatus
+┃ ┈➤ #mimonedas
+┃ ┈➤ #miexp
+┃ ┈➤ #mispersonajes
+┃ ┈➤ #mispjs
+┃ ┈➤ #inventario
+┃ ┈➤ #comprarpersonaje <nombre>
+┃ ┈➤ #reinado
+┃ ┈➤ #reinado reset
+┃ ┈➤ #rob2
+┃ ┈➤ #rob
+┃ ┈➤ #toppersonajes
+┃ ┈➤ #trabajar
+┃ ┈➤ #work
+┃ ┈➤ #invasionzombie
+┃ ┈➤ #menurpg
+┃ ┈➤ #tenertodo
+┃ ┈➤ #lb [página]
+┃ ┈➤ #bank
+┃ ┈➤ #banco
+┃ ┈➤ #cajamisteriosa
+┃ ┈➤ #transferirmonedas *@user cantidad*
+╰━━━━━━━━━━━━━
+
+╭ֹ┈ ⵿❀⵿ ┈╮ECON
+┃ ┈➤ #cambiarexp <cantidad>
+╰━━━━━━━━━━━━━
+
+╭ֹ┈ ⵿❀⵿ ┈╮ECONOMÍA
+┃ ┈➤ #listarpersonajes
+┃ ┈➤ #miestatus
+┃ ┈➤ #mimonedas
+┃ ┈➤ #miexp
+┃ ┈➤ #mispersonajes
+┃ ┈➤ #mispjs
+┃ ┈➤ #inventario
+┃ ┈➤ #trabajar
+┃ ┈➤ #work
+┃ ┈➤ #cajamisteriosa
+┃ ┈➤ #transferirmonedas *@user cantidad*
+╰━━━━━━━━━━━━━
+
+╭ֹ┈ ⵿❀⵿ ┈╮RANKING
+┃ ┈➤ #reinado
+┃ ┈➤ #reinado reset
+┃ ┈➤ #toppersonajes
+╰━━━━━━━━━━━━━
+
+╭ֹ┈ ⵿❀⵿ ┈╮SEARCH
+┃ ┈➤ #ytsearch *<texto>*
+╰━━━━━━━━━━━━━
+
+╭ֹ┈ ⵿❀⵿ ┈╮GACHA
+┃ ┈➤ #claim
+┃ ┈➤ #ver
+┃ ┈➤ #rw
+┃ ┈➤ #rollwaifu
+╰━━━━━━━━━━━━━
+
+╭ֹ┈ ⵿❀⵿ ┈╮GRUPOS
+┃ ┈➤ #rentar2 *<link>*
+╰━━━━━━━━━━━━━
+
+╭ֹ┈ ⵿❀⵿ ┈╮JADIBOT
+┃ ┈➤ #bots
+┃ ┈➤ #token
+┃ ┈➤ #gettoken
+┃ ┈➤ #serbottoken
+╰━━━━━━━━━━━━━
+
+╭ֹ┈ ⵿❀⵿ ┈╮RG
+┃ ┈➤ #profile
+┃ ┈➤ #unreg
+╰━━━━━━━━━━━━━
+
+╭ֹ┈ ⵿❀⵿ ┈╮PREMIUM
+┃ ┈➤ #comprarpremium <cantidad> <unidad>
+╰━━━━━━━━━━━━━
+
+╭ֹ┈ ⵿❀⵿ ┈╮JUEGOS
+┃ ┈➤ #cajamisteriosa
+╰━━━━━━━━━━━━━
+`;
+
+    const tokensList = [
+      "mak1", "mak2", "mak3", "mak4", "mak5", "mak6", "mak7", "mak8", "mak9", "mak10",
+      "mak11", "mak12", "mak13", "mak14", "mak15", "mak16", "mak17", "mak18", "mak19", "mak20",
+      "mak21", "mak22", "mak23", "mak24", "mak25", "mak26", "mak27", "mak28", "mak29", "mak30"
+    ];
+
+    // Contenido de bienvenida
+    function renderInicio() {
+      return `
+        <h1>Deymoon Club</h1>
+        <div class="welcome">
+          ¡Hola! Bienvenido a <b>Deymoon Club</b>, un club de bots especiales que te brindan la mejor estadía en tus grupos y más.
+        </div>
+        <div style="text-align:center;">
+          <a class="join-btn" href="https://whatsapp.com/channel/0029Vb5nxWWFHWq5CNFP5b21" target="_blank" rel="noopener">
+            Unirme al Canal
+          </a>
+        </div>
+      `;
+    }
+
+    // Contenido de comandos
+    function renderCommands() {
+      return `
+        <h2>Comandos</h2>
+        <div class="commands-block">${commandsData.replace(/</g, "&lt;").replace(/>/g, "&gt;")}</div>
+      `;
+    }
+
+    // Contenido de tokens
+    function renderTokens() {
+      let html = `<h2>Tokens Premium</h2>`;
+      tokensList.forEach((token, idx) => {
+        html += `
+          <div class="tokens-block">
+            <div class="token-title">TOKEN ${idx + 1}</div>
+            <div class="token-code">${token}</div>
+          </div>
+        `;
+      });
+      return html;
+    }
+
+    // Single Page Navigation (SPA)
+    function setActiveMenu(route) {
+      document.querySelectorAll('nav a').forEach(a => a.classList.remove('active'));
+      if (route === '/commands') document.getElementById('menu-commands').classList.add('active');
+      else if (route === '/tokens') document.getElementById('menu-tokens').classList.add('active');
+      else document.getElementById('menu-inicio').classList.add('active');
+    }
+
+    function renderRoute(route) {
+      setActiveMenu(route);
+      let main = document.getElementById('main-content');
+      if (route === '/commands') main.innerHTML = renderCommands();
+      else if (route === '/tokens') main.innerHTML = renderTokens();
+      else main.innerHTML = renderInicio();
+    }
+
+    // SPA: intercept menu clicks & manage URL
+    document.querySelectorAll('nav a').forEach(a => {
+      a.addEventListener('click', function(e) {
+        e.preventDefault();
+        const route = this.getAttribute('href');
+        window.history.pushState({ route }, '', route);
+        renderRoute(route);
+      });
+    });
+
+    // SPA: handle browser navigation
+    window.addEventListener('popstate', function(e) {
+      const route = window.location.pathname;
+      renderRoute(route);
+    });
+
+    // SPA: initial route
+    function initialRoute() {
+      const route = window.location.pathname;
+      if (['/commands','/tokens','/inicio'].includes(route)) renderRoute(route);
+      else {
+        window.history.replaceState({route:'/inicio'}, '', '/inicio');
+        renderRoute('/inicio');
+      }
+    }
+    initialRoute();
+  </script>
+</body>
+</html>
