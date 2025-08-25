@@ -23,30 +23,69 @@
     nav {
       background: var(--menu-bg);
       display: flex;
-      justify-content: center;
-      padding: 0.5em 0;
+      justify-content: flex-start;
+      align-items: flex-start;
+      padding: 0.5em 0 0.5em 0.7em;
       box-shadow: 0 1px 12px #000a;
       position: sticky;
       top: 0;
       z-index: 9;
+      gap: 2.5em;
+    }
+    .nav-brand {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin-right: 1.6em;
+      min-width: 70px;
+      user-select: none;
+    }
+    .nav-brand img {
+      width: 54px;
+      height: 54px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 2.5px solid var(--main-neon);
+      box-shadow: 0 0 10px var(--main-neon), 0 0 22px #ff174470;
+      margin-bottom: 0.23em;
+      background: #222;
+    }
+    .nav-brand-text {
+      text-align: center;
+      font-size: 0.98em;
+      font-weight: bold;
+      color: #fff;
+      line-height: 1.1;
+      text-shadow: 0 0 7px var(--main-neon), 0 0 12px #e53935a0;
+      letter-spacing: 0.5px;
+      margin-bottom: 0.15em;
+    }
+    .menu-links {
+      display: flex;
+      gap: 0.5em;
+      align-items: center;
+      flex: 1;
     }
     nav a {
       color: var(--text-color);
       text-decoration: none;
       padding: 1em 2em;
-      margin: 0 0.5em;
       font-weight: bold;
       border-bottom: 2px solid transparent;
       transition: color 0.2s, border-bottom 0.2s;
       font-size: 1.1em;
       letter-spacing: 1px;
+      border-radius: 6px 6px 0 0;
+      margin: 0;
+      background: none;
+      outline: none;
     }
     nav a.active, nav a:hover {
       color: var(--main-neon);
       border-bottom: 2.5px solid var(--main-neon);
       text-shadow: 0 0 5px var(--main-neon), 0 0 10px var(--main-neon);
+      background: #2222;
     }
-
     #main-content {
       max-width: 900px;
       margin: 2em auto;
@@ -57,7 +96,6 @@
       min-height: 400px;
       position: relative;
     }
-
     h1, h2 {
       color: var(--main-neon);
       text-shadow: 0 0 8px var(--main-neon), 0 0 16px var(--main-neon);
@@ -106,7 +144,6 @@
       font-size: 1.03em;
       overflow-x: auto;
     }
-
     .token-title {
       color: var(--main-neon);
       margin-bottom: 0.3em;
@@ -128,15 +165,26 @@
     }
     @media (max-width: 600px) {
       #main-content { padding: 1em; }
+      nav { flex-direction: column; align-items: stretch; gap: 0.7em;}
+      .nav-brand { margin: 0 auto 0.6em auto; }
+      .menu-links { justify-content: center; padding: 0 0.4em;}
       nav a {padding: 0.7em 1em; font-size: 1em;}
     }
   </style>
 </head>
 <body>
   <nav>
-    <a href="/inicio" id="menu-inicio" class="active">Inicio</a>
-    <a href="/commands" id="menu-commands">Comandos</a>
-    <a href="/tokens" id="menu-tokens">Tokens</a>
+    <div class="nav-brand">
+      <img src="https://qu.ax/Zqhlf.jpg" alt="Logo Deymoon Club">
+      <div class="nav-brand-text">
+        Home<br>Deymoon Club
+      </div>
+    </div>
+    <div class="menu-links">
+      <a href="/inicio" id="menu-inicio" class="active">Inicio</a>
+      <a href="/commands" id="menu-commands">Comandos</a>
+      <a href="/tokens" id="menu-tokens">Tokens</a>
+    </div>
   </nav>
   <div id="main-content"></div>
 
