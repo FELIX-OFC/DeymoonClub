@@ -2,48 +2,105 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Club de Exploradores del Universo</title>
+    <title>Deymoon Club</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>
         body {
             margin: 0;
             font-family: 'Segoe UI', Arial, sans-serif;
-            background: linear-gradient(135deg, #090a1a 60%, #23245a 100%);
+            background: linear-gradient(135deg, #181823 60%, #23245a 100%);
             color: #f4f4f4;
         }
         header {
-            text-align: center;
-            padding: 2em 0 1em 0;
-            background: rgba(20, 22, 40, 0.9);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 1em 2em;
+            background: rgba(20, 22, 40, 0.95);
+            position: sticky;
+            top: 0;
+            z-index: 10;
         }
-        header h1 {
-            font-size: 2.5em;
-            letter-spacing: 2px;
+        .logo {
+            font-size: 1.8em;
+            font-weight: bold;
             color: #ffcf5c;
-            text-shadow: 0 0 15px #23245a;
+            letter-spacing: 2px;
         }
-        header p {
-            font-size: 1.2em;
-            color: #b4b7e7;
+        nav {
+            display: flex;
+            align-items: center;
         }
-        .stars {
-            width: 100vw;
-            height: 200px;
-            background: url('https://www.transparenttextures.com/patterns/stardust.png');
-            background-repeat: repeat;
+        .nav-links {
+            display: flex;
+            gap: 2em;
         }
-        section {
-            max-width: 800px;
-            margin: 2em auto;
+        .nav-links a {
+            color: #f4f4f4;
+            text-decoration: none;
+            font-size: 1.1em;
+            transition: color 0.2s;
+        }
+        .nav-links a:hover {
+            color: #ffcf5c;
+        }
+        .hamburger {
+            display: none;
+            flex-direction: column;
+            cursor: pointer;
+            margin-left: 1em;
+        }
+        .bar {
+            width: 28px;
+            height: 4px;
+            background-color: #ffcf5c;
+            margin: 5px 0;
+            border-radius: 2px;
+            transition: all 0.3s;
+        }
+        @media (max-width: 700px) {
+            .nav-links {
+                display: none;
+                position: absolute;
+                top: 70px;
+                right: 0;
+                background: rgba(35,36,90,0.98);
+                flex-direction: column;
+                width: 180px;
+                border-radius: 0 0 16px 16px;
+                box-shadow: 0 6px 20px rgba(44,46,100,0.23);
+                padding: 1em 0;
+            }
+            .nav-links.active {
+                display: flex;
+            }
+            .hamburger {
+                display: flex;
+            }
+        }
+        main {
+            max-width: 700px;
+            margin: 3em auto 2em auto;
             padding: 2em;
-            background: rgba(35, 36, 90, 0.7);
+            background: rgba(35,36,90,0.7);
             border-radius: 16px;
-            box-shadow: 0 8px 32px 0 rgba(44, 46, 100, 0.3);
+            box-shadow: 0 8px 32px 0 rgba(44,46,100,0.25);
+            text-align: center;
+        }
+        h1 {
+            font-size: 2.2em;
+            color: #ffcf5c;
+            margin-bottom: 0.4em;
+            text-shadow: 0 0 14px #23245a;
+        }
+        p {
+            font-size: 1.15em;
+            color: #b4b7e7;
         }
         .cta-btn {
             display: inline-block;
             padding: 0.8em 2em;
-            margin-top: 1em;
+            margin: 2em 0 0 0;
             font-size: 1.2em;
             background: #ffcf5c;
             color: #23245a;
@@ -60,56 +117,45 @@
         }
         footer {
             text-align: center;
-            padding: 1em 0;
+            padding: 1.2em 0 0.7em 0;
             color: #888ab9;
-            font-size: 0.9em;
-        }
-        .planet {
-            display: block;
-            margin: 2em auto 1em auto;
-            width: 160px;
-            height: 160px;
-            background: radial-gradient(circle at 60% 40%, #d1eaff 0%, #5e82c5 80%, #23245a 100%);
-            border-radius: 50%;
-            box-shadow: 0 0 80px 10px #5e82c5;
-            position: relative;
-        }
-        .planet::after {
-            content: "";
-            position: absolute;
-            left: 45px;
-            top: 30px;
-            width: 70px;
-            height: 20px;
-            background: rgba(255,255,255,0.08);
-            border-radius: 50%;
-            transform: rotate(-18deg);
+            font-size: 0.95em;
         }
     </style>
 </head>
 <body>
     <header>
-        <h1>Club de Exploradores del Universo 🌌</h1>
-        <p>¡Descubre los secretos del cosmos, comparte historias y haz nuevos amigos!</p>
+        <div class="logo">Deymoon Club</div>
+        <nav>
+            <div class="nav-links" id="navLinks">
+                <a href="#inicio">Inicio</a>
+                <a href="https://whatsapp.com/channel/0029VbAscL4Fcow56wUp5b1Z" target="_blank" rel="noopener">Unirme al club</a>
+            </div>
+            <div class="hamburger" id="hamburger">
+                <div class="bar"></div>
+                <div class="bar"></div>
+                <div class="bar"></div>
+            </div>
+        </nav>
     </header>
-    <div class="stars"></div>
-    <section>
-        <div class="planet"></div>
-        <h2>¿Quiénes somos?</h2>
+    <main id="inicio">
+        <h1>Bienvenido a Deymoon Club 🌑</h1>
         <p>
-            Somos un grupo de curiosos, soñadores y aventureros que miran al cielo nocturno y se preguntan qué hay más allá de las estrellas. En nuestro club, compartimos teorías, imágenes astronómicas, relatos de ciencia ficción y recursos para aprender juntos sobre el universo.
+            Deymoon Club es una comunidad exclusiva creada para los que buscan compartir, aprender y conectar con personas que tienen intereses únicos. Un espacio donde tu voz importa y tus ideas pueden llegar lejos.<br><br>
+            Si eres curioso, creativo o simplemente quieres formar parte de algo diferente, este es tu lugar. Aquí encontrarás charlas, proyectos colaborativos, amistades nuevas y la oportunidad de crecer junto a otros miembros que valoran el respeto y la diversión.<br><br>
+            ¿Listo para ser parte de la luna? ¡Únete a nuestra aventura!
         </p>
-        <h2>¿Qué hacemos?</h2>
-        <ul>
-            <li>Observación de estrellas y planetas</li>
-            <li>Relatos y debates sobre misterios espaciales</li>
-            <li>Charlas con expertos invitados</li>
-            <li>Proyectos colaborativos: ¡crea tu propia constelación!</li>
-        </ul>
-        <a href="#" class="cta-btn">¡Únete al club!</a>
-    </section>
+        <a class="cta-btn" href="https://whatsapp.com/channel/0029VbAscL4Fcow56wUp5b1Z" target="_blank" rel="noopener">Unirme al club</a>
+    </main>
     <footer>
-        © 2025 Club de Exploradores del Universo | Hecho con creatividad por GitHub Copilot Chat Assistant 🚀
+        © 2025 Deymoon Club | Hecho con creatividad por GitHub Copilot Chat Assistant
     </footer>
+    <script>
+        const hamburger = document.getElementById('hamburger');
+        const navLinks = document.getElementById('navLinks');
+        hamburger.addEventListener('click', () => {
+            navLinks.classList.toggle('active');
+        });
+    </script>
 </body>
 </html>
