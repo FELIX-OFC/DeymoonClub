@@ -1,161 +1,177 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <title>Deymoon Club</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <style>
-        body {
-            margin: 0;
-            font-family: 'Segoe UI', Arial, sans-serif;
-            background: linear-gradient(135deg, #181823 60%, #23245a 100%);
-            color: #f4f4f4;
-        }
-        header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 1em 2em;
-            background: rgba(20, 22, 40, 0.95);
-            position: sticky;
-            top: 0;
-            z-index: 10;
-        }
-        .logo {
-            font-size: 1.8em;
-            font-weight: bold;
-            color: #ffcf5c;
-            letter-spacing: 2px;
-        }
-        nav {
-            display: flex;
-            align-items: center;
-        }
-        .nav-links {
-            display: flex;
-            gap: 2em;
-        }
-        .nav-links a {
-            color: #f4f4f4;
-            text-decoration: none;
-            font-size: 1.1em;
-            transition: color 0.2s;
-        }
-        .nav-links a:hover {
-            color: #ffcf5c;
-        }
-        .hamburger {
-            display: none;
-            flex-direction: column;
-            cursor: pointer;
-            margin-left: 1em;
-        }
-        .bar {
-            width: 28px;
-            height: 4px;
-            background-color: #ffcf5c;
-            margin: 5px 0;
-            border-radius: 2px;
-            transition: all 0.3s;
-        }
-        @media (max-width: 700px) {
-            .nav-links {
-                display: none;
-                position: absolute;
-                top: 70px;
-                right: 0;
-                background: rgba(35,36,90,0.98);
-                flex-direction: column;
-                width: 180px;
-                border-radius: 0 0 16px 16px;
-                box-shadow: 0 6px 20px rgba(44,46,100,0.23);
-                padding: 1em 0;
-            }
-            .nav-links.active {
-                display: flex;
-            }
-            .hamburger {
-                display: flex;
-            }
-        }
-        main {
-            max-width: 700px;
-            margin: 3em auto 2em auto;
-            padding: 2em;
-            background: rgba(35,36,90,0.7);
-            border-radius: 16px;
-            box-shadow: 0 8px 32px 0 rgba(44,46,100,0.25);
-            text-align: center;
-        }
-        h1 {
-            font-size: 2.2em;
-            color: #ffcf5c;
-            margin-bottom: 0.4em;
-            text-shadow: 0 0 14px #23245a;
-        }
-        p {
-            font-size: 1.15em;
-            color: #b4b7e7;
-        }
-        .cta-btn {
-            display: inline-block;
-            padding: 0.8em 2em;
-            margin: 2em 0 0 0;
-            font-size: 1.2em;
-            background: #ffcf5c;
-            color: #23245a;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            font-weight: bold;
-            box-shadow: 0 2px 8px rgba(44,46,100,0.2);
-            text-decoration: none;
-            transition: background 0.3s;
-        }
-        .cta-btn:hover {
-            background: #ffe390;
-        }
-        footer {
-            text-align: center;
-            padding: 1.2em 0 0.7em 0;
-            color: #888ab9;
-            font-size: 0.95em;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <title>🩵 Makima-Bot-MD 🩵 | SUPER WA - BOT</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {
+      font-family: 'Segoe UI', Arial, sans-serif;
+      margin: 0;
+      background: #181820;
+      color: #fff;
+    }
+    .container {
+      max-width: 800px;
+      margin: auto;
+      background: #232335;
+      border-radius: 12px;
+      padding: 30px;
+      box-shadow: 0 2px 20px #0007;
+      margin-top: 30px;
+    }
+    h1, h2, h3 {
+      text-align: center;
+    }
+    .center {
+      text-align: center;
+    }
+    img.header-img {
+      width: 100%;
+      max-width: 700px;
+      border-radius: 12px;
+      margin-bottom: 15px;
+    }
+    .important-links, .kurayami, .support, .badges {
+      margin: 25px 0;
+    }
+    .badges a {
+      margin-right: 10px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: #191932;
+      margin: 20px 0;
+      border-radius: 10px;
+      overflow: hidden;
+    }
+    th, td {
+      padding: 12px 10px;
+      border-bottom: 1px solid #33334d;
+      text-align: left;
+    }
+    th {
+      background: #2d2d4b;
+      color: #f700ff;
+    }
+    tr:last-child td {
+      border-bottom: none;
+    }
+    a {
+      color: #f700ff;
+      text-decoration: none;
+    }
+    a:hover {
+      text-decoration: underline;
+    }
+    hr {
+      border: none;
+      border-top: 1px solid #444;
+      margin: 30px 0;
+    }
+    .kurayami img {
+      border-radius: 10px;
+      border: 2px solid #f700ff44;
+      margin-bottom: 10px;
+    }
+  </style>
 </head>
 <body>
-    <header>
-        <div class="logo">Deymoon Club</div>
-        <nav>
-            <div class="nav-links" id="navLinks">
-                <a href="#inicio">Inicio</a>
-                <a href="https://whatsapp.com/channel/0029VbAscL4Fcow56wUp5b1Z" target="_blank" rel="noopener">Unirme al club</a>
-            </div>
-            <div class="hamburger" id="hamburger">
-                <div class="bar"></div>
-                <div class="bar"></div>
-                <div class="bar"></div>
-            </div>
-        </nav>
-    </header>
-    <main id="inicio">
-        <h1>Bienvenido a Deymoon Club 🌑</h1>
-        <p>
-            Deymoon Club es una comunidad exclusiva creada para los que buscan compartir, aprender y conectar con personas que tienen intereses únicos. Un espacio donde tu voz importa y tus ideas pueden llegar lejos.<br><br>
-            Si eres curioso, creativo o simplemente quieres formar parte de algo diferente, este es tu lugar. Aquí encontrarás charlas, proyectos colaborativos, amistades nuevas y la oportunidad de crecer junto a otros miembros que valoran el respeto y la diversión.<br><br>
-            ¿Listo para ser parte de la luna? ¡Únete a nuestra aventura!
-        </p>
-        <a class="cta-btn" href="https://whatsapp.com/channel/0029VbAscL4Fcow56wUp5b1Z" target="_blank" rel="noopener">Unirme al club</a>
-    </main>
-    <footer>
-        © 2025 Deymoon Club | Derechos reservados a su creador
-    </footer>
-    <script>
-        const hamburger = document.getElementById('hamburger');
-        const navLinks = document.getElementById('navLinks');
-        hamburger.addEventListener('click', () => {
-            navLinks.classList.toggle('active');
-        });
-    </script>
+  <div class="container">
+
+    <div class="center">
+      <img class="header-img" src="https://capsule-render.vercel.app/api?type=waving&color=F700FF&height=100&section=header&text=🩵%20Makima-Bot-MD%20🩵&fontSize=32&fontColor=ffffff" alt="Makima Bot MD Banner">
+      <h1>SUPER WA - BOT</h1>
+      <img src="https://files.catbox.moe/petcot.jpg" alt="Makima Bot Mascot" style="max-width:200px; border-radius: 10px;">
+      <p><strong>🩵 Versión actual: 2.0.3</strong></p>
+    </div>
+
+    <hr>
+
+    <h2>Descripción</h2>
+    <p>
+      Este Bot es 100% funcional con super juegos RPG, sistema de gacha, administración de grupos, etc...
+    </p>
+
+    <div class="important-links">
+      <h3>LINKS IMPORTANTES</h3>
+      <ul>
+        <li><strong>Canal oficial:</strong> <a href="https://whatsapp.com/channel/0029Vb5nxWWFHWq5CNFP5b21" target="_blank">Aquí</a></li>
+        <li><strong>Grupo oficial:</strong> <a href="https://chat.whatsapp.com/ETZduk7trjG9xgTXVCRHYK?mode=ac_t" target="_blank">Aquí</a></li>
+      </ul>
+    </div>
+
+    <hr>
+
+    <div class="kurayami">
+      <h3>KURAYAMI HOSTING</h3>
+      <a href="https://dash.kurayamihost.dpdns.org/home" target="_blank">
+        <img src="https://qu.ax/PdMmk.jpg" height="100px" alt="Kurayami Hosting">
+      </a>
+      <ul>
+        <li><strong>Dashboard:</strong> <a href="https://dash.kurayamihost.dpdns.org/home" target="_blank">Aquí</a></li>
+        <li><strong>Panel de Servicios:</strong> <a href="https://panel.kurayamihost.dpdns.org" target="_blank">Aquí</a></li>
+        <li><strong>Grupo de soporte:</strong> <a href="https://chat.whatsapp.com/LBEePvs3HP6IfME1Ju8HE1?mode=ac_t" target="_blank">Entrar</a></li>
+        <li><strong>Contacto de soporte:</strong> <a href="https://wa.me/18293142989" target="_blank">Contactar</a></li>
+        <li><strong>Canal de actualizaciones:</strong> <a href="https://whatsapp.com/channel/0029VbAa5sNCsU9Hlzsn651S" target="_blank">Aquí</a></li>
+      </ul>
+    </div>
+
+    <hr>
+
+    <h2>Características destacadas</h2>
+    <div class="center">
+      <table>
+        <tr>
+          <th>Función</th>
+          <th>Descripción</th>
+        </tr>
+        <tr>
+          <td>Jadibot</td>
+          <td>Conexión y reconexión automática</td>
+        </tr>
+        <tr>
+          <td>Descargas</td>
+          <td>Soporte para descargar de YouTube, TikTok, Instagram y más</td>
+        </tr>
+        <tr>
+          <td>Gestión de Grupos</td>
+          <td>Anti-enlaces, bienvenida, antifake, modo admin y más</td>
+        </tr>
+        <tr>
+          <td>Sistema RPG</td>
+          <td>Sistema de gacha, sube de nivel, gana recompensas, juega con otros</td>
+        </tr>
+        <tr>
+          <td>Juegos</td>
+          <td>Adivina, reto, piedra papel tijera, ruleta y más</td>
+        </tr>
+        <tr>
+          <td>Base de datos</td>
+          <td>PostgreSQL para una mayor eficiencia y escalabilidad</td>
+        </tr>
+        <tr>
+          <td>En constante mejora</td>
+          <td>Siempre en evolución con nuevas ideas y funciones</td>
+        </tr>
+      </table>
+    </div>
+
+    <hr>
+
+    <div class="support">
+      <h2>Si quieres contactar conmigo escríbeme:</h2>
+      <div class="badges center">
+        <a href="http://wa.me/18293142989" target="_blank">
+          <img src="https://img.shields.io/badge/Creador-25D366?style=for-the-badge&logo=whatsapp&logoColor=white" alt="Creador WhatsApp">
+        </a>
+        <a href="https://whatsapp.com/channel/0029Vb5nxWWFHWq5CNFP5b21" target="_blank">
+          <img src="https://img.shields.io/badge/Canal oficial-25D366?style=for-the-badge&logo=whatsapp&logoColor=white" alt="Canal Oficial WhatsApp">
+        </a>
+      </div>
+    </div>
+
+  </div>
 </body>
 </html>
