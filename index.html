@@ -1,177 +1,179 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <title>🩵 Makima-Bot-MD 🩵 | SUPER WA - BOT</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <style>
-    body {
-      font-family: 'Segoe UI', Arial, sans-serif;
-      margin: 0;
-      background: #181820;
-      color: #fff;
-    }
-    .container {
-      max-width: 800px;
-      margin: auto;
-      background: #232335;
-      border-radius: 12px;
-      padding: 30px;
-      box-shadow: 0 2px 20px #0007;
-      margin-top: 30px;
-    }
-    h1, h2, h3 {
-      text-align: center;
-    }
-    .center {
-      text-align: center;
-    }
-    img.header-img {
-      width: 100%;
-      max-width: 700px;
-      border-radius: 12px;
-      margin-bottom: 15px;
-    }
-    .important-links, .kurayami, .support, .badges {
-      margin: 25px 0;
-    }
-    .badges a {
-      margin-right: 10px;
-    }
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      background: #191932;
-      margin: 20px 0;
-      border-radius: 10px;
-      overflow: hidden;
-    }
-    th, td {
-      padding: 12px 10px;
-      border-bottom: 1px solid #33334d;
-      text-align: left;
-    }
-    th {
-      background: #2d2d4b;
-      color: #f700ff;
-    }
-    tr:last-child td {
-      border-bottom: none;
-    }
-    a {
-      color: #f700ff;
-      text-decoration: none;
-    }
-    a:hover {
-      text-decoration: underline;
-    }
-    hr {
-      border: none;
-      border-top: 1px solid #444;
-      margin: 30px 0;
-    }
-    .kurayami img {
-      border-radius: 10px;
-      border: 2px solid #f700ff44;
-      margin-bottom: 10px;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Promo Express</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background: #0f0c29; /* Azul neón oscuro */
+            background: linear-gradient(135deg, #0f0c29 0%, #1a2980 50%, #00f2fe 100%);
+            color: #fff;
+            font-family: 'Montserrat', Arial, sans-serif;
+        }
+        .center-content {
+            text-align: center;
+            margin-top: 80px;
+        }
+        .promo-img {
+            width: 200px;
+            margin-bottom: 20px;
+        }
+        .welcome {
+            font-size: 2rem;
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #00f2fe;
+            text-shadow: 0 0 12px #001f3f;
+        }
+        .desc {
+            font-size: 1.1rem;
+            margin-bottom: 30px;
+            color: #e0e7ff;
+        }
+        /* Menu styles */
+        .menu {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 100%;
+            width: 220px;
+            background: #202040;
+            box-shadow: 2px 0 10px #00f2fe55;
+            transform: translateX(-220px);
+            transition: transform 0.3s;
+            z-index: 10;
+            padding-top: 60px;
+        }
+        .menu.open {
+            transform: translateX(0);
+        }
+        .menu-option {
+            padding: 18px 25px;
+            cursor: pointer;
+            border-bottom: 1px solid #00f2fe33;
+            color: #fff;
+            font-weight: 500;
+            transition: background 0.2s;
+        }
+        .menu-option:hover {
+            background: #00f2fe33;
+        }
+        .hamburger {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            z-index: 20;
+            width: 40px;
+            height: 40px;
+            background: none;
+            border: none;
+            cursor: pointer;
+        }
+        .bar {
+            display: block;
+            width: 30px;
+            height: 5px;
+            margin: 6px auto;
+            background: #00f2fe;
+            border-radius: 3px;
+            transition: 0.3s;
+        }
+        .content {
+            max-width: 400px;
+            margin: 0 auto;
+            padding: 20px;
+            background: rgba(32, 32, 64, 0.8);
+            border-radius: 15px;
+            box-shadow: 0 0 30px #00f2fe33;
+        }
+        /* Button styles */
+        .btn {
+            display: inline-block;
+            padding: 10px 22px;
+            background: #00f2fe;
+            color: #202040;
+            text-decoration: none;
+            font-weight: bold;
+            border-radius: 8px;
+            margin: 12px 0;
+            transition: background 0.2s;
+        }
+        .btn:hover {
+            background: #1a2980;
+            color: #fff;
+        }
+    </style>
 </head>
 <body>
-  <div class="container">
-
-    <div class="center">
-      <img class="header-img" src="https://capsule-render.vercel.app/api?type=waving&color=F700FF&height=100&section=header&text=🩵%20Makima-Bot-MD%20🩵&fontSize=32&fontColor=ffffff" alt="Makima Bot MD Banner">
-      <h1>SUPER WA - BOT</h1>
-      <img src="https://files.catbox.moe/petcot.jpg" alt="Makima Bot Mascot" style="max-width:200px; border-radius: 10px;">
-      <p><strong>🩵 Versión actual: 2.0.3</strong></p>
+    <button class="hamburger" onclick="toggleMenu()">
+        <span class="bar"></span>
+        <span class="bar"></span>
+        <span class="bar"></span>
+    </button>
+    <nav id="menu" class="menu">
+        <div class="menu-option" onclick="showSection('principales')">Principales</div>
+        <div class="menu-option" onclick="showSection('hostings')">Hostings</div>
+        <div class="menu-option" onclick="showSection('webs')">Webs</div>
+        <div class="menu-option" onclick="showSection('grupos')">Grupos</div>
+        <div class="menu-option" onclick="showSection('canales')">Canales</div>
+    </nav>
+    <div class="center-content">
+        <div class="content" id="main-content">
+            <img class="promo-img" src="https://via.placeholder.com/300x80.png?text=Promo+Express" alt="Promo Express">
+            <div class="welcome">Bienvenido a Promo Express.</div>
+            <div class="desc">
+                Hecha un vistazo a todos estos canales, grupos y cosas para apoyar a otros mutuamente.
+            </div>
+        </div>
     </div>
 
-    <hr>
+    <script>
+        function toggleMenu() {
+            document.getElementById('menu').classList.toggle('open');
+        }
 
-    <h2>Descripción</h2>
-    <p>
-      Este Bot es 100% funcional con super juegos RPG, sistema de gacha, administración de grupos, etc...
-    </p>
-
-    <div class="important-links">
-      <h3>LINKS IMPORTANTES</h3>
-      <ul>
-        <li><strong>Canal oficial:</strong> <a href="https://whatsapp.com/channel/0029Vb5nxWWFHWq5CNFP5b21" target="_blank">Aquí</a></li>
-        <li><strong>Grupo oficial:</strong> <a href="https://chat.whatsapp.com/ETZduk7trjG9xgTXVCRHYK?mode=ac_t" target="_blank">Aquí</a></li>
-      </ul>
-    </div>
-
-    <hr>
-
-    <div class="kurayami">
-      <h3>KURAYAMI HOSTING</h3>
-      <a href="https://dash.kurayamihost.dpdns.org/home" target="_blank">
-        <img src="https://qu.ax/PdMmk.jpg" height="100px" alt="Kurayami Hosting">
-      </a>
-      <ul>
-        <li><strong>Dashboard:</strong> <a href="https://dash.kurayamihost.dpdns.org/home" target="_blank">Aquí</a></li>
-        <li><strong>Panel de Servicios:</strong> <a href="https://panel.kurayamihost.dpdns.org" target="_blank">Aquí</a></li>
-        <li><strong>Grupo de soporte:</strong> <a href="https://chat.whatsapp.com/LBEePvs3HP6IfME1Ju8HE1?mode=ac_t" target="_blank">Entrar</a></li>
-        <li><strong>Contacto de soporte:</strong> <a href="https://wa.me/18293142989" target="_blank">Contactar</a></li>
-        <li><strong>Canal de actualizaciones:</strong> <a href="https://whatsapp.com/channel/0029VbAa5sNCsU9Hlzsn651S" target="_blank">Aquí</a></li>
-      </ul>
-    </div>
-
-    <hr>
-
-    <h2>Características destacadas</h2>
-    <div class="center">
-      <table>
-        <tr>
-          <th>Función</th>
-          <th>Descripción</th>
-        </tr>
-        <tr>
-          <td>Jadibot</td>
-          <td>Conexión y reconexión automática</td>
-        </tr>
-        <tr>
-          <td>Descargas</td>
-          <td>Soporte para descargar de YouTube, TikTok, Instagram y más</td>
-        </tr>
-        <tr>
-          <td>Gestión de Grupos</td>
-          <td>Anti-enlaces, bienvenida, antifake, modo admin y más</td>
-        </tr>
-        <tr>
-          <td>Sistema RPG</td>
-          <td>Sistema de gacha, sube de nivel, gana recompensas, juega con otros</td>
-        </tr>
-        <tr>
-          <td>Juegos</td>
-          <td>Adivina, reto, piedra papel tijera, ruleta y más</td>
-        </tr>
-        <tr>
-          <td>Base de datos</td>
-          <td>PostgreSQL para una mayor eficiencia y escalabilidad</td>
-        </tr>
-        <tr>
-          <td>En constante mejora</td>
-          <td>Siempre en evolución con nuevas ideas y funciones</td>
-        </tr>
-      </table>
-    </div>
-
-    <hr>
-
-    <div class="support">
-      <h2>Si quieres contactar conmigo escríbeme:</h2>
-      <div class="badges center">
-        <a href="http://wa.me/18293142989" target="_blank">
-          <img src="https://img.shields.io/badge/Creador-25D366?style=for-the-badge&logo=whatsapp&logoColor=white" alt="Creador WhatsApp">
-        </a>
-        <a href="https://whatsapp.com/channel/0029Vb5nxWWFHWq5CNFP5b21" target="_blank">
-          <img src="https://img.shields.io/badge/Canal oficial-25D366?style=for-the-badge&logo=whatsapp&logoColor=white" alt="Canal Oficial WhatsApp">
-        </a>
-      </div>
-    </div>
-
-  </div>
+        function showSection(section) {
+            let html = '';
+            switch(section) {
+                case 'principales':
+                    html = `<div class="welcome">Estas son las plataformas principales nuestras.</div>
+                            <div>
+                                <b>Canal:</b> 
+                                <a class="btn" href="https://whatsapp.com/channel/0029VbAscL4Fcow56wUp5b1Z" target="_blank">Visitar</a>
+                                <br>
+                                <b>Grupo:</b> 
+                                <a class="btn" href="https://chat.whatsapp.com/DYoJVzkLjehJQOnwKzszUh?mode=ems_copy_t" target="_blank">Visitar</a>
+                            </div>`;
+                    break;
+                case 'hostings':
+                    html = `<div class="welcome">No hay promociones de hostings asociadas a nosotros aun, ¡visita nuestro grupo y promociona el tuyo!</div>
+                            <a class="btn" href="https://chat.whatsapp.com/DYoJVzkLjehJQOnwKzszUh?mode=ems_copy_t" target="_blank">Unirme al grupo</a>`;
+                    break;
+                case 'webs':
+                    html = `<div class="welcome">No hay promociones de webs asociadas a nosotros aun, ¡visita nuestro grupo y promociona la tuya!</div>
+                            <a class="btn" href="https://chat.whatsapp.com/DYoJVzkLjehJQOnwKzszUh?mode=ems_copy_t" target="_blank">Unirme al grupo</a>`;
+                    break;
+                case 'grupos':
+                    html = `<div class="welcome">No hay promociones de grupos asociadas a nosotros aun, ¡visita nuestro grupo y promociona el tuyo!</div>
+                            <a class="btn" href="https://chat.whatsapp.com/DYoJVzkLjehJQOnwKzszUh?mode=ems_copy_t" target="_blank">Unirme al grupo</a>`;
+                    break;
+                case 'canales':
+                    html = `<div class="welcome">No hay promociones de canales asociadas a nosotros aun, ¡visita nuestro grupo y promociona el tuyo!</div>
+                            <a class="btn" href="https://chat.whatsapp.com/DYoJVzkLjehJQOnwKzszUh?mode=ems_copy_t" target="_blank">Unirme al grupo</a>`;
+                    break;
+                default:
+                    html = `<img class="promo-img" src="https://via.placeholder.com/300x80.png?text=Promo+Express" alt="Promo Express">
+                            <div class="welcome">Bienvenido a Promo Express.</div>
+                            <div class="desc">
+                                Hecha un vistazo a todos estos canales, grupos y cosas para apoyar a otros mutuamente.
+                            </div>`;
+            }
+            document.getElementById('main-content').innerHTML = html;
+            document.getElementById('menu').classList.remove('open');
+        }
+    </script>
 </body>
 </html>
