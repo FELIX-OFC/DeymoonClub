@@ -1,179 +1,75 @@
 <!DOCTYPE html>
-<html lang="es">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Promo Express</title>
-    <style>
-        body {
-            margin: 0;
-            padding: 0;
-            background: #0f0c29; /* Azul neón oscuro */
-            background: linear-gradient(135deg, #0f0c29 0%, #1a2980 50%, #00f2fe 100%);
-            color: #fff;
-            font-family: 'Montserrat', Arial, sans-serif;
-        }
-        .center-content {
-            text-align: center;
-            margin-top: 80px;
-        }
-        .promo-img {
-            width: 200px;
-            margin-bottom: 20px;
-        }
-        .welcome {
-            font-size: 2rem;
-            font-weight: bold;
-            margin-bottom: 10px;
-            color: #00f2fe;
-            text-shadow: 0 0 12px #001f3f;
-        }
-        .desc {
-            font-size: 1.1rem;
-            margin-bottom: 30px;
-            color: #e0e7ff;
-        }
-        /* Menu styles */
-        .menu {
-            position: fixed;
-            top: 0;
-            left: 0;
-            height: 100%;
-            width: 220px;
-            background: #202040;
-            box-shadow: 2px 0 10px #00f2fe55;
-            transform: translateX(-220px);
-            transition: transform 0.3s;
-            z-index: 10;
-            padding-top: 60px;
-        }
-        .menu.open {
-            transform: translateX(0);
-        }
-        .menu-option {
-            padding: 18px 25px;
-            cursor: pointer;
-            border-bottom: 1px solid #00f2fe33;
-            color: #fff;
-            font-weight: 500;
-            transition: background 0.2s;
-        }
-        .menu-option:hover {
-            background: #00f2fe33;
-        }
-        .hamburger {
-            position: fixed;
-            top: 20px;
-            left: 20px;
-            z-index: 20;
-            width: 40px;
-            height: 40px;
-            background: none;
-            border: none;
-            cursor: pointer;
-        }
-        .bar {
-            display: block;
-            width: 30px;
-            height: 5px;
-            margin: 6px auto;
-            background: #00f2fe;
-            border-radius: 3px;
-            transition: 0.3s;
-        }
-        .content {
-            max-width: 400px;
-            margin: 0 auto;
-            padding: 20px;
-            background: rgba(32, 32, 64, 0.8);
-            border-radius: 15px;
-            box-shadow: 0 0 30px #00f2fe33;
-        }
-        /* Button styles */
-        .btn {
-            display: inline-block;
-            padding: 10px 22px;
-            background: #00f2fe;
-            color: #202040;
-            text-decoration: none;
-            font-weight: bold;
-            border-radius: 8px;
-            margin: 12px 0;
-            transition: background 0.2s;
-        }
-        .btn:hover {
-            background: #1a2980;
-            color: #fff;
-        }
-    </style>
+  <title>Panel de Control</title>
+  <style>
+    .contenedor {
+      max-width: 800px;
+      margin: 40px auto;
+      padding: 20px;
+      border: 1px solid #ddd;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .seccion {
+      margin-bottom: 20px;
+      padding: 20px;
+      border-bottom: 1px solid #ccc;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 10px;
+    }
+
+    input[type="text"], input[type="password"] {
+      width: 100%;
+      height: 40px;
+      margin-bottom: 20px;
+      padding: 10px;
+      border: 1px solid #ccc;
+    }
+
+    button {
+      background-color: #4CAF50;
+      color: #fff;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #3e8e41;
+    }
+  </style>
 </head>
 <body>
-    <button class="hamburger" onclick="toggleMenu()">
-        <span class="bar"></span>
-        <span class="bar"></span>
-        <span class="bar"></span>
-    </button>
-    <nav id="menu" class="menu">
-        <div class="menu-option" onclick="showSection('principales')">Principales</div>
-        <div class="menu-option" onclick="showSection('hostings')">Hostings</div>
-        <div class="menu-option" onclick="showSection('webs')">Webs</div>
-        <div class="menu-option" onclick="showSection('grupos')">Grupos</div>
-        <div class="menu-option" onclick="showSection('canales')">Canales</div>
-    </nav>
-    <div class="center-content">
-        <div class="content" id="main-content">
-            <img class="promo-img" src="https://via.placeholder.com/300x80.png?text=Promo+Express" alt="Promo Express">
-            <div class="welcome">Bienvenido a Promo Express.</div>
-            <div class="desc">
-                Hecha un vistazo a todos estos canales, grupos y cosas para apoyar a otros mutuamente.
-            </div>
-        </div>
+  <div class="contenedor">
+    <h1>Panel de Control</h1>
+    <div class="seccion">
+      <h2>Configuración</h2>
+      <form>
+        <label>Nombre de usuario:</label>
+        <input type="text" id="nombre" />
+        <br>
+        <label>Contraseña:</label>
+        <input type="password" id="contraseña" />
+      </form>
     </div>
+    <div class="seccion">
+      <h2>Monitoreo</h2>
+      <p>Estado del sistema: <span id="estado">Activo</span></p>
+      <button id="reiniciar">Reiniciar</button>
+    </div>
+  </div>
 
-    <script>
-        function toggleMenu() {
-            document.getElementById('menu').classList.toggle('open');
-        }
-
-        function showSection(section) {
-            let html = '';
-            switch(section) {
-                case 'principales':
-                    html = `<div class="welcome">Estas son las plataformas principales nuestras.</div>
-                            <div>
-                                <b>Canal:</b> 
-                                <a class="btn" href="https://whatsapp.com/channel/0029VbAscL4Fcow56wUp5b1Z" target="_blank">Visitar</a>
-                                <br>
-                                <b>Grupo:</b> 
-                                <a class="btn" href="https://chat.whatsapp.com/DYoJVzkLjehJQOnwKzszUh?mode=ems_copy_t" target="_blank">Visitar</a>
-                            </div>`;
-                    break;
-                case 'hostings':
-                    html = `<div class="welcome">No hay promociones de hostings asociadas a nosotros aun, ¡visita nuestro grupo y promociona el tuyo!</div>
-                            <a class="btn" href="https://chat.whatsapp.com/DYoJVzkLjehJQOnwKzszUh?mode=ems_copy_t" target="_blank">Unirme al grupo</a>`;
-                    break;
-                case 'webs':
-                    html = `<div class="welcome">No hay promociones de webs asociadas a nosotros aun, ¡visita nuestro grupo y promociona la tuya!</div>
-                            <a class="btn" href="https://chat.whatsapp.com/DYoJVzkLjehJQOnwKzszUh?mode=ems_copy_t" target="_blank">Unirme al grupo</a>`;
-                    break;
-                case 'grupos':
-                    html = `<div class="welcome">No hay promociones de grupos asociadas a nosotros aun, ¡visita nuestro grupo y promociona el tuyo!</div>
-                            <a class="btn" href="https://chat.whatsapp.com/DYoJVzkLjehJQOnwKzszUh?mode=ems_copy_t" target="_blank">Unirme al grupo</a>`;
-                    break;
-                case 'canales':
-                    html = `<div class="welcome">No hay promociones de canales asociadas a nosotros aun, ¡visita nuestro grupo y promociona el tuyo!</div>
-                            <a class="btn" href="https://chat.whatsapp.com/DYoJVzkLjehJQOnwKzszUh?mode=ems_copy_t" target="_blank">Unirme al grupo</a>`;
-                    break;
-                default:
-                    html = `<img class="promo-img" src="https://via.placeholder.com/300x80.png?text=Promo+Express" alt="Promo Express">
-                            <div class="welcome">Bienvenido a Promo Express.</div>
-                            <div class="desc">
-                                Hecha un vistazo a todos estos canales, grupos y cosas para apoyar a otros mutuamente.
-                            </div>`;
-            }
-            document.getElementById('main-content').innerHTML = html;
-            document.getElementById('menu').classList.remove('open');
-        }
-    </script>
+  <script>
+    document.getElementById("reiniciar").addEventListener("click", function() {
+      document.getElementById("estado").innerHTML = "Reiniciando...";
+      // Aquí puedes agregar la lógica para reiniciar el sistema
+    });
+  </script>
 </body>
 </html>
