@@ -1,0 +1,140 @@
+<?php
+session_start();
+
+// Cargar la base de datos JSON
+$json = file_get_contents('database.json');
+$data = json_decode($json, true);
+
+// Verificar si el usuario está logueado
+if (isset($_SESSION['loggedin'])) {
+    header("Location: welcome.php");
+    exit;
+}
+
+// Registro de usuario
+if (isset($_POST['register'])) {
+    $name = $_POST['name'];
+    $email = $_POST['email'];
+    $password = $_POST['password'];
+
+    // Verificar si el email ya existe
+    foreach ($data['users'] as $user) {
+        if ($user['email'] == $email) {
+            echo "El email ya existe";
+            exit;
+        }
+    }
+
+    // Agregar el nuevo usuario
+    $newUser = array(
+        "id" => count($data['users']) + 1,
+        "name" => $name,
+        "email" => $email,
+        "password" => $password,
+        "role" => "user",
+        "security_question" => "",
+        "security_answer" => "",
+        "created_at" => date("Y-m-d H:i:s")
+    );
+    array_push($data['users'], $newUser);
+
+    // Guardar la base de datos JSON
+    $json = json_encode($data);
+    file_put_contents('database.json', $json);
+
+    echo "Registro exitoso";
+}
+
+// Inicio de sesión
+if (isset($_POST['login'])) {
+    $email = $_POST['email'];
+    $password = $_POST['password'];
+
+    // Verificar las credenciales
+    foreach ($data['users'] as $user) {
+        if ($user['email'] == $email && $user['password'] == $password) {
+            $_SESSION['loggedin'] = true;
+            $_SESSION['username'] = $user['name'];
+            header("Location: welcome.php");
+            exit;
+        }
+    }
+
+    echo "Usuario o contraseña incorrecta";
+}
+?>
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Login</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        .container {
+            width: 300px;
+            margin: 50px auto;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .button {
+            background-color: #4CAF50;
+            color: #fff;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Login</h2>
+        <form action="" method="post">
+            <label>Email:</label>
+            <input type="email" name="email"><br><br>
+            <label>Contraseña:</label>
+            <input type="password" name="password"><br><br>
+            <input type="submit" name="login" value="Iniciar sesión" class="button">
+        </form>
+        <p>¿No tienes cuenta? <a href="?register=true">Registra aquí</a></p>
+    </div>
+
+    <?php if (isset($_GET['register'])) { ?>
+        <div class="container">
+            <h2>Registro</h2>
+            <form action="" method="post">
+                <label>Nombre:</label>
+                <input type="text" name="name"><br><br>
+                <label>Email:</label>
+                <input type="email" name="email"><br><br>
+                <label>Contraseña:</label>
+                <input type="password" name="password"><br><br>
+                <input type="submit" name="register" value="Registrarse" class="button">
+            </form>
+        </div>
+    <?php } ?>
+</body>
+</html>
+
+<?php
+// welcome.php
+session_start();
+if (!isset($_SESSION['loggedin'])) {
+    header("Location: index.php");
+    exit;
+}
+?>
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Bienvenido</title>
+</head>
+<body>
+    <h2>Hola, bienvenido <?php echo $_SESSION['username']; ?></h2>
+</body>
+</html>
