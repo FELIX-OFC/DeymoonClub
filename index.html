@@ -1,91 +1,40 @@
-<?php
-session_start();
-
-// Base de datos
-$users = array(
-    array(
-        "id" => 1,
-        "name" => "Admin",
-        "email" => "felixmanuel17@gmail.com",
-        "password" => "MANTIS MDd1"
-    )
-);
-
-// Registro de usuario
-if (isset($_POST['register'])) {
-    $name = $_POST['name'];
-    $email = $_POST['email'];
-    $password = $_POST['password'];
-
-    // Verificar si el email ya existe
-    foreach ($users as $user) {
-        if ($user['email'] == $email) {
-            echo "El email ya existe";
-            exit;
-        }
-    }
-
-    // Agregar el nuevo usuario
-    $newUser = array(
-        "id" => count($users) + 1,
-        "name" => $name,
-        "email" => $email,
-        "password" => $password
-    );
-    array_push($users, $newUser);
+<html>
+<meta name="viewport" content="width=device-width, user-scalable=no" />
+<header>
+<style>
+body {
+	background: #21303b;
+	color: #fff;
 }
 
-// Inicio de sesión
-if (isset($_POST['login'])) {
-    $email = $_POST['email'];
-    $password = $_POST['password'];
-
-    // Verificar las credenciales
-    foreach ($users as $user) {
-        if ($user['email'] == $email && $user['password'] == $password) {
-            $_SESSION['loggedin'] = true;
-            $_SESSION['username'] = $user['name'];
-            header("Location: index.php");
-            exit;
-        }
-    }
-
-    echo "Usuario o contraseña incorrecta";
+h2 {
+	line-height: 1.5;
+	font-family: Helvetica, sans-serif;
+	font-weight: bold;
+	text-align: center;
 }
 
-// Verificar si el usuario está logueado
-if (isset($_SESSION['loggedin'])) {
-    echo "Hola, bienvenido " . $_SESSION['username'];
-    echo "<br><a href='index.php?logout=true'>Cerrar sesión</a>";
+#container {
+	/*stitching*/
+	outline: 1px dashed #98abb9;
+	outline-offset: -5px;
+	
+	background-color: #556068;
+	height: 35px;
+	width: 100%;
+	
+	/*shadow*/
+	-webkit-box-shadow: 0px 2px 2px #000;
+	-moz-box-shadow: 0px 2px 2px #000;
+	box-shadow: 0px 2px 2px #000;
+}
+</style>
+</header>
+<body>
 
-    // Cerrar sesión
-    if (isset($_GET['logout'])) {
-        session_destroy();
-        header("Location: index.php");
-        exit;
-    }
-} else {
-    ?>
-    <h2>Login</h2>
-    <form action="" method="post">
-        <label>Email:</label>
-        <input type="email" name="email"><br><br>
-        <label>Contraseña:</label>
-        <input type="password" name="password"><br><br>
-        <input type="submit" name="login" value="Iniciar sesión">
-    </form>
-    <p>¿No tienes cuenta? <a href="?register=true">Registra aquí</a></p>
+    <div id="container">
+     <h2>GoMods</h2>
+    </div>
 
-    <?php if (isset($_GET['register'])) { ?>
-        <h2>Registro</h2>
-        <form action="" method="post">
-            <label>Nombre:</label>
-            <input type="text" name="name"><br><br>
-            <label>Email:</label>
-            <input type="email" name="email"><br><br>
-            <label>Contraseña:</label>
-            <input type="password" name="password"><br><br>
-            <input type="submit" name="register" value="Registrarse">
-        </form>
-    <?php } ?>
-<?php } ?>
+</body>
+</html>
