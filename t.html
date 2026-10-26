@@ -33,19 +33,22 @@
         .song-list { display: flex; flex-direction: column; gap: 15px; }
         .song-card { display: flex; align-items: center; background-color: var(--bg-card); padding: 10px; border-radius: 12px; transition: background 0.2s, box-shadow 0.2s; cursor: pointer; border: 1px solid transparent; }
         .song-card:hover { background-color: var(--bg-brilloso); box-shadow: 0 0 10px var(--neon-pink-glow); border: 1px solid var(--neon-pink); }
-        .song-card img { width: 60px; height: 60px; border-radius: 8px; object-fit: cover; margin-right: 15px; }
+        
+        /* Cover por defecto con gradiente neón */
+        .song-cover { width: 60px; height: 60px; border-radius: 8px; margin-right: 15px; background: linear-gradient(135deg, var(--neon-pink), #2a003f); display: flex; justify-content: center; align-items: center; font-size: 1.5rem; box-shadow: 0 0 10px var(--neon-pink-glow); flex-shrink: 0; }
+        
         .song-info { flex: 1; overflow: hidden; }
         .song-title { font-weight: 600; font-size: 1rem; margin-bottom: 5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .song-artist { font-size: 0.85rem; color: var(--text-muted); }
+        .song-artist { font-size: 0.85rem; color: var(--text-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
         #player { position: fixed; bottom: 70px; left: 10px; right: 10px; background: rgba(20, 20, 20, 0.95); backdrop-filter: blur(10px); border-radius: 15px; padding: 10px 15px; display: none; align-items: center; border: 1px solid var(--neon-pink); box-shadow: 0 0 20px var(--neon-pink-glow); z-index: 100; }
         #player.active { display: flex; }
-        #player img { width: 40px; height: 40px; border-radius: 5px; margin-right: 10px; }
+        .player-cover { width: 40px; height: 40px; border-radius: 5px; margin-right: 10px; background: linear-gradient(135deg, var(--neon-pink), #2a003f); display: flex; justify-content: center; align-items: center; flex-shrink: 0;}
         .player-controls { flex: 1; overflow: hidden; }
         .playing-title { font-size: 0.9rem; font-weight: bold; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: var(--neon-pink); }
-        .playing-artist { font-size: 0.75rem; color: var(--text-muted); }
+        .playing-artist { font-size: 0.75rem; color: var(--text-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         #audio-element { display: none; }
-        .play-btn { background: var(--neon-pink); border: none; color: white; width: 40px; height: 40px; border-radius: 50%; cursor: pointer; font-size: 1.2rem; display: flex; justify-content: center; align-items: center; box-shadow: 0 0 10px var(--neon-pink-glow); }
+        .play-btn { background: var(--neon-pink); border: none; color: white; width: 40px; height: 40px; border-radius: 50%; cursor: pointer; font-size: 1.2rem; display: flex; justify-content: center; align-items: center; box-shadow: 0 0 10px var(--neon-pink-glow); flex-shrink: 0; }
 
         #bottom-nav { position: fixed; bottom: 0; left: 0; width: 100%; height: 70px; background-color: var(--bg-card); display: flex; justify-content: space-around; align-items: center; border-top: 1px solid var(--bg-brilloso); z-index: 101; }
         .nav-item { display: flex; flex-direction: column; align-items: center; color: var(--text-muted); text-decoration: none; font-size: 0.7rem; cursor: pointer; transition: color 0.3s; }
@@ -72,14 +75,14 @@
 
     <div id="view-home" class="view active">
         <h2>Bienvenido</h2>
-        <div class="section-title"><h2>Tus Favoritos</h2></div>
+        <div class="section-title"><h2>Tu Playlist</h2></div>
         <div class="song-list" id="home-list"></div>
     </div>
 
     <div id="view-search" class="view">
-        <h2>Buscar Música</h2>
+        <h2>Buscar en tu Playlist</h2>
         <div class="search-bar">
-            <input type="text" id="search-input" placeholder="Artista, canción o enlace de YouTube...">
+            <input type="text" id="search-input" placeholder="Filtrar por canción o artista...">
             <button id="search-btn">🔍</button>
         </div>
         <div class="song-list" id="search-results"></div>
@@ -90,13 +93,13 @@
         <div class="settings-container">
             <div class="setting-item"><span>Canciones escuchadas</span><span class="setting-value" id="stat-played">0</span></div>
             <div class="setting-item"><span>Almacenamiento en caché</span><span class="setting-value" id="stat-cache">0 KB</span></div>
-            <div class="setting-item"><span>Versión</span><span class="setting-value">1.0.0 Neon</span></div>
+            <div class="setting-item"><span>Versión</span><span class="setting-value">1.0.0 Neon (Local)</span></div>
         </div>
         <button onclick="localStorage.clear(); location.reload();" style="margin-top: 20px; background: transparent; color: var(--neon-pink); border: 1px solid var(--neon-pink); padding: 10px; border-radius: 8px; width: 100%; cursor: pointer;">Borrar historial</button>
     </div>
 
     <div id="player">
-        <img id="player-img" src="" alt="Cover">
+        <div class="player-cover">🎵</div>
         <div class="player-controls">
             <div class="playing-title" id="player-title">Canción</div>
             <div class="playing-artist" id="player-artist">Artista</div>
@@ -118,133 +121,121 @@
     </div>
 
     <script>
+        // --- TU PLAYLIST LOCAL ---
+        const playlist = [
+            { name: "Latin Lover", artist: "Neutro Shorty, Big Soto", url: "https://raw.githubusercontent.com/JTxs00/uploads/main/1775936364197.mpeg" },
+            { name: "El La Engaño Lambada", artist: "Natusha", url: "https://raw.githubusercontent.com/JTxs00/uploads/main/1775936787983.mpeg" },
+            { name: "Quédate", artist: "Belee", url: "https://raw.githubusercontent.com/JTxs00/uploads/main/1775936643238.mpeg" },
+            { name: "Odisea", artist: "Ozuna", url: "https://raw.githubusercontent.com/JTxs00/uploads/main/1775935979163.mpeg" },
+            { name: "Maquiavélico", artist: "Cancerbero", url: "https://raw.githubusercontent.com/JTxs00/uploads/main/1775936827892.mpeg" },
+            { name: "Eoo", artist: "Bad Bunny", url: "https://raw.githubusercontent.com/JTxs00/uploads/main/1775936322243.mpeg" },
+            { name: "Los Viejos Me Llaman", artist: "No Name", url: "https://raw.githubusercontent.com/JTxs00/uploads/main/1775936897844.mpeg" },
+            { name: "Ninfómana", artist: "Jossimar ft El Apóstol", url: "https://raw.githubusercontent.com/JTxs00/uploads/main/1775936920447.mpeg" }
+        ];
+
         const audio = document.getElementById('audio-element');
         const player = document.getElementById('player');
         const playBtn = document.getElementById('play-pause-btn');
-        const API_PROXY = "/api/search";
-
+        
         let historial = JSON.parse(localStorage.getItem('neon_historial')) || [];
 
-        window.onload = async () => {
+        // --- INICIALIZACIÓN ---
+        window.onload = () => {
             actualizarEstadisticas();
-            if (historial.length > 0) {
-                const ultimaBusqueda = historial[historial.length - 1].title;
-                await buscarCanciones(ultimaBusqueda, 'home-list');
-            } else {
-                document.getElementById('home-list').innerHTML = '<p style="color:var(--text-muted); text-align:center;">Busca tu música favorita en el menú de abajo.</p>';
-            }
+            
+            // Mostramos la lista completa en Inicio
+            renderizarLista(playlist, 'home-list');
+
             setTimeout(() => {
                 document.getElementById('loading-screen').style.opacity = '0';
                 setTimeout(() => document.getElementById('loading-screen').style.display = 'none', 500);
-            }, 1500);
+            }, 1000); // 1 segundo para que se vea el spinner
         };
 
+        // --- NAVEGACIÓN ---
         function switchTab(tab) {
             document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
             document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+            
             document.getElementById(`view-${tab}`).classList.add('active');
             event.currentTarget.classList.add('active');
+
             if(tab === 'settings') actualizarEstadisticas();
-        }
-
-        // BUSCADOR ACTUALIZADO CON DETECCIÓN DE URL
-        async function buscarCanciones(query, contenedorId) {
-            const container = document.getElementById(contenedorId);
-            container.innerHTML = '<p style="color:var(--neon-pink);">Buscando...</p>';
-            
-            // Expresión regular para detectar si es un enlace de YouTube
-            const ytRegex = /^(https?:\/\/)?(www\.)?(youtube\.com|youtu\.be)\/.+$/i;
-            const isUrl = ytRegex.test(query);
-
-            try {
-                const res = await fetch(`${API_PROXY}?q=${encodeURIComponent(query)}&type=search`);
-                const data = await res.json();
-                
-                container.innerHTML = '';
-                
-                // Si es una URL, la API de lempi puede devolver un objeto único o un array. 
-                // Lo normalizamos a un array para que el código de abajo funcione.
-                let videos = [];
-                if (isUrl) {
-                    // Si es URL, asumimos que la API devuelve la info del video directo
-                    // Si devuelve un array con un solo elemento, lo usamos. Si no, lo envolvemos.
-                    videos = Array.isArray(data) ? data : (data.videos || [data]);
-                } else {
-                    videos = data.videos || data;
-                }
-                
-                if (!videos || videos.length === 0 || !videos[0]) {
-                    container.innerHTML = '<p>No se encontraron resultados.</p>';
-                    return;
-                }
-
-                videos.slice(0, 10).forEach(video => {
-                    const div = document.createElement('div');
-                    div.className = 'song-card';
-                    div.onclick = () => reproducir(video);
-                    
-                    // Ajustamos las propiedades por si vienen de un enlace directo o de una búsqueda
-                    const imgUrl = video.thumbnail || video.image || "https://via.placeholder.com/60";
-                    const title = video.title || "Video de YouTube";
-                    const author = video.author?.name || video.author || "YouTube";
-                    const duration = video.timestamp || "0:00";
-
-                    div.innerHTML = `
-                        <img src="${imgUrl}" alt="Cover">
-                        <div class="song-info">
-                            <div class="song-title">${title}</div>
-                            <div class="song-artist">${author} • ${duration}</div>
-                        </div>
-                    `;
-                    container.appendChild(div);
-                });
-            } catch (error) {
-                container.innerHTML = `<p style="color:red;">Error de conexión con el Proxy.</p>`;
-                console.error(error);
+            if(tab === 'search') {
+                // Limpiamos la búsqueda al entrar
+                document.getElementById('search-input').value = '';
+                document.getElementById('search-results').innerHTML = '';
             }
         }
+
+        // --- RENDERIZAR LISTA ---
+        function renderizarLista(lista, contenedorId) {
+            const container = document.getElementById(contenedorId);
+            container.innerHTML = '';
+
+            if(lista.length === 0) {
+                container.innerHTML = '<p style="color:var(--text-muted); text-align:center;">No se encontraron canciones.</p>';
+                return;
+            }
+
+            lista.forEach(cancion => {
+                const div = document.createElement('div');
+                div.className = 'song-card';
+                div.onclick = () => reproducir(cancion);
+                
+                // Usamos el gradiente en vez de foto
+                div.innerHTML = `
+                    <div class="song-cover">🎵</div>
+                    <div class="song-info">
+                        <div class="song-title">${cancion.name}</div>
+                        <div class="song-artist">${cancion.artist}</div>
+                    </div>
+                `;
+                container.appendChild(div);
+            });
+        }
+
+        // --- BUSCADOR LOCAL (Filtra tu array) ---
+        document.getElementById('search-input').addEventListener('input', (e) => {
+            const query = e.target.value.toLowerCase();
+            const filtradas = playlist.filter(c => 
+                c.name.toLowerCase().includes(query) || 
+                c.artist.toLowerCase().includes(query)
+            );
+            renderizarLista(filtradas, 'search-results');
+        });
 
         document.getElementById('search-btn').onclick = () => {
-            const query = document.getElementById('search-input').value;
-            if(query) buscarCanciones(query, 'search-results');
+            const query = document.getElementById('search-input').value.toLowerCase();
+            const filtradas = playlist.filter(c => 
+                c.name.toLowerCase().includes(query) || 
+                c.artist.toLowerCase().includes(query)
+            );
+            renderizarLista(filtradas, 'search-results');
         };
 
-        async function reproducir(video) {
+        // --- REPRODUCTOR ---
+        function reproducir(cancion) {
             player.classList.add('active');
-            document.getElementById('player-title').innerText = video.title || "Video";
-            document.getElementById('player-artist').innerText = video.author?.name || video.author || "YouTube";
-            document.getElementById('player-img').src = video.thumbnail || video.image || "https://via.placeholder.com/40";
+            document.getElementById('player-title').innerText = cancion.name;
+            document.getElementById('player-artist').innerText = cancion.artist;
             
             playBtn.innerText = "⏳";
-            playBtn.disabled = true;
 
-            try {
-                // Si el video ya trae la propiedad 'url' (porque vino de un enlace), la usamos.
-                // Si no, la armamos con el videoId.
-                const videoUrl = video.url || `https://youtu.be/${video.videoId}`;
-                
-                const response = await fetch(`${API_PROXY}?q=${encodeURIComponent(videoUrl)}&type=mp3`);
-                const data = await response.json();
-
-                if(data.url) {
-                    audio.src = data.url;
-                    audio.play();
-                    playBtn.innerText = "⏸";
-                    guardarEnHistorial(video);
-                    let plays = parseInt(localStorage.getItem('neon_plays') || '0');
-                    localStorage.setItem('neon_plays', plays + 1);
-                    actualizarEstadisticas();
-                } else {
-                    alert("No se pudo cargar el audio (Revisa que la API de lempi siga viva).");
-                    playBtn.innerText = "▶";
-                }
-            } catch (error) {
+            // Como los enlaces son directos, solo asignamos y reproducimos
+            audio.src = cancion.url;
+            audio.play().then(() => {
+                playBtn.innerText = "⏸";
+                guardarEnHistorial(cancion);
+                let plays = parseInt(localStorage.getItem('neon_plays') || '0');
+                localStorage.setItem('neon_plays', plays + 1);
+                actualizarEstadisticas();
+            }).catch(error => {
                 console.error(error);
-                alert("Error al conectar con el servidor de audio proxy.");
+                alert("Error al reproducir. Revisa que el enlace de GitHub sea válido.");
                 playBtn.innerText = "▶";
-            }
-            
-            playBtn.disabled = false;
+            });
+
             playBtn.onclick = togglePlay;
         }
 
@@ -255,17 +246,11 @@
 
         audio.onended = () => { playBtn.innerText = "▶"; };
 
-        function guardarEnHistorial(video) {
-            const id = video.videoId || video.id || video.url;
-            if(historial.length > 0 && (historial[historial.length - 1].videoId === id || historial[historial.length - 1].id === id)) return;
+        // --- HISTORIAL Y ESTADÍSTICAS ---
+        function guardarEnHistorial(cancion) {
+            if(historial.length > 0 && historial[historial.length - 1].url === cancion.url) return;
 
-            historial.push({
-                videoId: id,
-                title: video.title,
-                author: video.author,
-                url: video.url,
-                thumbnail: video.thumbnail || video.image
-            });
+            historial.push(cancion);
             if (historial.length > 10) historial.shift();
             localStorage.setItem('neon_historial', JSON.stringify(historial));
             
