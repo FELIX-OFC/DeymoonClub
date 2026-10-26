@@ -1,1383 +1,275 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="icon" href="/src/icon.png" type="image/png">
-    <title id="pageTitle">API GOHAN</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css"/>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet"/>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Neon Music</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'Poppins', sans-serif;
-            color: #2c2c2c;
-            background: #ffffff;
-            overflow-x: hidden;
-        }
-
-        body.no-scroll {
-            overflow: hidden;
-        }
-
-        /* Loading Screen */
-        #loadingScreen {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: #ffffff;
-            z-index: 10000;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            flex-direction: column;
-            transition: opacity 0.5s ease;
-        }
-
-        #loadingScreen.fade-out {
-            opacity: 0;
-        }
-
-        .spinner-border {
-            width: 3rem;
-            height: 3rem;
-            border: 3px solid #f0f0f0;
-            border-top-color: #2c2c2c;
-        }
-
-        /* Music Player Flotante */
-        .music-player {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            width: 320px;
-            background: linear-gradient(135deg, #1a1a2e, #16213e);
-            border-radius: 15px;
-            padding: 15px;
-            z-index: 10000;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255,255,255,0.2);
-            transition: all 0.3s ease;
-        }
-
-        .music-player.minimized {
-            width: 50px;
-            padding: 10px;
-            border-radius: 25px;
-        }
-
-        .music-player.minimized .music-info,
-        .music-player.minimized .music-controls,
-        .music-player.minimized .progress-container {
-            display: none;
-        }
-
-        .music-player.minimized .music-toggle-min {
-            transform: rotate(180deg);
-        }
-
-        .music-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 10px;
-            color: white;
-        }
-
-        .music-title {
-            font-size: 14px;
-            font-weight: 600;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
-            flex: 1;
-        }
-
-        .music-toggle-min {
-            background: none;
-            border: none;
-            color: white;
-            cursor: pointer;
-            font-size: 16px;
-            padding: 0 5px;
-        }
-
-        .music-info {
-            text-align: center;
-            margin-bottom: 10px;
-        }
-
-        .song-name {
-            color: white;
-            font-size: 14px;
-            font-weight: 500;
-            margin-bottom: 5px;
-        }
-
-        .artist-name {
-            color: rgba(255,255,255,0.7);
-            font-size: 11px;
-        }
-
-        .progress-container {
-            background: rgba(255,255,255,0.2);
-            border-radius: 10px;
-            height: 4px;
-            margin: 10px 0;
-            cursor: pointer;
-        }
-
-        .progress-bar {
-            background: #e74c3c;
-            border-radius: 10px;
-            height: 100%;
-            width: 0%;
-            position: relative;
-            transition: width 0.1s linear;
-        }
-
-        .time-info {
-            display: flex;
-            justify-content: space-between;
-            color: rgba(255,255,255,0.6);
-            font-size: 10px;
-            margin-bottom: 10px;
-        }
-
-        .music-controls {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 20px;
-        }
-
-        .control-btn {
-            background: rgba(255,255,255,0.1);
-            border: none;
-            border-radius: 50%;
-            width: 35px;
-            height: 35px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            color: white;
-        }
-
-        .control-btn:hover {
-            background: rgba(255,255,255,0.2);
-            transform: scale(1.05);
-        }
-
-        .control-btn.play-btn {
-            background: #e74c3c;
-            width: 45px;
-            height: 45px;
-        }
-
-        .control-btn.play-btn:hover {
-            background: #c0392b;
-        }
-
-        /* Top Bar */
-        .top-bar {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 60px;
-            background: #ffffff;
-            border-bottom: 1px solid #e5e5e5;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 0 20px;
-            z-index: 1000;
-            transition: all 0.3s ease;
-        }
-
-        .top-bar.scrolled {
-            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-        }
-
-        .top-bar-left {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-        }
-
-        .menu-toggle {
-            width: 40px;
-            height: 40px;
-            background: none;
-            border: none;
-            cursor: pointer;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            gap: 5px;
-            padding: 0;
-            transition: all 0.3s ease;
-        }
-
-        .menu-toggle:hover {
-            background: #f5f5f5;
-            border-radius: 5px;
-        }
-
-        .menu-toggle span {
-            display: block;
-            width: 22px;
-            height: 2px;
-            background: #2c2c2c;
-            transition: all 0.3s ease;
-        }
-
-        .menu-toggle.active span:nth-child(1) {
-            transform: rotate(45deg) translate(5px, 5px);
-        }
-
-        .menu-toggle.active span:nth-child(2) {
-            opacity: 0;
-        }
-
-        .menu-toggle.active span:nth-child(3) {
-            transform: rotate(-45deg) translate(7px, -6px);
-        }
-
-        .api-name {
-            font-size: 18px;
-            font-weight: 600;
-            color: #2c2c2c;
-        }
-
-        .top-bar-right {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-        }
-
-        .top-links {
-            display: flex;
-            gap: 20px;
-            align-items: center;
-        }
-
-        .top-link {
-            color: #2c2c2c;
-            text-decoration: none;
-            font-size: 14px;
-            font-weight: 500;
-            transition: all 0.3s ease;
-            display: flex;
-            align-items: center;
-            gap: 5px;
-        }
-
-        .top-link:hover {
-            color: #666;
-        }
-
-        .link-icon {
-            width: 16px;
-            height: 16px;
-        }
-
-        /* Sidebar */
-        .sidebar {
-            position: fixed;
-            top: 60px;
-            left: -280px;
-            width: 280px;
-            height: calc(100vh - 60px);
-            background: #ffffff;
-            border-right: 1px solid #e5e5e5;
-            overflow-y: auto;
-            transition: left 0.3s ease;
-            z-index: 999;
-        }
-
-        .sidebar.active {
-            left: 0;
-        }
-
-        .sidebar-overlay {
-            position: fixed;
-            top: 60px;
-            left: 0;
-            width: 100%;
-            height: calc(100vh - 60px);
-            background: rgba(0,0,0,0.3);
-            opacity: 0;
-            visibility: hidden;
-            transition: all 0.3s ease;
-            z-index: 998;
-        }
-
-        .sidebar-overlay.active {
-            opacity: 1;
-            visibility: visible;
-        }
-
-        .sidebar-nav {
-            padding: 20px 0;
-        }
-
-        .sidebar-item {
-            padding: 12px 20px;
-            color: #2c2c2c;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            border-left: 3px solid transparent;
-            font-size: 14px;
-            font-weight: 500;
-        }
-
-        .sidebar-item:hover {
-            background: #f5f5f5;
-        }
-
-        .sidebar-item.active {
-            background: #f5f5f5;
-            border-left-color: #2c2c2c;
-        }
-
-        .sidebar-category {
-            padding: 20px 20px 8px;
-            font-size: 12px;
-            font-weight: 600;
-            color: #999;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        /* Main Content */
-        .main-content {
-            margin-top: 60px;
-            padding: 40px 20px;
-            max-width: 1200px;
-            margin-left: auto;
-            margin-right: auto;
-            min-height: calc(100vh - 120px);
-        }
-
-        /* Home Page */
-        .home-banner {
-            text-align: center;
-            padding: 40px 20px;
-            animation: fadeIn 0.6s ease;
-        }
-
-        .home-banner img {
-            max-width: 100%;
-            height: auto;
-            border-radius: 10px;
-            margin-bottom: 30px;
-        }
-
-        .home-title {
-            font-size: 42px;
-            font-weight: 600;
-            margin-bottom: 10px;
-            color: #2c2c2c;
-        }
-
-        .home-version {
-            display: inline-block;
-            background: #2c2c2c;
-            color: #ffffff;
-            padding: 6px 16px;
-            border-radius: 20px;
-            font-size: 13px;
-            font-weight: 500;
-            margin-bottom: 20px;
-        }
-
-        .home-description {
-            font-size: 18px;
-            color: #666;
-            margin-bottom: 40px;
-        }
-
-        /* Status Page */
-        .status-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 20px;
-            margin-top: 30px;
-            animation: fadeIn 0.6s ease;
-        }
-
-        .status-card {
-            background: #ffffff;
-            border: 1px solid #e5e5e5;
-            border-radius: 10px;
-            padding: 20px;
-            transition: all 0.3s ease;
-        }
-
-        .status-card:hover {
-            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-            transform: translateY(-2px);
-        }
-
-        .status-card-title {
-            font-size: 12px;
-            font-weight: 600;
-            color: #999;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            margin-bottom: 10px;
-        }
-
-        .status-card-value {
-            font-size: 24px;
-            font-weight: 600;
-            color: #2c2c2c;
-        }
-
-        .status-card-small {
-            font-size: 14px;
-            color: #666;
-            margin-top: 5px;
-        }
-
-        /* Endpoints Page */
-        .search-box {
-            margin-bottom: 30px;
-            animation: fadeIn 0.6s ease;
-        }
-
-        .search-input {
-            width: 100%;
-            padding: 14px 20px;
-            border: 1px solid #e5e5e5;
-            border-radius: 8px;
-            font-size: 15px;
-            transition: all 0.3s ease;
-            font-family: 'Poppins', sans-serif;
-        }
-
-        .search-input:focus {
-            outline: none;
-            border-color: #2c2c2c;
-            box-shadow: 0 0 0 3px rgba(44,44,44,0.1);
-        }
-
-        .category-section {
-            margin-bottom: 40px;
-            animation: fadeIn 0.6s ease;
-        }
-
-        .category-title {
-            font-size: 22px;
-            font-weight: 600;
-            color: #2c2c2c;
-            margin-bottom: 20px;
-            padding-bottom: 10px;
-            border-bottom: 2px solid #2c2c2c;
-        }
-
-        .endpoints-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 15px;
-        }
-
-        .endpoint-card {
-            background: #ffffff;
-            border: 1px solid #e5e5e5;
-            border-radius: 8px;
-            padding: 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            transition: all 0.3s ease;
-        }
-
-        .endpoint-card:hover {
-            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-            transform: translateY(-2px);
-        }
-
-        .endpoint-info {
-            flex: 1;
-            min-width: 0;
-        }
-
-        .endpoint-name {
-            font-size: 16px;
-            font-weight: 600;
-            color: #2c2c2c;
-            margin-bottom: 4px;
-        }
-
-        .endpoint-desc {
-            font-size: 13px;
-            color: #999;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
-        }
-
-        .endpoint-btn {
-            background: #2c2c2c;
-            color: #ffffff;
-            border: none;
-            padding: 8px 20px;
-            border-radius: 6px;
-            font-size: 13px;
-            font-weight: 500;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            white-space: nowrap;
-            margin-left: 15px;
-        }
-
-        .endpoint-btn:hover {
-            background: #1a1a1a;
-            transform: scale(1.05);
-        }
-
-        /* Modal */
-        .modal-content {
-            border: none;
-            border-radius: 12px;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
-        }
-
-        .modal-header {
-            border-bottom: 1px solid #e5e5e5;
-            padding: 20px 24px;
-        }
-
-        .modal-title {
-            font-size: 20px;
-            font-weight: 600;
-            color: #2c2c2c;
-        }
-
-        .modal-desc {
-            font-size: 13px;
-            color: #999;
-            margin-top: 4px;
-        }
-
-        .modal-body {
-            padding: 24px;
-        }
-
-        .modal-footer {
-            border-top: 1px solid #e5e5e5;
-            padding: 16px 24px;
-        }
-
-        .api-endpoint-box {
-            background: #f8f9fa;
-            padding: 12px;
-            border-radius: 6px;
-            font-family: monospace;
-            font-size: 13px;
-            color: #2c2c2c;
-            word-break: break-all;
-            margin-bottom: 16px;
-        }
-
-        .param-input {
-            width: 100%;
-            padding: 12px;
-            border: 1px solid #e5e5e5;
-            border-radius: 6px;
-            font-size: 14px;
-            margin-bottom: 12px;
-            font-family: 'Poppins', sans-serif;
-            transition: all 0.3s ease;
-        }
-
-        .param-input:focus {
-            outline: none;
-            border-color: #2c2c2c;
-            box-shadow: 0 0 0 3px rgba(44,44,44,0.1);
-        }
-
-        .param-input.is-invalid {
-            border-color: #dc3545;
-        }
-
-        .inner-desc {
-            font-size: 12px;
-            color: #999;
-            margin-top: 8px;
-            line-height: 1.5;
-        }
-
-        .submit-btn {
-            background: #2c2c2c;
-            color: #ffffff;
-            border: none;
-            padding: 10px 24px;
-            border-radius: 6px;
-            font-size: 14px;
-            font-weight: 500;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .submit-btn:hover {
-            background: #1a1a1a;
-        }
-
-        .submit-btn:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-        }
-
-        .response-box {
-            background: #f8f9fa;
-            padding: 16px;
-            border-radius: 6px;
-            font-family: monospace;
-            font-size: 13px;
-            color: #2c2c2c;
-            white-space: pre-wrap;
-            word-wrap: break-word;
-            max-height: 400px;
-            overflow-y: auto;
-            margin-top: 16px;
-        }
-
-        .response-image {
-            max-width: 100%;
-            height: auto;
-            border-radius: 8px;
-            margin-top: 16px;
-        }
-
-        /* Footer */
-        .footer {
-            text-align: center;
-            padding: 30px 20px;
-            color: #999;
-            font-size: 13px;
-            border-top: 1px solid #e5e5e5;
-        }
-
-        /* Animations */
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(10px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        /* Responsive */
-        @media (max-width: 768px) {
-            .top-links {
-                display: none;
-            }
-
-            .home-title {
-                font-size: 32px;
-            }
-
-            .home-description {
-                font-size: 16px;
-            }
-
-            .endpoints-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .main-content {
-                padding: 20px 15px;
-            }
-
-            .music-player {
-                width: 280px;
-                bottom: 10px;
-                right: 10px;
-            }
-        }
+        :root {
+            --bg-color: #050505;
+            --bg-card: #121212;
+            --bg-brilloso: #1e1e1e;
+            --neon-pink: #ff007f;
+            --neon-pink-glow: rgba(255, 0, 127, 0.4);
+            --text-main: #ffffff;
+            --text-muted: #b3b3b3;
+            --font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        body { background-color: var(--bg-color); color: var(--text-main); font-family: var(--font-family); overflow: hidden; height: 100vh; display: flex; flex-direction: column; }
+        
+        #loading-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: var(--bg-color); display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 9999; transition: opacity 0.5s ease; }
+        .spinner { width: 60px; height: 60px; border: 4px solid var(--bg-brilloso); border-top: 4px solid var(--neon-pink); border-radius: 50%; animation: spin 1s linear infinite; box-shadow: 0 0 15px var(--neon-pink-glow); }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        #loading-screen p { margin-top: 20px; color: var(--neon-pink); font-weight: bold; letter-spacing: 2px; }
+
+        .view { flex: 1; overflow-y: auto; padding: 20px; padding-bottom: 160px; display: none; animation: fadeIn 0.3s ease; }
+        .view.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        h2 { font-size: 1.5rem; margin-bottom: 15px; margin-top: 10px; }
+        .section-title { display: flex; justify-content: space-between; align-items: center; }
+        
+        .song-list { display: flex; flex-direction: column; gap: 15px; }
+        .song-card { display: flex; align-items: center; background-color: var(--bg-card); padding: 10px; border-radius: 12px; transition: background 0.2s, box-shadow 0.2s; cursor: pointer; border: 1px solid transparent; }
+        .song-card:hover { background-color: var(--bg-brilloso); box-shadow: 0 0 10px var(--neon-pink-glow); border: 1px solid var(--neon-pink); }
+        .song-card img { width: 60px; height: 60px; border-radius: 8px; object-fit: cover; margin-right: 15px; }
+        .song-info { flex: 1; overflow: hidden; }
+        .song-title { font-weight: 600; font-size: 1rem; margin-bottom: 5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .song-artist { font-size: 0.85rem; color: var(--text-muted); }
+
+        #player { position: fixed; bottom: 70px; left: 10px; right: 10px; background: rgba(20, 20, 20, 0.95); backdrop-filter: blur(10px); border-radius: 15px; padding: 10px 15px; display: none; align-items: center; border: 1px solid var(--neon-pink); box-shadow: 0 0 20px var(--neon-pink-glow); z-index: 100; }
+        #player.active { display: flex; }
+        #player img { width: 40px; height: 40px; border-radius: 5px; margin-right: 10px; }
+        .player-controls { flex: 1; overflow: hidden; }
+        .playing-title { font-size: 0.9rem; font-weight: bold; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: var(--neon-pink); }
+        .playing-artist { font-size: 0.75rem; color: var(--text-muted); }
+        #audio-element { display: none; }
+        .play-btn { background: var(--neon-pink); border: none; color: white; width: 40px; height: 40px; border-radius: 50%; cursor: pointer; font-size: 1.2rem; display: flex; justify-content: center; align-items: center; box-shadow: 0 0 10px var(--neon-pink-glow); }
+
+        #bottom-nav { position: fixed; bottom: 0; left: 0; width: 100%; height: 70px; background-color: var(--bg-card); display: flex; justify-content: space-around; align-items: center; border-top: 1px solid var(--bg-brilloso); z-index: 101; }
+        .nav-item { display: flex; flex-direction: column; align-items: center; color: var(--text-muted); text-decoration: none; font-size: 0.7rem; cursor: pointer; transition: color 0.3s; }
+        .nav-item svg { width: 24px; height: 24px; margin-bottom: 4px; fill: currentColor; }
+        .nav-item.active { color: var(--neon-pink); filter: drop-shadow(0 0 5px var(--neon-pink-glow)); }
+
+        .settings-container { background: var(--bg-card); border-radius: 15px; padding: 20px; border-left: 4px solid var(--neon-pink); box-shadow: -5px 0 15px var(--neon-pink-glow); animation: openBook 0.4s ease-out forwards; transform-origin: left center; }
+        @keyframes openBook { from { transform: perspective(1000px) rotateY(-90deg); opacity: 0; } to { transform: perspective(1000px) rotateY(0deg); opacity: 1; } }
+        .setting-item { display: flex; justify-content: space-between; padding: 15px 0; border-bottom: 1px solid var(--bg-brilloso); }
+        .setting-item:last-child { border-bottom: none; }
+        .setting-value { color: var(--neon-pink); font-weight: bold; }
+
+        .search-bar { display: flex; background: var(--bg-brilloso); border-radius: 25px; padding: 10px 20px; margin-bottom: 20px; border: 1px solid var(--neon-pink); }
+        .search-bar input { flex: 1; background: none; border: none; color: white; font-size: 1rem; outline: none; }
+        .search-bar button { background: none; border: none; color: var(--neon-pink); font-weight: bold; cursor: pointer; }
     </style>
 </head>
 <body>
-    <!-- Loading Screen -->
-    <div id="loadingScreen">
-        <div class="spinner-border" role="status">
-            <span class="visually-hidden">Loading...</span>
-        </div>
-        <p style="margin-top: 16px; color: #666;">Loading...</p>
+
+    <div id="loading-screen">
+        <div class="spinner"></div>
+        <p>CARGANDO NEON...</p>
     </div>
 
-    <!-- Reproductor de Música Flotante -->
-    <div class="music-player" id="musicPlayer">
-        <div class="music-header">
-            <span class="music-title">🎵 MUSIC PLAYER</span>
-            <button class="music-toggle-min" id="toggleMinimize">−</button>
-        </div>
-        <div class="music-info">
-            <div class="song-name" id="songName">Cargando...</div>
-            <div class="artist-name" id="artistName">---</div>
-        </div>
-        <div class="progress-container" id="progressContainer">
-            <div class="progress-bar" id="progressBar"></div>
-        </div>
-        <div class="time-info">
-            <span id="currentTime">0:00</span>
-            <span id="duration">0:00</span>
-        </div>
-        <div class="music-controls">
-            <button class="control-btn" id="prevBtn">⏮</button>
-            <button class="control-btn play-btn" id="playPauseBtn">▶</button>
-            <button class="control-btn" id="nextBtn">⏭</button>
-        </div>
+    <div id="view-home" class="view active">
+        <h2>Bienvenido</h2>
+        <div class="section-title"><h2>Tus Favoritos</h2></div>
+        <div class="song-list" id="home-list"></div>
     </div>
 
-    <audio id="audioPlayer" style="display: none;"></audio>
-
-    <!-- Top Bar -->
-    <div class="top-bar">
-        <div class="top-bar-left">
-            <button class="menu-toggle" id="menuToggle">
-                <span></span>
-                <span></span>
-                <span></span>
-            </button>
-            <div class="api-name" id="apiName"></div>
+    <div id="view-search" class="view">
+        <h2>Buscar Música</h2>
+        <div class="search-bar">
+            <input type="text" id="search-input" placeholder="Artista, canción...">
+            <button id="search-btn">🔍</button>
         </div>
-        <div class="top-bar-right">
-            <div class="top-links" id="topLinks"></div>
-        </div>
+        <div class="song-list" id="search-results"></div>
     </div>
 
-    <!-- Sidebar -->
-    <div class="sidebar-overlay" id="sidebarOverlay"></div>
-    <div class="sidebar" id="sidebar">
-        <div class="sidebar-nav">
-            <div class="sidebar-item active" data-page="home">Home</div>
-            <div class="sidebar-item" data-page="status">Status</div>
-            <div class="sidebar-category">Categories</div>
-            <div id="categoriesNav"></div>
-            <div class="sidebar-item" data-page="all">All Endpoints</div>
+    <div id="view-settings" class="view">
+        <h2>Configuración</h2>
+        <div class="settings-container">
+            <div class="setting-item"><span>Canciones escuchadas</span><span class="setting-value" id="stat-played">0</span></div>
+            <div class="setting-item"><span>Almacenamiento en caché</span><span class="setting-value" id="stat-cache">0 KB</span></div>
+            <div class="setting-item"><span>Versión</span><span class="setting-value">1.0.0 Neon</span></div>
+        </div>
+        <button onclick="localStorage.clear(); location.reload();" style="margin-top: 20px; background: transparent; color: var(--neon-pink); border: 1px solid var(--neon-pink); padding: 10px; border-radius: 8px; width: 100%; cursor: pointer;">Borrar historial</button>
+    </div>
+
+    <div id="player">
+        <img id="player-img" src="" alt="Cover">
+        <div class="player-controls">
+            <div class="playing-title" id="player-title">Canción</div>
+            <div class="playing-artist" id="player-artist">Artista</div>
+        </div>
+        <button class="play-btn" id="play-pause-btn">▶</button>
+    </div>
+    <audio id="audio-element"></audio>
+
+    <div id="bottom-nav">
+        <div class="nav-item active" onclick="switchTab('home')">
+            <svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg> Inicio
+        </div>
+        <div class="nav-item" onclick="switchTab('search')">
+            <svg viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg> Buscar
+        </div>
+        <div class="nav-item" onclick="switchTab('settings')">
+            <svg viewBox="0 0 24 24"><path d="M19.14,12.94c0.04-0.3,0.06-0.61,0.06-0.94c0-0.32-0.02-0.64-0.06-0.94l2.03-1.58c0.18-0.14,0.23-0.41,0.12-0.61 l-1.92-3.32c-0.12-0.22-0.37-0.29-0.59-0.22l-2.39,0.96c-0.5-0.38-1.03-0.7-1.62-0.94L14.4,2.81c-0.04-0.24-0.24-0.41-0.48-0.41 h-3.84c-0.24,0-0.43,0.17-0.47,0.41L9.25,5.35C8.66,5.59,8.12,5.92,7.63,6.29L5.24,5.33c-0.22-0.08-0.47,0-0.59,0.22L2.73,8.87 C2.62,9.08,2.66,9.34,2.86,9.48l2.03,1.58C4.84,11.36,4.8,11.69,4.8,12s0.02,0.64,0.06,0.94l-2.03,1.58 c-0.18,0.14-0.23,0.41-0.12,0.61l1.92,3.32c0.12,0.22,0.37,0.29,0.59,0.22l2.39-0.96c0.5,0.38,1.03,0.7,1.62,0.94l0.36,2.54 c0.05,0.24,0.24,0.41,0.48,0.41h3.84c0.24,0,0.44-0.17,0.47-0.41l0.36-2.54c0.59-0.24,1.13-0.56,1.62-0.94l2.39,0.96 c0.22,0.08,0.47,0,0.59-0.22l1.92-3.32c0.12-0.22,0.07-0.49-0.12-0.61L19.14,12.94z M12,15.6c-1.98,0-3.6-1.62-3.6-3.6 s1.62-3.6,3.6-3.6s3.6,1.62,3.6,3.6S13.98,15.6,12,15.6z"/></svg> Ajustes
         </div>
     </div>
 
-    <!-- Main Content -->
-    <div class="main-content" id="mainContent"></div>
-
-    <!-- Footer -->
-    <div class="footer">
-        <p id="footerText"></p>
-    </div>
-
-    <!-- Modal -->
-    <div class="modal fade" id="apiModal" tabindex="-1">
-        <div class="modal-dialog modal-dialog-centered modal-lg">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <div>
-                        <h5 class="modal-title" id="modalTitle"></h5>
-                        <p class="modal-desc" id="modalDesc"></p>
-                    </div>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body">
-                    <div class="api-endpoint-box" id="endpointBox" style="display: none;"></div>
-                    <div id="paramsContainer"></div>
-                    <div id="loadingContainer" style="display: none; text-align: center; padding: 40px;">
-                        <div class="spinner-border" role="status"></div>
-                    </div>
-                    <div id="responseContainer"></div>
-                </div>
-                <div class="modal-footer">
-                    <button class="submit-btn" id="submitBtn" style="display: none;">Submit</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        // ============ REPRODUCTOR DE MÚSICA ============
-        const playlist = [
-            { name: "Latin Lover", artist: "Neutro Shorty, Big Soto", url: "https://raw.githubusercontent.com/JTxs00/uploads/main/1775936364197.mpeg" },
-            { name: "El La Engaño Lambada", artist: "Natusha", url: "https://raw.githubusercontent.com/JTxs00/uploads/main/1775936787983.mpeg" },
-            { name: "Quédate", artist: "Belee", url: "https://raw.githubusercontent.com/JTxs00/uploads/main/1775936643238.mpeg" },
-            { name: "Odisea", artist: "Ozuna", url: "https://raw.githubusercontent.com/JTxs00/uploads/main/1775935979163.mpeg" },
-            { name: "Maquiavélico", artist: "Cancerbero", url: "https://raw.githubusercontent.com/JTxs00/uploads/main/1775936827892.mpeg" },
-            { name: "Eoo", artist: "Bad Bunny", url: "https://raw.githubusercontent.com/JTxs00/uploads/main/1775936322243.mpeg" },
-            { name: "Los Viejos Me Llaman", artist: "No Name", url: "https://raw.githubusercontent.com/JTxs00/uploads/main/1775936897844.mpeg" },
-            { name: "Ninfómana", artist: "Jossimar ft El Apóstol", url: "https://raw.githubusercontent.com/JTxs00/uploads/main/1775936920447.mpeg" }
-        ];
+        const audio = document.getElementById('audio-element');
+        const player = document.getElementById('player');
+        const playBtn = document.getElementById('play-pause-btn');
+        
+        // ESTA ES LA RUTA A TU FUNCIÓN EN VERCEL (El proxy que creaste)
+        const API_PROXY = "/api/search";
 
-        let currentSongIndex = 0;
-        let isPlaying = false;
-        let isMinimized = false;
+        let historial = JSON.parse(localStorage.getItem('neon_historial')) || [];
 
-        const audio = document.getElementById('audioPlayer');
-        const playPauseBtn = document.getElementById('playPauseBtn');
-        const prevBtn = document.getElementById('prevBtn');
-        const nextBtn = document.getElementById('nextBtn');
-        const songNameEl = document.getElementById('songName');
-        const artistNameEl = document.getElementById('artistName');
-        const progressBar = document.getElementById('progressBar');
-        const progressContainer = document.getElementById('progressContainer');
-        const currentTimeEl = document.getElementById('currentTime');
-        const durationEl = document.getElementById('duration');
-        const toggleMinimize = document.getElementById('toggleMinimize');
-        const musicPlayer = document.getElementById('musicPlayer');
-
-        function loadSong(index) {
-            const song = playlist[index];
-            songNameEl.textContent = song.name;
-            artistNameEl.textContent = song.artist;
-            audio.src = song.url;
-            audio.load();
-            if (isPlaying) {
-                audio.play().catch(e => console.log('Error playing:', e));
-            }
-            updatePlayPauseIcon();
-        }
-
-        function updatePlayPauseIcon() {
-            if (isPlaying) {
-                playPauseBtn.innerHTML = '⏸';
+        window.onload = async () => {
+            actualizarEstadisticas();
+            
+            if (historial.length > 0) {
+                const ultimaBusqueda = historial[historial.length - 1].title;
+                await buscarCanciones(ultimaBusqueda, 'home-list');
             } else {
-                playPauseBtn.innerHTML = '▶';
+                document.getElementById('home-list').innerHTML = '<p style="color:var(--text-muted); text-align:center;">Busca tu música favorita en el menú de abajo.</p>';
             }
+
+            setTimeout(() => {
+                document.getElementById('loading-screen').style.opacity = '0';
+                setTimeout(() => document.getElementById('loading-screen').style.display = 'none', 500);
+            }, 1500);
+        };
+
+        function switchTab(tab) {
+            document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+            document.getElementById(`view-${tab}`).classList.add('active');
+            event.currentTarget.classList.add('active');
+            if(tab === 'settings') actualizarEstadisticas();
         }
 
-        function playPause() {
-            if (isPlaying) {
-                audio.pause();
-            } else {
-                audio.play().catch(e => console.log('Error playing:', e));
-            }
-            isPlaying = !isPlaying;
-            updatePlayPauseIcon();
-        }
-
-        function nextSong() {
-            currentSongIndex = (currentSongIndex + 1) % playlist.length;
-            loadSong(currentSongIndex);
-            if (!isPlaying) {
-                playPause();
-            }
-        }
-
-        function prevSong() {
-            currentSongIndex = (currentSongIndex - 1 + playlist.length) % playlist.length;
-            loadSong(currentSongIndex);
-            if (!isPlaying) {
-                playPause();
-            }
-        }
-
-        function updateProgress() {
-            if (audio.duration && !isNaN(audio.duration)) {
-                const percent = (audio.currentTime / audio.duration) * 100;
-                progressBar.style.width = `${percent}%`;
-                currentTimeEl.textContent = formatTime(audio.currentTime);
-                durationEl.textContent = formatTime(audio.duration);
-            }
-        }
-
-        function formatTime(seconds) {
-            if (isNaN(seconds)) return "0:00";
-            const mins = Math.floor(seconds / 60);
-            const secs = Math.floor(seconds % 60);
-            return `${mins}:${secs.toString().padStart(2, '0')}`;
-        }
-
-        function setProgress(e) {
-            const rect = progressContainer.getBoundingClientRect();
-            const percent = (e.clientX - rect.left) / rect.width;
-            audio.currentTime = percent * audio.duration;
-        }
-
-        function toggleMinimizePlayer() {
-            isMinimized = !isMinimized;
-            if (isMinimized) {
-                musicPlayer.classList.add('minimized');
-                toggleMinimize.textContent = '+';
-            } else {
-                musicPlayer.classList.remove('minimized');
-                toggleMinimize.textContent = '−';
-            }
-        }
-
-        playPauseBtn.addEventListener('click', playPause);
-        nextBtn.addEventListener('click', nextSong);
-        prevBtn.addEventListener('click', prevSong);
-        audio.addEventListener('timeupdate', updateProgress);
-        audio.addEventListener('ended', nextSong);
-        progressContainer.addEventListener('click', setProgress);
-        toggleMinimize.addEventListener('click', toggleMinimizePlayer);
-
-        // Cargar primera canción
-        loadSong(0);
-
-        // ============ API DASHBOARD ORIGINAL ============
-        let settings = {};
-        let currentPage = 'home';
-
-        document.addEventListener('DOMContentLoaded', async () => {
-            await loadSettings();
-            initializeUI();
-            renderPage('home');
-            hideLoading();
-        });
-
-        async function loadSettings() {
+        // BUSCADOR USANDO TU PROXY
+        async function buscarCanciones(query, contenedorId) {
+            const container = document.getElementById(contenedorId);
+            container.innerHTML = '<p style="color:var(--neon-pink);">Buscando...</p>';
+            
             try {
-                const response = await fetch('/src/settings.json');
-                settings = await response.json();
-
-                document.getElementById('pageTitle').textContent = settings.name || 'API';
-                document.getElementById('apiName').textContent = settings.name || 'API';
-                document.getElementById('footerText').textContent = `Created by ${settings.apiSettings?.creator || 'Unknown'}`;
-
-                // Top links
-                const topLinksContainer = document.getElementById('topLinks');
-                if (settings.links && settings.links.length > 0) {
-                    settings.links.forEach(link => {
-                        const a = document.createElement('a');
-                        a.href = link.url;
-                        a.className = 'top-link';
-                        a.target = '_blank';
-                        a.innerHTML = `
-                            <svg class="link-icon" fill="currentColor" viewBox="0 0 20 20">
-                                <path d="M11 3a1 1 0 100 2h2.586l-6.293 6.293a1 1 0 101.414 1.414L15 6.414V9a1 1 0 102 0V4a1 1 0 00-1-1h-5z"></path>
-                                <path d="M5 5a2 2 0 00-2 2v8a2 2 0 002 2h8a2 2 0 002-2v-3a1 1 0 10-2 0v3H5V7h3a1 1 0 000-2H5z"></path>
-                            </svg>
-                            ${link.name}
-                        `;
-                        topLinksContainer.appendChild(a);
-                    });
+                // Llamamos a Vercel, no a lempi directamente
+                const res = await fetch(`${API_PROXY}?q=${encodeURIComponent(query)}&type=search`);
+                const data = await res.json();
+                
+                container.innerHTML = '';
+                
+                // La API de lempi devuelve los datos en data.videos o data
+                const videos = data.videos || data; 
+                
+                if (!videos || videos.length === 0) {
+                    container.innerHTML = '<p>No se encontraron resultados.</p>';
+                    return;
                 }
 
-                // Categories navigation
-                const categoriesNav = document.getElementById('categoriesNav');
-                if (settings.categories) {
-                    settings.categories.forEach(category => {
-                        const item = document.createElement('div');
-                        item.className = 'sidebar-item';
-                        item.dataset.page = 'category';
-                        item.dataset.category = category.name;
-                        item.textContent = category.name;
-                        categoriesNav.appendChild(item);
-                    });
-                }
-            } catch (error) {
-                console.error('Error loading settings:', error);
-            }
-        }
+                videos.slice(0, 10).forEach(video => {
+                    const div = document.createElement('div');
+                    div.className = 'song-card';
+                    // Le pasamos todo el objeto a la función de reproducir
+                    div.onclick = () => reproducir(video);
+                    
+                    const imgUrl = video.thumbnail || video.image || "https://via.placeholder.com/60";
+                    const title = video.title || "Desconocido";
+                    const author = video.author?.name || video.author || "YouTube";
+                    const duration = video.timestamp || "0:00";
 
-        function initializeUI() {
-            // Menu toggle
-            const menuToggle = document.getElementById('menuToggle');
-            const sidebar = document.getElementById('sidebar');
-            const overlay = document.getElementById('sidebarOverlay');
-
-            menuToggle.addEventListener('click', () => {
-                menuToggle.classList.toggle('active');
-                sidebar.classList.toggle('active');
-                overlay.classList.toggle('active');
-            });
-
-            overlay.addEventListener('click', () => {
-                menuToggle.classList.remove('active');
-                sidebar.classList.remove('active');
-                overlay.classList.remove('active');
-            });
-
-            // Sidebar navigation
-            document.querySelectorAll('.sidebar-item').forEach(item => {
-                item.addEventListener('click', () => {
-                    const page = item.dataset.page;
-                    const category = item.dataset.category;
-
-                    document.querySelectorAll('.sidebar-item').forEach(i => i.classList.remove('active'));
-                    item.classList.add('active');
-
-                    if (page === 'category') {
-                        renderPage('category', category);
-                    } else {
-                        renderPage(page);
-                    }
-
-                    menuToggle.classList.remove('active');
-                    sidebar.classList.remove('active');
-                    overlay.classList.remove('active');
+                    div.innerHTML = `
+                        <img src="${imgUrl}" alt="Cover">
+                        <div class="song-info">
+                            <div class="song-title">${title}</div>
+                            <div class="song-artist">${author} • ${duration}</div>
+                        </div>
+                    `;
+                    container.appendChild(div);
                 });
-            });
-
-            // Scroll effect
-            window.addEventListener('scroll', () => {
-                const topBar = document.querySelector('.top-bar');
-                if (window.scrollY > 0) {
-                    topBar.classList.add('scrolled');
-                } else {
-                    topBar.classList.remove('scrolled');
-                }
-            });
-        }
-
-        function renderPage(page, category = null) {
-            currentPage = page;
-            const content = document.getElementById('mainContent');
-
-            switch (page) {
-                case 'home':
-                    renderHomePage(content);
-                    break;
-                case 'status':
-                    renderStatusPage(content);
-                    break;
-                case 'category':
-                    renderCategoryPage(content, category);
-                    break;
-                case 'all':
-                    renderAllEndpoints(content);
-                    break;
+            } catch (error) {
+                container.innerHTML = `<p style="color:red;">Error de conexión con el Proxy.</p>`;
+                console.error(error);
             }
         }
 
-        function renderHomePage(container) {
-            const imageSrc = Array.isArray(settings.header.imageSrc) && settings.header.imageSrc.length > 0
-                ? settings.header.imageSrc[Math.floor(Math.random() * settings.header.imageSrc.length)]
-                : '';
+        document.getElementById('search-btn').onclick = () => {
+            const query = document.getElementById('search-input').value;
+            if(query) buscarCanciones(query, 'search-results');
+        };
 
-            container.innerHTML = `
-                <div class="home-banner">
-                    ${imageSrc ? `<img src="${imageSrc}" alt="${settings.name}" style="max-width: ${settings.header.imageSize?.desktop || '40%'}">` : ''}
-                    <h1 class="home-title">${settings.name || 'API'}</h1>
-                    <div class="home-version">${settings.version || 'v1.0'}</div>
-                    <p class="home-description">${settings.description || 'API Documentation'}</p>
-                </div>
-            `;
-        }
-
-        async function renderStatusPage(container) {
-            container.innerHTML = '<div style="text-align: center; padding: 40px;"><div class="spinner-border"></div></div>';
+        // REPRODUCTOR USANDO TU PROXY
+        async function reproducir(video) {
+            player.classList.add('active');
+            document.getElementById('player-title').innerText = video.title;
+            document.getElementById('player-artist').innerText = video.author?.name || video.author || "YouTube";
+            document.getElementById('player-img').src = video.thumbnail || video.image || "https://via.placeholder.com/40";
+            
+            playBtn.innerText = "⏳";
+            playBtn.disabled = true;
 
             try {
-                const response = await fetch('/status');
+                // La URL del video en youtube
+                const videoUrl = video.url || `https://youtu.be/${video.videoId}`;
+                
+                // Llamamos a Vercel para que use TU API de lempi
+                const response = await fetch(`${API_PROXY}?q=${encodeURIComponent(videoUrl)}&type=mp3`);
                 const data = await response.json();
 
-                container.innerHTML = `
-                    <h2 style="font-size: 28px; font-weight: 600; margin-bottom: 30px;">API Status</h2>
-                    <div class="status-grid">
-                        <div class="status-card">
-                            <div class="status-card-title">Status</div>
-                            <div class="status-card-value" style="color: #28a745;">Online</div>
-                        </div>
-                        <div class="status-card">
-                            <div class="status-card-title">Version</div>
-                            <div class="status-card-value">${settings.version || 'N/A'}</div>
-                        </div>
-                        <div class="status-card">
-                            <div class="status-card-title">Total Requests</div>
-                            <div class="status-card-value">${data.total_requests || 0}</div>
-                        </div>
-                        <div class="status-card">
-                            <div class="status-card-title">Active Users</div>
-                            <div class="status-card-value">${data.active_users || 0}</div>
-                        </div>
-                        <div class="status-card">
-                            <div class="status-card-title">Daily Limit</div>
-                            <div class="status-card-value">${data.daily_limit || 'N/A'}</div>
-                        </div>
-                        <div class="status-card">
-                            <div class="status-card-title">Routes Loaded</div>
-                            <div class="status-card-value">${data.routes_loaded || 0}</div>
-                        </div>
-                        <div class="status-card">
-                            <div class="status-card-title">Uptime</div>
-                            <div class="status-card-value">${formatUptime(data.uptime_seconds)}</div>
-                        </div>
-                        <div class="status-card">
-                            <div class="status-card-title">API Latency</div>
-                            <div class="status-card-value">${data.api_latency_ms || 0}ms</div>
-                        </div>
-                        <div class="status-card">
-                            <div class="status-card-title">CPU Cores</div>
-                            <div class="status-card-value">${data.system?.cores || 'N/A'}</div>
-                            <div class="status-card-small">${data.system?.cpu_model || ''}</div>
-                        </div>
-                        <div class="status-card">
-                            <div class="status-card-title">CPU Load</div>
-                            <div class="status-card-value">${data.system?.cpu_load_percent || 0}%</div>
-                        </div>
-                        <div class="status-card">
-                            <div class="status-card-title">RAM Usage</div>
-                            <div class="status-card-value">${data.system?.ram_used_gb || 0} GB</div>
-                            <div class="status-card-small">of ${data.system?.ram_total_gb || 0} GB</div>
-                        </div>
-                        <div class="status-card">
-                            <div class="status-card-title">Disk Usage</div>
-                            <div class="status-card-value">${data.system?.disk_used_gb || 0} GB</div>
-                            <div class="status-card-small">of ${data.system?.disk_total_gb || 0} GB</div>
-                        </div>
-                    </div>
-                `;
-            } catch (error) {
-                container.innerHTML = '<p style="text-align: center; color: #dc3545;">Failed to load status</p>';
-            }
-        }
-
-        function renderCategoryPage(container, categoryName) {
-            const category = settings.categories.find(c => c.name === categoryName);
-            if (!category) return;
-
-            const sortedItems = [...category.items].sort((a, b) => a.name.localeCompare(b.name));
-
-            container.innerHTML = `
-                <div class="search-box">
-                    <input type="text" class="search-input" placeholder="Search endpoints..." id="searchInput">
-                </div>
-                <div class="category-section">
-                    <h2 class="category-title">${category.name}</h2>
-                    <div class="endpoints-grid" id="endpointsGrid">
-                        ${sortedItems.map(item => createEndpointCard(item)).join('')}
-                    </div>
-                </div>
-            `;
-
-            setupSearch();
-            setupEndpointButtons();
-        }
-
-        function renderAllEndpoints(container) {
-            container.innerHTML = `
-                <div class="search-box">
-                    <input type="text" class="search-input" placeholder="Search endpoints..." id="searchInput">
-                </div>
-                <div id="allCategories"></div>
-            `;
-
-            const allCategories = document.getElementById('allCategories');
-            settings.categories.forEach(category => {
-                const sortedItems = [...category.items].sort((a, b) => a.name.localeCompare(b.name));
-
-                allCategories.innerHTML += `
-                    <div class="category-section" data-category="${category.name}">
-                        <h2 class="category-title">${category.name}</h2>
-                        <div class="endpoints-grid">
-                            ${sortedItems.map(item => createEndpointCard(item)).join('')}
-                        </div>
-                    </div>
-                `;
-            });
-
-            setupSearch();
-            setupEndpointButtons();
-        }
-
-        function createEndpointCard(item) {
-            return `
-                <div class="endpoint-card" data-name="${item.name.toLowerCase()}" data-desc="${item.desc.toLowerCase()}">
-                    <div class="endpoint-info">
-                        <div class="endpoint-name">${item.name}</div>
-                        <div class="endpoint-desc">${item.desc}</div>
-                    </div>
-                    <button class="endpoint-btn" data-path="${item.path}" data-name="${item.name}" data-desc="${item.desc}" data-inner-desc="${item.innerDesc || ''}">
-                        GET
-                    </button>
-                </div>
-            `;
-        }
-
-        function setupSearch() {
-            const searchInput = document.getElementById('searchInput');
-            if (!searchInput) return;
-
-            searchInput.addEventListener('input', (e) => {
-                const term = e.target.value.toLowerCase();
-                const cards = document.querySelectorAll('.endpoint-card');
-                const sections = document.querySelectorAll('.category-section');
-
-                cards.forEach(card => {
-                    const name = card.dataset.name;
-                    const desc = card.dataset.desc;
-                    const matches = name.includes(term) || desc.includes(term);
-                    card.style.display = matches ? '' : 'none';
-                });
-
-                sections.forEach(section => {
-                    const visibleCards = section.querySelectorAll('.endpoint-card:not([style*="display: none"])');
-                    section.style.display = visibleCards.length > 0 ? '' : 'none';
-                });
-            });
-        }
-
-        function setupEndpointButtons() {
-            document.querySelectorAll('.endpoint-btn').forEach(btn => {
-                btn.addEventListener('click', () => {
-                    const path = btn.dataset.path;
-                    const name = btn.dataset.name;
-                    const desc = btn.dataset.desc;
-                    const innerDesc = btn.dataset.innerDesc;
-
-                    openModal(path, name, desc, innerDesc);
-                });
-            });
-        }
-
-        function openModal(path, name, desc, innerDesc) {
-            const modal = new bootstrap.Modal(document.getElementById('apiModal'));
-
-            document.getElementById('modalTitle').textContent = name;
-            document.getElementById('modalDesc').textContent = desc;
-            document.getElementById('endpointBox').style.display = 'none';
-            document.getElementById('paramsContainer').innerHTML = '';
-            document.getElementById('responseContainer').innerHTML = '';
-            document.getElementById('submitBtn').style.display = 'none';
-
-            const baseUrl = window.location.origin + path;
-            const urlParts = path.split('?');
-            const params = new URLSearchParams(urlParts[1] || '');
-            const hasParams = Array.from(params.keys()).length > 0;
-
-            if (hasParams) {
-                const paramsContainer = document.getElementById('paramsContainer');
-
-                Array.from(params.keys()).forEach(param => {
-                    const input = document.createElement('input');
-                    input.type = 'text';
-                    input.className = 'param-input';
-                    input.placeholder = `Enter ${param}...`;
-                    input.dataset.param = param;
-                    input.required = true;
-                    paramsContainer.appendChild(input);
-                });
-
-                if (innerDesc) {
-                    const descDiv = document.createElement('div');
-                    descDiv.className = 'inner-desc';
-                    descDiv.innerHTML = innerDesc.replace(/\n/g, '<br>');
-                    paramsContainer.appendChild(descDiv);
-                }
-
-                const submitBtn = document.getElementById('submitBtn');
-                submitBtn.style.display = 'block';
-                submitBtn.disabled = true;
-
-                paramsContainer.querySelectorAll('.param-input').forEach(input => {
-                    input.addEventListener('input', () => {
-                        const allInputs = paramsContainer.querySelectorAll('.param-input');
-                        const allFilled = Array.from(allInputs).every(inp => inp.value.trim() !== '');
-                        submitBtn.disabled = !allFilled;
-                    });
-                });
-
-                submitBtn.onclick = () => {
-                    const inputs = paramsContainer.querySelectorAll('.param-input');
-                    const newParams = new URLSearchParams();
-                    let isValid = true;
-
-                    inputs.forEach(input => {
-                        if (!input.value.trim()) {
-                            isValid = false;
-                            input.classList.add('is-invalid');
-                        } else {
-                            input.classList.remove('is-invalid');
-                            newParams.append(input.dataset.param, input.value.trim());
-                        }
-                    });
-
-                    if (!isValid) return;
-
-                    const fullUrl = `${window.location.origin}${urlParts[0]}?${newParams.toString()}`;
-                    paramsContainer.innerHTML = '';
-                    submitBtn.style.display = 'none';
-                    makeApiRequest(fullUrl);
-                };
-            } else {
-                makeApiRequest(baseUrl);
-            }
-
-            modal.show();
-        }
-
-        async function makeApiRequest(url) {
-            const endpointBox = document.getElementById('endpointBox');
-            const loadingContainer = document.getElementById('loadingContainer');
-            const responseContainer = document.getElementById('responseContainer');
-
-            endpointBox.textContent = url;
-            endpointBox.style.display = 'block';
-            loadingContainer.style.display = 'block';
-            responseContainer.innerHTML = '';
-
-            try {
-                const response = await fetch(url);
-
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-
-                const contentType = response.headers.get('Content-Type');
-
-                if (contentType && contentType.startsWith('image/')) {
-                    const blob = await response.blob();
-                    const imageUrl = URL.createObjectURL(blob);
-
-                    const img = document.createElement('img');
-                    img.src = imageUrl;
-                    img.className = 'response-image';
-                    responseContainer.appendChild(img);
+                if(data.url) {
+                    audio.src = data.url;
+                    audio.play();
+                    playBtn.innerText = "⏸";
+                    guardarEnHistorial(video);
+                    let plays = parseInt(localStorage.getItem('neon_plays') || '0');
+                    localStorage.setItem('neon_plays', plays + 1);
+                    actualizarEstadisticas();
                 } else {
-                    const data = await response.json();
-                    const pre = document.createElement('pre');
-                    pre.className = 'response-box';
-                    pre.textContent = JSON.stringify(data, null, 2);
-                    responseContainer.appendChild(pre);
+                    alert("No se pudo cargar el audio (Revisa que la API de lempi siga viva).");
+                    playBtn.innerText = "▶";
                 }
             } catch (error) {
-                const pre = document.createElement('pre');
-                pre.className = 'response-box';
-                pre.textContent = `Error: ${error.message}`;
-                pre.style.color = '#dc3545';
-                responseContainer.appendChild(pre);
-            } finally {
-                loadingContainer.style.display = 'none';
+                console.error(error);
+                alert("Error al conectar con el servidor de audio proxy.");
+                playBtn.innerText = "▶";
             }
+            
+            playBtn.disabled = false;
+            playBtn.onclick = togglePlay;
         }
 
-        function formatUptime(seconds) {
-            if (!seconds) return 'N/A';
-
-            const days = Math.floor(seconds / 86400);
-            const hours = Math.floor((seconds % 86400) / 3600);
-            const minutes = Math.floor((seconds % 3600) / 60);
-
-            if (days > 0) return `${days}d ${hours}h`;
-            if (hours > 0) return `${hours}h ${minutes}m`;
-            return `${minutes}m`;
+        function togglePlay() {
+            if (audio.paused) { audio.play(); playBtn.innerText = "⏸"; } 
+            else { audio.pause(); playBtn.innerText = "▶"; }
         }
 
-        function hideLoading() {
-            const loadingScreen = document.getElementById('loadingScreen');
-            loadingScreen.classList.add('fade-out');
-            setTimeout(() => {
-                loadingScreen.style.display = 'none';
-                document.body.classList.remove('no-scroll');
-            }, 500);
+        audio.onended = () => { playBtn.innerText = "▶"; };
+
+        function guardarEnHistorial(video) {
+            const id = video.videoId || video.id;
+            if(historial.length > 0 && (historial[historial.length - 1].videoId === id || historial[historial.length - 1].id === id)) return;
+
+            historial.push({
+                videoId: id,
+                title: video.title,
+                author: video.author,
+                url: video.url
+            });
+            if (historial.length > 10) historial.shift();
+            localStorage.setItem('neon_historial', JSON.stringify(historial));
+            
+            const stringified = JSON.stringify(localStorage);
+            const kb = (new Blob([stringified]).size / 1024).toFixed(2);
+            localStorage.setItem('neon_cache_size', kb);
+        }
+
+        function actualizarEstadisticas() {
+            document.getElementById('stat-played').innerText = localStorage.getItem('neon_plays') || '0';
+            document.getElementById('stat-cache').innerText = (localStorage.getItem('neon_cache_size') || '0') + ' KB';
         }
     </script>
 </body>
