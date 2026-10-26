@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Neon Music</title>
     <style>
-        /* VARIABLES DE COLOR: ROSA NEÓN Y NEGRO BRILLOSO */
         :root {
             --bg-color: #050505;
             --bg-card: #121212;
@@ -16,234 +15,86 @@
             --text-muted: #b3b3b3;
             --font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            -webkit-tap-highlight-color: transparent;
-        }
-
-        body {
-            background-color: var(--bg-color);
-            color: var(--text-main);
-            font-family: var(--font-family);
-            overflow: hidden; /* Evita scroll general, lo manejamos en el contenedor */
-            height: 100vh;
-            display: flex;
-            flex-direction: column;
-        }
-
-        /* --- PANTALLA DE CARGA --- */
-        #loading-screen {
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background-color: var(--bg-color);
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            z-index: 9999;
-            transition: opacity 0.5s ease;
-        }
-        .spinner {
-            width: 60px; height: 60px;
-            border: 4px solid var(--bg-brilloso);
-            border-top: 4px solid var(--neon-pink);
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-            box-shadow: 0 0 15px var(--neon-pink-glow);
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        body { background-color: var(--bg-color); color: var(--text-main); font-family: var(--font-family); overflow: hidden; height: 100vh; display: flex; flex-direction: column; }
+        
+        #loading-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: var(--bg-color); display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 9999; transition: opacity 0.5s ease; }
+        .spinner { width: 60px; height: 60px; border: 4px solid var(--bg-brilloso); border-top: 4px solid var(--neon-pink); border-radius: 50%; animation: spin 1s linear infinite; box-shadow: 0 0 15px var(--neon-pink-glow); }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
         #loading-screen p { margin-top: 20px; color: var(--neon-pink); font-weight: bold; letter-spacing: 2px; }
 
-        /* --- VISTAS --- */
-        .view {
-            flex: 1;
-            overflow-y: auto;
-            padding: 20px;
-            padding-bottom: 160px; /* Espacio para el menú y el reproductor */
-            display: none;
-            animation: fadeIn 0.3s ease;
-        }
+        .view { flex: 1; overflow-y: auto; padding: 20px; padding-bottom: 160px; display: none; animation: fadeIn 0.3s ease; }
         .view.active { display: block; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* --- HOME / LISTAS --- */
         h2 { font-size: 1.5rem; margin-bottom: 15px; margin-top: 10px; }
         .section-title { display: flex; justify-content: space-between; align-items: center; }
         
-        .song-list {
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-        }
-        
-        .song-card {
-            display: flex;
-            align-items: center;
-            background-color: var(--bg-card);
-            padding: 10px;
-            border-radius: 12px;
-            transition: background 0.2s, box-shadow 0.2s;
-            cursor: pointer;
-            border: 1px solid transparent;
-        }
-        .song-card:hover {
-            background-color: var(--bg-brilloso);
-            box-shadow: 0 0 10px var(--neon-pink-glow);
-            border: 1px solid var(--neon-pink);
-        }
-        .song-card img {
-            width: 60px; height: 60px;
-            border-radius: 8px;
-            object-fit: cover;
-            margin-right: 15px;
-        }
+        .song-list { display: flex; flex-direction: column; gap: 15px; }
+        .song-card { display: flex; align-items: center; background-color: var(--bg-card); padding: 10px; border-radius: 12px; transition: background 0.2s, box-shadow 0.2s; cursor: pointer; border: 1px solid transparent; }
+        .song-card:hover { background-color: var(--bg-brilloso); box-shadow: 0 0 10px var(--neon-pink-glow); border: 1px solid var(--neon-pink); }
+        .song-card img { width: 60px; height: 60px; border-radius: 8px; object-fit: cover; margin-right: 15px; }
         .song-info { flex: 1; overflow: hidden; }
-        .song-title {
-            font-weight: 600; font-size: 1rem; margin-bottom: 5px;
-            white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-        }
+        .song-title { font-weight: 600; font-size: 1rem; margin-bottom: 5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         .song-artist { font-size: 0.85rem; color: var(--text-muted); }
 
-        /* --- REPRODUCTOR INFERIOR --- */
-        #player {
-            position: fixed;
-            bottom: 70px; /* Encima del menú */
-            left: 10px; right: 10px;
-            background: rgba(20, 20, 20, 0.95);
-            backdrop-filter: blur(10px);
-            border-radius: 15px;
-            padding: 10px 15px;
-            display: none; /* Oculto hasta que se reproduzca algo */
-            align-items: center;
-            border: 1px solid var(--neon-pink);
-            box-shadow: 0 0 20px var(--neon-pink-glow);
-            z-index: 100;
-        }
+        #player { position: fixed; bottom: 70px; left: 10px; right: 10px; background: rgba(20, 20, 20, 0.95); backdrop-filter: blur(10px); border-radius: 15px; padding: 10px 15px; display: none; align-items: center; border: 1px solid var(--neon-pink); box-shadow: 0 0 20px var(--neon-pink-glow); z-index: 100; }
         #player.active { display: flex; }
         #player img { width: 40px; height: 40px; border-radius: 5px; margin-right: 10px; }
         .player-controls { flex: 1; overflow: hidden; }
         .playing-title { font-size: 0.9rem; font-weight: bold; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: var(--neon-pink); }
         .playing-artist { font-size: 0.75rem; color: var(--text-muted); }
         #audio-element { display: none; }
-        .play-btn {
-            background: var(--neon-pink); border: none; color: white;
-            width: 40px; height: 40px; border-radius: 50%;
-            cursor: pointer; font-size: 1.2rem; display: flex; justify-content: center; align-items: center;
-            box-shadow: 0 0 10px var(--neon-pink-glow);
-        }
+        .play-btn { background: var(--neon-pink); border: none; color: white; width: 40px; height: 40px; border-radius: 50%; cursor: pointer; font-size: 1.2rem; display: flex; justify-content: center; align-items: center; box-shadow: 0 0 10px var(--neon-pink-glow); }
 
-        /* --- BARRA DE NAVEGACIÓN INFERIOR --- */
-        #bottom-nav {
-            position: fixed;
-            bottom: 0; left: 0; width: 100%;
-            height: 70px;
-            background-color: var(--bg-card);
-            display: flex;
-            justify-content: space-around;
-            align-items: center;
-            border-top: 1px solid var(--bg-brilloso);
-            z-index: 101;
-        }
-        .nav-item {
-            display: flex; flex-direction: column; align-items: center;
-            color: var(--text-muted); text-decoration: none; font-size: 0.7rem;
-            cursor: pointer; transition: color 0.3s;
-        }
+        #bottom-nav { position: fixed; bottom: 0; left: 0; width: 100%; height: 70px; background-color: var(--bg-card); display: flex; justify-content: space-around; align-items: center; border-top: 1px solid var(--bg-brilloso); z-index: 101; }
+        .nav-item { display: flex; flex-direction: column; align-items: center; color: var(--text-muted); text-decoration: none; font-size: 0.7rem; cursor: pointer; transition: color 0.3s; }
         .nav-item svg { width: 24px; height: 24px; margin-bottom: 4px; fill: currentColor; }
         .nav-item.active { color: var(--neon-pink); filter: drop-shadow(0 0 5px var(--neon-pink-glow)); }
 
-        /* --- VISTA AJUSTES (EFECTO LIBRO) --- */
-        .settings-container {
-            background: var(--bg-card);
-            border-radius: 15px;
-            padding: 20px;
-            border-left: 4px solid var(--neon-pink);
-            box-shadow: -5px 0 15px var(--neon-pink-glow);
-            animation: openBook 0.4s ease-out forwards;
-            transform-origin: left center;
-        }
-        @keyframes openBook {
-            from { transform: perspective(1000px) rotateY(-90deg); opacity: 0; }
-            to { transform: perspective(1000px) rotateY(0deg); opacity: 1; }
-        }
-        .setting-item {
-            display: flex; justify-content: space-between;
-            padding: 15px 0; border-bottom: 1px solid var(--bg-brilloso);
-        }
+        .settings-container { background: var(--bg-card); border-radius: 15px; padding: 20px; border-left: 4px solid var(--neon-pink); box-shadow: -5px 0 15px var(--neon-pink-glow); animation: openBook 0.4s ease-out forwards; transform-origin: left center; }
+        @keyframes openBook { from { transform: perspective(1000px) rotateY(-90deg); opacity: 0; } to { transform: perspective(1000px) rotateY(0deg); opacity: 1; } }
+        .setting-item { display: flex; justify-content: space-between; padding: 15px 0; border-bottom: 1px solid var(--bg-brilloso); }
         .setting-item:last-child { border-bottom: none; }
         .setting-value { color: var(--neon-pink); font-weight: bold; }
 
-        /* --- BARRA DE BÚSQUEDA --- */
-        .search-bar {
-            display: flex; background: var(--bg-brilloso);
-            border-radius: 25px; padding: 10px 20px; margin-bottom: 20px;
-            border: 1px solid var(--neon-pink);
-        }
-        .search-bar input {
-            flex: 1; background: none; border: none; color: white;
-            font-size: 1rem; outline: none;
-        }
-        .search-bar button {
-            background: none; border: none; color: var(--neon-pink); font-weight: bold; cursor: pointer;
-        }
-
+        .search-bar { display: flex; background: var(--bg-brilloso); border-radius: 25px; padding: 10px 20px; margin-bottom: 20px; border: 1px solid var(--neon-pink); }
+        .search-bar input { flex: 1; background: none; border: none; color: white; font-size: 1rem; outline: none; }
+        .search-bar button { background: none; border: none; color: var(--neon-pink); font-weight: bold; cursor: pointer; }
     </style>
 </head>
 <body>
 
-    <!-- PANTALLA DE CARGA -->
     <div id="loading-screen">
         <div class="spinner"></div>
         <p>CARGANDO NEON...</p>
     </div>
 
-    <!-- VISTA 1: HOME -->
     <div id="view-home" class="view active">
         <h2>Bienvenido</h2>
-        <div class="section-title">
-            <h2>Tus Favoritos</h2>
-        </div>
-        <div class="song-list" id="home-list">
-            <!-- Aquí se inyectan las canciones -->
-        </div>
+        <div class="section-title"><h2>Tus Favoritos</h2></div>
+        <div class="song-list" id="home-list"></div>
     </div>
 
-    <!-- VISTA 2: BUSCAR -->
     <div id="view-search" class="view">
         <h2>Buscar Música</h2>
         <div class="search-bar">
-            <input type="text" id="search-input" placeholder="Artista, canción...">
+            <input type="text" id="search-input" placeholder="Artista, canción o enlace de YouTube...">
             <button id="search-btn">🔍</button>
         </div>
-        <div class="song-list" id="search-results">
-            <!-- Resultados de búsqueda -->
-        </div>
+        <div class="song-list" id="search-results"></div>
     </div>
 
-    <!-- VISTA 3: AJUSTES -->
     <div id="view-settings" class="view">
         <h2>Configuración</h2>
         <div class="settings-container">
-            <div class="setting-item">
-                <span>Canciones escuchadas</span>
-                <span class="setting-value" id="stat-played">0</span>
-            </div>
-            <div class="setting-item">
-                <span>Almacenamiento en caché</span>
-                <span class="setting-value" id="stat-cache">0 KB</span>
-            </div>
-            <div class="setting-item">
-                <span>Versión</span>
-                <span class="setting-value">1.0.0 Neon</span>
-            </div>
+            <div class="setting-item"><span>Canciones escuchadas</span><span class="setting-value" id="stat-played">0</span></div>
+            <div class="setting-item"><span>Almacenamiento en caché</span><span class="setting-value" id="stat-cache">0 KB</span></div>
+            <div class="setting-item"><span>Versión</span><span class="setting-value">1.0.0 Neon</span></div>
         </div>
         <button onclick="localStorage.clear(); location.reload();" style="margin-top: 20px; background: transparent; color: var(--neon-pink); border: 1px solid var(--neon-pink); padding: 10px; border-radius: 8px; width: 100%; cursor: pointer;">Borrar historial</button>
     </div>
 
-    <!-- REPRODUCTOR FLOTANTE -->
     <div id="player">
         <img id="player-img" src="" alt="Cover">
         <div class="player-controls">
@@ -254,103 +105,101 @@
     </div>
     <audio id="audio-element"></audio>
 
-    <!-- MENÚ INFERIOR -->
     <div id="bottom-nav">
         <div class="nav-item active" onclick="switchTab('home')">
-            <svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
-            Inicio
+            <svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg> Inicio
         </div>
         <div class="nav-item" onclick="switchTab('search')">
-            <svg viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
-            Buscar
+            <svg viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg> Buscar
         </div>
         <div class="nav-item" onclick="switchTab('settings')">
-            <svg viewBox="0 0 24 24"><path d="M19.14,12.94c0.04-0.3,0.06-0.61,0.06-0.94c0-0.32-0.02-0.64-0.06-0.94l2.03-1.58c0.18-0.14,0.23-0.41,0.12-0.61 l-1.92-3.32c-0.12-0.22-0.37-0.29-0.59-0.22l-2.39,0.96c-0.5-0.38-1.03-0.7-1.62-0.94L14.4,2.81c-0.04-0.24-0.24-0.41-0.48-0.41 h-3.84c-0.24,0-0.43,0.17-0.47,0.41L9.25,5.35C8.66,5.59,8.12,5.92,7.63,6.29L5.24,5.33c-0.22-0.08-0.47,0-0.59,0.22L2.73,8.87 C2.62,9.08,2.66,9.34,2.86,9.48l2.03,1.58C4.84,11.36,4.8,11.69,4.8,12s0.02,0.64,0.06,0.94l-2.03,1.58 c-0.18,0.14-0.23,0.41-0.12,0.61l1.92,3.32c0.12,0.22,0.37,0.29,0.59,0.22l2.39-0.96c0.5,0.38,1.03,0.7,1.62,0.94l0.36,2.54 c0.05,0.24,0.24,0.41,0.48,0.41h3.84c0.24,0,0.44-0.17,0.47-0.41l0.36-2.54c0.59-0.24,1.13-0.56,1.62-0.94l2.39,0.96 c0.22,0.08,0.47,0,0.59-0.22l1.92-3.32c0.12-0.22,0.07-0.49-0.12-0.61L19.14,12.94z M12,15.6c-1.98,0-3.6-1.62-3.6-3.6 s1.62-3.6,3.6-3.6s3.6,1.62,3.6,3.6S13.98,15.6,12,15.6z"/></svg>
-            Ajustes
+            <svg viewBox="0 0 24 24"><path d="M19.14,12.94c0.04-0.3,0.06-0.61,0.06-0.94c0-0.32-0.02-0.64-0.06-0.94l2.03-1.58c0.18-0.14,0.23-0.41,0.12-0.61 l-1.92-3.32c-0.12-0.22-0.37-0.29-0.59-0.22l-2.39,0.96c-0.5-0.38-1.03-0.7-1.62-0.94L14.4,2.81c-0.04-0.24-0.24-0.41-0.48-0.41 h-3.84c-0.24,0-0.43,0.17-0.47,0.41L9.25,5.35C8.66,5.59,8.12,5.92,7.63,6.29L5.24,5.33c-0.22-0.08-0.47,0-0.59,0.22L2.73,8.87 C2.62,9.08,2.66,9.34,2.86,9.48l2.03,1.58C4.84,11.36,4.8,11.69,4.8,12s0.02,0.64,0.06,0.94l-2.03,1.58 c-0.18,0.14-0.23,0.41-0.12,0.61l1.92,3.32c0.12,0.22,0.37,0.29,0.59,0.22l2.39-0.96c0.5,0.38,1.03,0.7,1.62,0.94l0.36,2.54 c0.05,0.24,0.24,0.41,0.48,0.41h3.84c0.24,0,0.44-0.17,0.47-0.41l0.36-2.54c0.59-0.24,1.13-0.56,1.62-0.94l2.39,0.96 c0.22,0.08,0.47,0,0.59-0.22l1.92-3.32c0.12-0.22,0.07-0.49-0.12-0.61L19.14,12.94z M12,15.6c-1.98,0-3.6-1.62-3.6-3.6 s1.62-3.6,3.6-3.6s3.6,1.62,3.6,3.6S13.98,15.6,12,15.6z"/></svg> Ajustes
         </div>
     </div>
 
     <script>
-        // --- LÓGICA DE LA APP ---
         const audio = document.getElementById('audio-element');
         const player = document.getElementById('player');
         const playBtn = document.getElementById('play-pause-btn');
-        
-        // APIs (Usamos proxies públicos con CORS habilitado para evitar bloqueos)
-        const API_SEARCH = "https://inv.nadeko.net/api/v1/search?q=";
-        const API_AUDIO = "https://api.cobalt.tools/api/json";
+        const API_PROXY = "/api/search";
 
-        // Estado
-        let currentSong = null;
         let historial = JSON.parse(localStorage.getItem('neon_historial')) || [];
 
-        // --- INICIALIZACIÓN ---
         window.onload = async () => {
             actualizarEstadisticas();
-            
-            // Si hay historial, buscamos lo último escuchado
             if (historial.length > 0) {
                 const ultimaBusqueda = historial[historial.length - 1].title;
                 await buscarCanciones(ultimaBusqueda, 'home-list');
             } else {
-                // Si no hay historial, mostramos algo por defecto (Ej: TYKING o Yk It's Juna)
                 document.getElementById('home-list').innerHTML = '<p style="color:var(--text-muted); text-align:center;">Busca tu música favorita en el menú de abajo.</p>';
             }
-
-            // Ocultar pantalla de carga
             setTimeout(() => {
                 document.getElementById('loading-screen').style.opacity = '0';
                 setTimeout(() => document.getElementById('loading-screen').style.display = 'none', 500);
-            }, 1500); // Simulamos un poco de carga para que se vea el spinner neón
+            }, 1500);
         };
 
-        // --- NAVEGACIÓN ---
         function switchTab(tab) {
             document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
             document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-            
             document.getElementById(`view-${tab}`).classList.add('active');
             event.currentTarget.classList.add('active');
-
             if(tab === 'settings') actualizarEstadisticas();
         }
 
-        // --- BUSCAR (Usando Invidious) ---
+        // BUSCADOR ACTUALIZADO CON DETECCIÓN DE URL
         async function buscarCanciones(query, contenedorId) {
             const container = document.getElementById(contenedorId);
             container.innerHTML = '<p style="color:var(--neon-pink);">Buscando...</p>';
             
+            // Expresión regular para detectar si es un enlace de YouTube
+            const ytRegex = /^(https?:\/\/)?(www\.)?(youtube\.com|youtu\.be)\/.+$/i;
+            const isUrl = ytRegex.test(query);
+
             try {
-                // Agregamos "music" para filtrar resultados
-                const res = await fetch(`${API_SEARCH}${encodeURIComponent(query)}&type=video`);
+                const res = await fetch(`${API_PROXY}?q=${encodeURIComponent(query)}&type=search`);
                 const data = await res.json();
-                
-                // Filtramos los que tengan videoId (videos normales)
-                const videos = data.filter(item => item.type === 'video').slice(0, 10); 
                 
                 container.innerHTML = '';
                 
-                if (videos.length === 0) {
+                // Si es una URL, la API de lempi puede devolver un objeto único o un array. 
+                // Lo normalizamos a un array para que el código de abajo funcione.
+                let videos = [];
+                if (isUrl) {
+                    // Si es URL, asumimos que la API devuelve la info del video directo
+                    // Si devuelve un array con un solo elemento, lo usamos. Si no, lo envolvemos.
+                    videos = Array.isArray(data) ? data : (data.videos || [data]);
+                } else {
+                    videos = data.videos || data;
+                }
+                
+                if (!videos || videos.length === 0 || !videos[0]) {
                     container.innerHTML = '<p>No se encontraron resultados.</p>';
                     return;
                 }
 
-                videos.forEach(video => {
+                videos.slice(0, 10).forEach(video => {
                     const div = document.createElement('div');
                     div.className = 'song-card';
                     div.onclick = () => reproducir(video);
                     
+                    // Ajustamos las propiedades por si vienen de un enlace directo o de una búsqueda
+                    const imgUrl = video.thumbnail || video.image || "https://via.placeholder.com/60";
+                    const title = video.title || "Video de YouTube";
+                    const author = video.author?.name || video.author || "YouTube";
+                    const duration = video.timestamp || "0:00";
+
                     div.innerHTML = `
-                        <img src="${video.videoThumbnails[0].url}" alt="Cover">
+                        <img src="${imgUrl}" alt="Cover">
                         <div class="song-info">
-                            <div class="song-title">${video.title}</div>
-                            <div class="song-artist">${video.author} • ${formatTime(video.lengthSeconds)}</div>
+                            <div class="song-title">${title}</div>
+                            <div class="song-artist">${author} • ${duration}</div>
                         </div>
                     `;
                     container.appendChild(div);
                 });
             } catch (error) {
-                container.innerHTML = `<p style="color:red;">Error de red. Intenta de nuevo.</p>`;
+                container.innerHTML = `<p style="color:red;">Error de conexión con el Proxy.</p>`;
                 console.error(error);
             }
         }
@@ -360,54 +209,38 @@
             if(query) buscarCanciones(query, 'search-results');
         };
 
-        // --- REPRODUCIR Y DESCARGAR (Usando Cobalt API) ---
         async function reproducir(video) {
             player.classList.add('active');
-            document.getElementById('player-title').innerText = video.title;
-            document.getElementById('player-artist').innerText = video.author;
-            document.getElementById('player-img').src = video.videoThumbnails[0].url;
+            document.getElementById('player-title').innerText = video.title || "Video";
+            document.getElementById('player-artist').innerText = video.author?.name || video.author || "YouTube";
+            document.getElementById('player-img').src = video.thumbnail || video.image || "https://via.placeholder.com/40";
             
-            // Mostrar cargando en el botón
             playBtn.innerText = "⏳";
             playBtn.disabled = true;
 
             try {
-                const videoUrl = `https://youtube.com/watch?v=${video.videoId}`;
+                // Si el video ya trae la propiedad 'url' (porque vino de un enlace), la usamos.
+                // Si no, la armamos con el videoId.
+                const videoUrl = video.url || `https://youtu.be/${video.videoId}`;
                 
-                // Petición a Cobalt para obtener el audio
-                const response = await fetch(API_AUDIO, {
-                    method: 'POST',
-                    headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        url: videoUrl,
-                        isAudioOnly: true,
-                        aFormat: "mp3"
-                    })
-                });
-
+                const response = await fetch(`${API_PROXY}?q=${encodeURIComponent(videoUrl)}&type=mp3`);
                 const data = await response.json();
 
-                if(data.status === 'stream' || data.status === 'redirect') {
+                if(data.url) {
                     audio.src = data.url;
                     audio.play();
                     playBtn.innerText = "⏸";
-                    
-                    // Guardar en Historial
                     guardarEnHistorial(video);
-                    
-                    // Sumar al contador
                     let plays = parseInt(localStorage.getItem('neon_plays') || '0');
                     localStorage.setItem('neon_plays', plays + 1);
                     actualizarEstadisticas();
-
                 } else {
-                    alert("No se pudo cargar el audio. Intenta con otra canción.");
+                    alert("No se pudo cargar el audio (Revisa que la API de lempi siga viva).");
                     playBtn.innerText = "▶";
                 }
-
             } catch (error) {
                 console.error(error);
-                alert("Error al conectar con el servidor de audio.");
+                alert("Error al conectar con el servidor de audio proxy.");
                 playBtn.innerText = "▶";
             }
             
@@ -415,37 +248,27 @@
             playBtn.onclick = togglePlay;
         }
 
-        // Controles
         function togglePlay() {
-            if (audio.paused) {
-                audio.play();
-                playBtn.innerText = "⏸";
-            } else {
-                audio.pause();
-                playBtn.innerText = "▶";
-            }
+            if (audio.paused) { audio.play(); playBtn.innerText = "⏸"; } 
+            else { audio.pause(); playBtn.innerText = "▶"; }
         }
 
         audio.onended = () => { playBtn.innerText = "▶"; };
 
-        // --- HISTORIAL Y ESTADÍSTICAS ---
         function guardarEnHistorial(video) {
-            // Evitar duplicados seguidos
-            if(historial.length > 0 && historial[historial.length - 1].videoId === video.videoId) return;
+            const id = video.videoId || video.id || video.url;
+            if(historial.length > 0 && (historial[historial.length - 1].videoId === id || historial[historial.length - 1].id === id)) return;
 
             historial.push({
-                videoId: video.videoId,
+                videoId: id,
                 title: video.title,
                 author: video.author,
-                videoThumbnails: video.videoThumbnails
+                url: video.url,
+                thumbnail: video.thumbnail || video.image
             });
-
-            // Solo guardamos las últimas 10
             if (historial.length > 10) historial.shift();
-            
             localStorage.setItem('neon_historial', JSON.stringify(historial));
             
-            // Calcular peso (LocalStorage)
             const stringified = JSON.stringify(localStorage);
             const kb = (new Blob([stringified]).size / 1024).toFixed(2);
             localStorage.setItem('neon_cache_size', kb);
@@ -454,12 +277,6 @@
         function actualizarEstadisticas() {
             document.getElementById('stat-played').innerText = localStorage.getItem('neon_plays') || '0';
             document.getElementById('stat-cache').innerText = (localStorage.getItem('neon_cache_size') || '0') + ' KB';
-        }
-
-        function formatTime(seconds) {
-            const m = Math.floor(seconds / 60);
-            const s = seconds % 60;
-            return `${m}:${s < 10 ? '0' : ''}${s}`;
         }
     </script>
 </body>
