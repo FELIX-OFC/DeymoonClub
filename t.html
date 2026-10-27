@@ -18,13 +18,11 @@
         * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
         body { background-color: var(--bg-color); color: var(--text-main); font-family: var(--font-family); overflow: hidden; height: 100vh; display: flex; flex-direction: column; }
         
-        /* LOADER */
         #loading-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: var(--bg-color); display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 9999; transition: opacity 0.5s ease; }
         .spinner { width: 60px; height: 60px; border: 4px solid var(--bg-brilloso); border-top: 4px solid var(--neon-pink); border-radius: 50%; animation: spin 1s linear infinite; box-shadow: 0 0 15px var(--neon-pink-glow); }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
         #loading-screen p { margin-top: 20px; color: var(--neon-pink); font-weight: bold; letter-spacing: 2px; }
 
-        /* VISTAS */
         .view { flex: 1; overflow-y: auto; padding: 20px; padding-bottom: 160px; display: none; animation: fadeIn 0.3s ease; }
         .view.active { display: block; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
@@ -33,55 +31,43 @@
         .section-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; margin-top: 20px; }
         .section-header h2 { margin: 0; }
         
-        /* --- NUEVO: CARRUSEL HORIZONTAL --- */
         .carousel-container { display: flex; overflow-x: auto; gap: 15px; padding-bottom: 10px; scroll-snap-type: x mandatory; scrollbar-width: none; }
         .carousel-container::-webkit-scrollbar { display: none; }
         
         .big-card { flex: 0 0 150px; scroll-snap-align: start; display: flex; flex-direction: column; cursor: pointer; position: relative; }
         .big-card-cover { width: 150px; height: 150px; border-radius: 12px; background: linear-gradient(135deg, var(--neon-pink), #2a003f); background-size: cover; background-position: center; display: flex; justify-content: center; align-items: center; font-size: 3rem; box-shadow: 0 4px 15px rgba(0,0,0,0.5); margin-bottom: 8px; position: relative; overflow: hidden; }
-        
-        /* Capa oscura para que el texto se lea mejor en la foto */
         .big-card-cover::after { content: ''; position: absolute; bottom: 0; left: 0; width: 100%; height: 40%; background: linear-gradient(to top, rgba(0,0,0,0.8), transparent); }
-        
         .big-card-title { font-weight: 600; font-size: 0.95rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; position: absolute; bottom: 35px; left: 10px; right: 10px; z-index: 1; }
         .big-card-subtitle { font-size: 0.8rem; color: var(--text-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; position: absolute; bottom: 15px; left: 10px; right: 10px; z-index: 1; }
 
-        /* LISTA NORMAL */
         .song-list { display: flex; flex-direction: column; gap: 15px; }
         .song-card { display: flex; align-items: center; background-color: var(--bg-card); padding: 10px; border-radius: 12px; transition: all 0.3s ease; cursor: pointer; border: 1px solid transparent; position: relative; }
         .song-card:hover { background-color: var(--bg-brilloso); box-shadow: 0 0 10px var(--neon-pink-glow); border: 1px solid var(--neon-pink); }
         
         .song-cover { width: 60px; height: 60px; border-radius: 8px; margin-right: 15px; background: linear-gradient(135deg, var(--neon-pink), #2a003f); background-size: cover; background-position: center; display: flex; justify-content: center; align-items: center; font-size: 1.5rem; box-shadow: 0 0 10px var(--neon-pink-glow); flex-shrink: 0; }
-        
         .song-info { flex: 1; overflow: hidden; min-width: 0; }
         .song-title { font-weight: 600; font-size: 1rem; margin-bottom: 5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         .song-artist { font-size: 0.85rem; color: var(--text-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-
         .like-indicator { position: absolute; right: 15px; top: 50%; transform: translateY(-50%); color: var(--neon-pink); display: none; }
         .like-indicator svg { width: 20px; height: 20px; fill: currentColor; filter: drop-shadow(0 0 5px var(--neon-pink)); }
         .song-card.liked .like-indicator { display: block; }
 
-        /* MINI REPRODUCTOR */
         #mini-player { position: fixed; bottom: 70px; left: 10px; right: 10px; background: rgba(20, 20, 20, 0.95); backdrop-filter: blur(10px); border-radius: 15px; padding: 10px 15px; display: none; align-items: center; border: 1px solid var(--neon-pink); box-shadow: 0 0 20px var(--neon-pink-glow); z-index: 100; cursor: pointer; }
         #mini-player.active { display: flex; }
         .player-cover { width: 40px; height: 40px; border-radius: 5px; margin-right: 10px; background: linear-gradient(135deg, var(--neon-pink), #2a003f); background-size: cover; background-position: center; display: flex; justify-content: center; align-items: center; flex-shrink: 0;}
         .player-controls { flex: 1; overflow: hidden; }
         .playing-title { font-size: 0.9rem; font-weight: bold; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: var(--neon-pink); }
         .playing-artist { font-size: 0.75rem; color: var(--text-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        
         .play-btn { background: var(--neon-pink); border: none; color: white; width: 40px; height: 40px; border-radius: 50%; cursor: pointer; display: flex; justify-content: center; align-items: center; box-shadow: 0 0 10px var(--neon-pink-glow); flex-shrink: 0; }
         .play-btn svg { width: 20px; height: 20px; fill: currentColor; }
 
-        /* MENÚ INFERIOR */
         #bottom-nav { position: fixed; bottom: 0; left: 0; width: 100%; height: 70px; background-color: var(--bg-card); display: flex; justify-content: space-around; align-items: center; border-top: 1px solid var(--bg-brilloso); z-index: 101; }
         .nav-item { display: flex; flex-direction: column; align-items: center; color: var(--text-muted); text-decoration: none; font-size: 0.7rem; cursor: pointer; transition: color 0.3s; }
         .nav-item svg { width: 24px; height: 24px; margin-bottom: 4px; fill: currentColor; }
         .nav-item.active { color: var(--neon-pink); filter: drop-shadow(0 0 5px var(--neon-pink-glow)); }
 
-        /* PANTALLA COMPLETA (MODAL) */
         #full-player { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(to bottom, #1a1a1a, var(--bg-color)); z-index: 200; display: flex; flex-direction: column; padding: 30px 20px; transform: translateY(100%); transition: transform 0.4s cubic-bezier(0.25, 1, 0.5, 1); }
         #full-player.active { transform: translateY(0); }
-        
         .close-btn { background: none; border: none; color: white; cursor: pointer; align-self: flex-start; margin-bottom: 20px; }
         .close-btn svg { width: 30px; height: 30px; fill: currentColor; }
         
@@ -97,7 +83,6 @@
         .feedback-btns { display: flex; gap: 15px; }
         .feedback-btn { background: transparent; border: 2px solid var(--bg-brilloso); color: var(--text-muted); width: 45px; height: 45px; border-radius: 50%; cursor: pointer; display: flex; justify-content: center; align-items: center; transition: all 0.3s; }
         .feedback-btn svg { width: 22px; height: 22px; fill: currentColor; }
-        
         .feedback-btn.active-like { border-color: var(--neon-pink); color: var(--neon-pink); box-shadow: 0 0 15px var(--neon-pink), inset 0 0 10px var(--neon-pink-glow); animation: pulseGlow 1.5s infinite alternate; }
         .feedback-btn.active-dislike { border-color: #555; color: #888; background: #222; }
         
@@ -106,73 +91,15 @@
             to { box-shadow: 0 0 25px var(--neon-pink), inset 0 0 15px var(--neon-pink-glow); }
         }
 
-        /* --- NUEVO: BARRA DE PROGRESO CON RELLENO NEÓN --- */
         .progress-container { width: 100%; margin-bottom: 20px; position: relative; }
-        
-        input[type=range] { 
-            -webkit-appearance: none; 
-            width: 100%; 
-            background: transparent; 
-            position: relative;
-            z-index: 2;
-        }
+        input[type=range] { -webkit-appearance: none; width: 100%; background: transparent; position: relative; z-index: 2; }
         input[type=range]:focus { outline: none; }
-        
-        /* Riel base (gris) */
-        input[type=range]::-webkit-slider-runnable-track { 
-            width: 100%; 
-            height: 6px; 
-            cursor: pointer; 
-            background: transparent; 
-            border-radius: 3px; 
-        }
-        
-        /* El circulito (•) */
-        input[type=range]::-webkit-slider-thumb { 
-            height: 16px; 
-            width: 16px; 
-            border-radius: 50%; 
-            background: var(--neon-pink); 
-            cursor: pointer; 
-            -webkit-appearance: none; 
-            margin-top: -5px; 
-            box-shadow: 0 0 10px var(--neon-pink), 0 0 20px var(--neon-pink); 
-            position: relative;
-            z-index: 3;
-        }
-
-        /* El relleno neón (la línea rosada que avanza) */
-        .progress-fill {
-            position: absolute;
-            top: 50%;
-            left: 0;
-            height: 6px;
-            background: var(--neon-pink);
-            border-radius: 3px;
-            transform: translateY(-50%);
-            width: 0%; /* Se actualiza con JS */
-            box-shadow: 0 0 10px var(--neon-pink), 0 0 20px var(--neon-pink);
-            z-index: 1;
-            pointer-events: none;
-        }
-
-        /* Riel base por detrás */
-        .progress-bg {
-            position: absolute;
-            top: 50%;
-            left: 0;
-            width: 100%;
-            height: 6px;
-            background: var(--bg-brilloso);
-            border-radius: 3px;
-            transform: translateY(-50%);
-            z-index: 0;
-            pointer-events: none;
-        }
-
+        input[type=range]::-webkit-slider-runnable-track { width: 100%; height: 6px; cursor: pointer; background: transparent; border-radius: 3px; }
+        input[type=range]::-webkit-slider-thumb { height: 16px; width: 16px; border-radius: 50%; background: var(--neon-pink); cursor: pointer; -webkit-appearance: none; margin-top: -5px; box-shadow: 0 0 10px var(--neon-pink), 0 0 20px var(--neon-pink); position: relative; z-index: 3; }
+        .progress-fill { position: absolute; top: 50%; left: 0; height: 6px; background: var(--neon-pink); border-radius: 3px; transform: translateY(-50%); width: 0%; box-shadow: 0 0 10px var(--neon-pink), 0 0 20px var(--neon-pink); z-index: 1; pointer-events: none; }
+        .progress-bg { position: absolute; top: 50%; left: 0; width: 100%; height: 6px; background: var(--bg-brilloso); border-radius: 3px; transform: translateY(-50%); z-index: 0; pointer-events: none; }
         .time-info { display: flex; justify-content: space-between; font-size: 0.8rem; color: var(--text-muted); margin-top: 8px; }
 
-        /* CONTROLES PRINCIPALES */
         .main-controls { display: flex; justify-content: center; align-items: center; gap: 30px; margin-bottom: 30px; }
         .ctrl-btn { background: none; border: none; color: white; cursor: pointer; transition: color 0.2s; display: flex; align-items: center; justify-content: center; }
         .ctrl-btn svg { width: 35px; height: 35px; fill: currentColor; }
@@ -180,6 +107,22 @@
         .play-large { background: white; color: black; width: 70px; height: 70px; border-radius: 50%; display: flex; justify-content: center; align-items: center; box-shadow: 0 0 20px rgba(255,255,255,0.2); cursor: pointer; border: none; }
         .play-large svg { width: 35px; height: 35px; fill: currentColor; }
         .play-large:hover { transform: scale(1.05); }
+
+        .lyrics-disabled { opacity: 0.3; cursor: not-allowed; }
+
+        #lyrics-modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(5, 5, 5, 0.98); z-index: 300; display: none; flex-direction: column; padding: 30px 20px; backdrop-filter: blur(5px); }
+        #lyrics-modal.active { display: flex; }
+        .lyrics-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+        .lyrics-title { font-size: 1.2rem; font-weight: bold; color: var(--neon-pink); }
+        .lyrics-content { flex: 1; overflow-y: auto; padding: 20px 0; scroll-behavior: smooth; text-align: center; }
+        .lyrics-content::-webkit-scrollbar { width: 4px; }
+        .lyrics-content::-webkit-scrollbar-thumb { background: var(--neon-pink); border-radius: 4px; }
+        .lyric-line { font-size: 1.1rem; color: var(--text-muted); margin: 15px 0; transition: all 0.3s ease; opacity: 0.5; }
+        .lyric-line.active { font-size: 1.4rem; color: var(--neon-pink); font-weight: bold; opacity: 1; text-shadow: 0 0 10px var(--neon-pink), 0 0 20px var(--neon-pink); transform: scale(1.05); }
+        .lyric-line.section-title { font-size: 0.9rem; color: var(--neon-pink); opacity: 0.7; margin-top: 30px; font-weight: bold; text-transform: uppercase; }
+
+        #toast { position: fixed; bottom: 100px; left: 50%; transform: translateX(-50%) translateY(20px); background: var(--bg-brilloso); color: white; padding: 12px 24px; border-radius: 25px; border: 1px solid var(--neon-pink); box-shadow: 0 0 15px var(--neon-pink-glow); font-size: 0.9rem; z-index: 9999; opacity: 0; transition: all 0.3s ease; pointer-events: none; text-align: center; width: 80%; max-width: 300px; }
+        #toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
     </style>
 </head>
 <body>
@@ -189,23 +132,19 @@
         <p>CARGANDO PLASSTUBE...</p>
     </div>
 
-    <!-- VISTA HOME -->
     <div id="view-home" class="view active">
         <h2>Bienvenido a PlassTube</h2>
         
-        <!-- Recomendados (Carrusel) -->
         <div class="section-header">
             <h2>Recomendados</h2>
         </div>
         <div class="carousel-container" id="home-recommended"></div>
 
-        <!-- Favoritos (Carrusel) -->
         <div class="section-header">
             <h2>Favoritos</h2>
         </div>
         <div class="carousel-container" id="home-favorites"></div>
 
-        <!-- Lista normal (Sin título "Tu Playlist", solo las canciones) -->
         <div class="section-header" style="margin-top: 30px;">
             <h2>Todas las canciones</h2>
         </div>
@@ -228,12 +167,11 @@
         <div class="settings-container" style="background: var(--bg-card); border-radius: 15px; padding: 20px; border-left: 4px solid var(--neon-pink); box-shadow: -5px 0 15px var(--neon-pink-glow);">
             <div class="setting-item" style="display: flex; justify-content: space-between; padding: 15px 0; border-bottom: 1px solid var(--bg-brilloso);"><span>Canciones escuchadas</span><span class="setting-value" id="stat-played" style="color: var(--neon-pink); font-weight: bold;">0</span></div>
             <div class="setting-item" style="display: flex; justify-content: space-between; padding: 15px 0; border-bottom: 1px solid var(--bg-brilloso);"><span>Almacenamiento en caché</span><span class="setting-value" id="stat-cache" style="color: var(--neon-pink); font-weight: bold;">0 KB</span></div>
-            <div class="setting-item" style="display: flex; justify-content: space-between; padding: 15px 0; border-bottom: none;"><span>Versión</span><span class="setting-value" style="color: var(--neon-pink); font-weight: bold;">1.4.0 PlassTube</span></div>
+            <div class="setting-item" style="display: flex; justify-content: space-between; padding: 15px 0; border-bottom: none;"><span>Versión</span><span class="setting-value" style="color: var(--neon-pink); font-weight: bold;">1.5.0 PlassTube</span></div>
         </div>
         <button onclick="localStorage.clear(); location.reload();" style="margin-top: 20px; background: transparent; color: var(--neon-pink); border: 1px solid var(--neon-pink); padding: 10px; border-radius: 8px; width: 100%; cursor: pointer;">Borrar historial</button>
     </div>
 
-    <!-- MINI REPRODUCTOR -->
     <div id="mini-player" onclick="abrirPantallaCompleta()">
         <div class="player-cover" id="mini-cover">🎵</div>
         <div class="player-controls">
@@ -245,10 +183,8 @@
         </button>
     </div>
     
-    <!-- ELEMENTO DE AUDIO OCULTO -->
     <audio id="audio-element"></audio>
 
-    <!-- PANTALLA COMPLETA (MODAL) -->
     <div id="full-player">
         <button class="close-btn" onclick="cerrarPantallaCompleta()">
             <svg viewBox="0 0 24 24"><path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z"/></svg>
@@ -265,6 +201,9 @@
                 <div class="credits">© Placencio Corporation</div>
             </div>
             <div class="feedback-btns">
+                <button class="feedback-btn" id="btn-lyrics" onclick="abrirLetras()">
+                    <svg viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg>
+                </button>
                 <button class="feedback-btn" id="btn-dislike" onclick="votar('dislike')">
                     <svg viewBox="0 0 24 24"><path d="M15 3H6c-.83 0-1.54.5-1.84 1.22l-3.02 7.05c-.09.23-.14.47-.14.73v2c0 1.1.9 2 2 2h6.31l-.95 4.57-.03.32c0 .41.17.79.44 1.06L9.83 23l6.59-6.59c.36-.36.58-.86.58-1.41V5c0-1.1-.9-2-2-2zm4 0v12h4V3h-4z"/></svg>
                 </button>
@@ -274,7 +213,6 @@
             </div>
         </div>
 
-        <!-- Barra de progreso con relleno -->
         <div class="progress-container">
             <div class="progress-bg"></div>
             <div class="progress-fill" id="progress-fill"></div>
@@ -298,6 +236,18 @@
         </div>
     </div>
 
+    <div id="lyrics-modal">
+        <div class="lyrics-header">
+            <div class="lyrics-title">Letra: <span id="lyrics-song-title"></span></div>
+            <button class="close-btn" style="margin-bottom: 0;" onclick="cerrarLetras()">
+                <svg viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+            </button>
+        </div>
+        <div class="lyrics-content" id="lyrics-content"></div>
+    </div>
+
+    <div id="toast">Este tema no tiene letra disponible.</div>
+
     <div id="bottom-nav">
         <div class="nav-item active" onclick="switchTab('home')">
             <svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg> Inicio
@@ -311,22 +261,58 @@
     </div>
 
     <script>
-        // --- PLAYLIST COMPLETA (Añadida propiedad 'imagen') ---
-        let playlist = [
-            { id: 1, name: "Latin Lover", artist: "Neutro Shorty, Big Soto", url: "https://raw.githubusercontent.com/JTxs00/uploads/main/1775936364197.mpeg", cover: "", imagen: "" },
-            { id: 2, name: "El La Engaño Lambada", artist: "Natusha", url: "https://raw.githubusercontent.com/JTxs00/uploads/main/1775936787983.mpeg", cover: "", imagen: "" },
-            { id: 3, name: "Quédate", artist: "Belee", url: "https://raw.githubusercontent.com/JTxs00/uploads/main/1775936643238.mpeg", cover: "", imagen: "https://d.uguu.se/bCnKHBzl.jpg" }, // Imagen añadida
-            { id: 4, name: "Odisea", artist: "Ozuna", url: "https://raw.githubusercontent.com/JTxs00/uploads/main/1775935979163.mpeg", cover: "", imagen: "" },
-            { id: 5, name: "Maquiavélico", artist: "Cancerbero", url: "https://raw.githubusercontent.com/JTxs00/uploads/main/1775936827892.mpeg", cover: "", imagen: "" },
-            { id: 6, name: "Eoo", artist: "Bad Bunny", url: "https://raw.githubusercontent.com/JTxs00/uploads/main/1775936322243.mpeg", cover: "", imagen: "" },
-            { id: 7, name: "Los Viejos Me Llaman", artist: "No Name", url: "https://raw.githubusercontent.com/JTxs00/uploads/main/1775936897844.mpeg", cover: "", imagen: "" },
-            { id: 8, name: "Ninfómana", artist: "Jossimar ft El Apóstol", url: "https://raw.githubusercontent.com/JTxs00/uploads/main/1775936920447.mpeg", cover: "", imagen: "" },
-            { id: 9, name: "Eu Já Sofri Por Amor Mas Não Sofro Mais", artist: "TikTokTunes (Brasil)", url: "https://d.uguu.se/FjTEHYFP.mp3", cover: "", imagen: "" },
-            { id: 10, name: "Kamin", artist: "EMIN, JONY", url: "https://n.uguu.se/JSbiiAsL.mp3", cover: "", imagen: "" },
-            { id: 11, name: "No Me Vendo", artist: "RDjavi", url: "https://d.uguu.se/fXbMgFAh.mp3", cover: "", imagen: "" }
+        const lyricsQueDate = [
+            { time: 0, text: "[Verso 1]" },
+            { time: 8, text: "¿Cómo le explico al corazón que quieres irte?" },
+            { time: 13, text: "Si tienes dudas, mami, no te estoy mintiendo" },
+            { time: 18, text: "Mira mis ojos mientras mi alma se desviste" },
+            { time: 23, text: "Los que miras justo cuando me estoy viniendo" },
+            { time: 28, text: "Cómo quisiera que estuvieras aquí" },
+            { time: 32, text: "Me sintieras a mí al ladito tuyo" },
+            { time: 37, text: "Pa' que veas que yo no puedo fingir" },
+            { time: 41, text: "Y me puedo morir por los besos tuyos" },
+            { time: 48, text: "[Coro]" },
+            { time: 50, text: "Ven quédate, quédate" },
+            { time: 55, text: "No puedo estar sin ti" },
+            { time: 59, text: "Quédate, quédate" },
+            { time: 64, text: "Oh-oh, no puedo estar sin ti" },
+            { time: 69, text: "Oh, no-no-no" },
+            { time: 73, text: "Oh, no-no-no" },
+            { time: 80, text: "[Verso 2]" },
+            { time: 82, text: "Este que está aquí a ti no te quiere dejar" },
+            { time: 87, text: "Este que está aquí también se deja llevar" },
+            { time: 92, text: "Estamo' destinados a juntos celebrar la Navidad" },
+            { time: 97, text: "Esto nunca tuvo sentido, fuimos en contra de la Ley Universal" },
+            { time: 103, text: "Qué visaje, cule' viaje" },
+            { time: 106, text: "Dime cómo evitamos las señales" },
+            { time: 110, text: "A veces yo quisiera que no pare" },
+            { time: 113, text: "Pero esto me va a matar" },
+            { time: 117, text: "Quiero ver qué responde, no me tira ni: \"Hola\"" },
+            { time: 121, text: "Y yo aquí con cule' bartola" },
+            { time: 124, text: "Pensando en toda' las noche' que estuvimos a solas" },
+            { time: 128, text: "Y no le parábamos bolas" },
+            { time: 131, text: "Chingando con un feeling, somos Reyes de las Olas" },
+            { time: 135, text: "Estoy frente a tu alma, porfa, ma', déjame entrar" },
+            { time: 140, text: "Permíteme que entienda' que no existe nadie más" },
+            { time: 145, text: "Y si me quedo contigo es porque tú eres la mondá" },
+            { time: 152, text: "[Coro Final]" },
+            { time: 155, text: "Ven quédate (quédate), quédate (quédate)" },
+            { time: 161, text: "No puedo estar sin ti (sin ti)" },
+            { time: 165, text: "No, no puedo estar sin ti" },
+            { time: 170, text: "Quédate (alright, alright)" }
         ];
 
-        // --- ESTADO GLOBAL ---
+        let playlist = [
+            { id: 1, name: "Latin Lover", artist: "Neutro Shorty, Big Soto", url: "https://raw.githubusercontent.com/JTxs00/uploads/main/1775936364197.mpeg", cover: "", imagen: "", lyrics: null },
+            { id: 2, name: "El La Engaño Lambada", artist: "Natusha", url: "https://raw.githubusercontent.com/JTxs00/uploads/main/1775936787983.mpeg", cover: "", imagen: "", lyrics: null },
+            { id: 3, name: "Quédate", artist: "Belee", url: "https://raw.githubusercontent.com/JTxs00/uploads/main/1775936643238.mpeg", cover: "", imagen: "https://d.uguu.se/bCnKHBzl.jpg", lyrics: lyricsQueDate },
+            { id: 4, name: "Odisea", artist: "Ozuna", url: "https://raw.githubusercontent.com/JTxs00/uploads/main/1775935979163.mpeg", cover: "", imagen: "", lyrics: null },
+            { id: 5, name: "Maquiavélico", artist: "Cancerbero", url: "https://raw.githubusercontent.com/JTxs00/uploads/main/1775936827892.mpeg", cover: "", imagen: "", lyrics: null },
+            { id: 6, name: "Eoo", artist: "Bad Bunny", url: "https://raw.githubusercontent.com/JTxs00/uploads/main/1775936322243.mpeg", cover: "", imagen: "", lyrics: null },
+            { id: 7, name: "Los Viejos Me Llaman", artist: "No Name", url: "https://raw.githubusercontent.com/JTxs00/uploads/main/1775936897844.mpeg", cover: "", imagen: "", lyrics: null },
+            { id: 8, name: "Ninfómana", artist: "Jossimar ft El Apóstol", url: "https://raw.githubusercontent.com/JTxs00/uploads/main/1775936920447.mpeg", cover: "", imagen: "", lyrics: null }
+        ];
+
         const audio = document.getElementById('audio-element');
         let currentSongIndex = -1;
         let isPlaying = false;
@@ -334,6 +320,9 @@
         let savedOrder = JSON.parse(localStorage.getItem('neon_order')) || [];
         let userVotes = JSON.parse(localStorage.getItem('neon_votes')) || {};
         let playHistory = JSON.parse(localStorage.getItem('neon_history')) || [];
+
+        let autoScrollLyrics = true;
+        let currentActiveLyricIndex = -1;
 
         if (savedOrder.length > 0) {
             playlist.sort((a, b) => {
@@ -345,7 +334,6 @@
             });
         }
 
-        // --- INICIALIZACIÓN ---
         window.onload = () => {
             actualizarEstadisticas();
             renderizarHome();
@@ -357,7 +345,6 @@
             }, 1000); 
         };
 
-        // --- NAVEGACIÓN PESTAÑAS ---
         function switchTab(tab) {
             document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
             document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
@@ -372,9 +359,7 @@
             }
         }
 
-        // --- RENDERIZADO DINÁMICO DEL HOME ---
         function renderizarHome() {
-            // Recomendados
             let recomendados = [];
             if (playHistory.length > 0) {
                 const uniqueIds = [...new Set(playHistory)].slice(0, 5);
@@ -384,7 +369,6 @@
             }
             renderizarCarrusel(recomendados, 'home-recommended');
 
-            // Favoritos
             const favoritos = playlist.filter(c => userVotes[c.id] === 'like');
             renderizarCarrusel(favoritos, 'home-favorites');
             
@@ -393,7 +377,6 @@
             }
         }
 
-        // --- NUEVO: RENDERIZAR CARRUSEL (Cuadros Grandes) ---
         function renderizarCarrusel(lista, contenedorId) {
             const container = document.getElementById(contenedorId);
             if (!container) return;
@@ -407,10 +390,11 @@
                 
                 div.onclick = () => {
                     abrirPantallaCompleta();
-                    reproducirPorId(cancion.id);
+                    if (currentSongIndex !== playlist.findIndex(c => c.id === cancion.id)) {
+                        reproducirPorId(cancion.id);
+                    }
                 };
                 
-                // Usamos la propiedad 'imagen' o el gradiente por defecto
                 const coverStyle = cancion.imagen ? `background-image: url('${cancion.imagen}');` : '';
                 const coverContent = cancion.imagen ? '' : '🎵';
 
@@ -425,7 +409,6 @@
             });
         }
 
-        // --- RENDERIZAR LISTA NORMAL ---
         function renderizarLista(lista, contenedorId) {
             const container = document.getElementById(contenedorId);
             if (!container) return;
@@ -441,7 +424,9 @@
                 
                 div.onclick = () => {
                     abrirPantallaCompleta();
-                    reproducirPorId(cancion.id);
+                    if (currentSongIndex !== playlist.findIndex(c => c.id === cancion.id)) {
+                        reproducirPorId(cancion.id);
+                    }
                 };
                 
                 const coverStyle = cancion.imagen ? `background-image: url('${cancion.imagen}');` : '';
@@ -461,7 +446,6 @@
             });
         }
 
-        // --- BUSCADOR ---
         document.getElementById('search-input')?.addEventListener('input', (e) => {
             const query = e.target.value.toLowerCase();
             const filtradas = playlist.filter(c => 
@@ -471,7 +455,6 @@
             renderizarLista(filtradas, 'search-results');
         });
 
-        // --- LÓGICA DE REPRODUCCIÓN ---
         function reproducirPorId(id) {
             const index = playlist.findIndex(c => c.id === id);
             if (index !== -1) reproducirCancion(index);
@@ -491,6 +474,7 @@
             
             document.getElementById('full-title').innerText = cancion.name;
             document.getElementById('full-artist').innerText = cancion.artist;
+            document.getElementById('lyrics-song-title').innerText = cancion.name;
             
             const coverStyle = cancion.imagen ? `background-image: url('${cancion.imagen}');` : '';
             const coverContent = cancion.imagen ? '' : '🎵';
@@ -515,6 +499,17 @@
             });
 
             actualizarBotonesVoto(cancion.id);
+            actualizarBotonLetra(cancion);
+            renderizarLetra(cancion);
+        }
+
+        function actualizarBotonLetra(cancion) {
+            const btnLyrics = document.getElementById('btn-lyrics');
+            if (cancion.lyrics && cancion.lyrics.length > 0) {
+                btnLyrics.classList.remove('lyrics-disabled');
+            } else {
+                btnLyrics.classList.add('lyrics-disabled');
+            }
         }
 
         function togglePlay() {
@@ -554,7 +549,6 @@
             reproducirCancion(prevIndex);
         }
 
-        // --- BARRA DE PROGRESO ACTUALIZADA (El relleno neón) ---
         const progressBar = document.getElementById('progress-bar');
         const progressFill = document.getElementById('progress-fill');
         const currentTimeEl = document.getElementById('current-time');
@@ -564,11 +558,14 @@
             if (!isNaN(audio.duration)) {
                 const percent = (audio.currentTime / audio.duration) * 100;
                 progressBar.value = percent;
-                // Actualiza el ancho de la línea rosada
                 progressFill.style.width = `${percent}%`;
                 
                 currentTimeEl.innerText = formatTime(audio.currentTime);
                 totalTimeEl.innerText = formatTime(audio.duration);
+
+                if (document.getElementById('lyrics-modal').classList.contains('active')) {
+                    actualizarLetraAutomatica(audio.currentTime);
+                }
             }
         });
 
@@ -576,7 +573,6 @@
             if (audio.duration) {
                 const seekTime = (progressBar.value / 100) * audio.duration;
                 audio.currentTime = seekTime;
-                // Actualiza el relleno visualmente al arrastrar
                 progressFill.style.width = `${progressBar.value}%`;
             }
         });
@@ -588,7 +584,6 @@
             return `${m}:${s < 10 ? '0' : ''}${s}`;
         }
 
-        // --- PANTALLA COMPLETA (MODAL) ---
         function abrirPantallaCompleta() {
             if (currentSongIndex === -1) return;
             document.getElementById('full-player').classList.add('active');
@@ -598,7 +593,6 @@
             document.getElementById('full-player').classList.remove('active');
         }
 
-        // --- SISTEMA DE VOTOS ---
         function votar(tipo) {
             if (currentSongIndex === -1) return;
             const cancionId = playlist[currentSongIndex].id;
@@ -651,7 +645,6 @@
             localStorage.setItem('neon_order', JSON.stringify(nuevoOrdenIds));
         }
 
-        // --- ESTADÍSTICAS ---
         function guardarEstadisticaPlay(cancionId) {
             let plays = parseInt(localStorage.getItem('neon_plays') || '0');
             localStorage.setItem('neon_plays', plays + 1);
@@ -674,6 +667,97 @@
         function actualizarEstadisticas() {
             document.getElementById('stat-played').innerText = localStorage.getItem('neon_plays') || '0';
             document.getElementById('stat-cache').innerText = (localStorage.getItem('neon_cache_size') || '0') + ' KB';
+        }
+
+        function abrirLetras() {
+            if (currentSongIndex === -1) return;
+            const cancion = playlist[currentSongIndex];
+            
+            if (!cancion.lyrics || cancion.lyrics.length === 0) {
+                mostrarToast();
+                return;
+            }
+
+            document.getElementById('lyrics-modal').classList.add('active');
+            autoScrollLyrics = true;
+            currentActiveLyricIndex = -1;
+            actualizarLetraAutomatica(audio.currentTime, true);
+        }
+
+        function cerrarLetras() {
+            document.getElementById('lyrics-modal').classList.remove('active');
+        }
+
+        function renderizarLetra(cancion) {
+            const container = document.getElementById('lyrics-content');
+            container.innerHTML = '';
+            
+            if (!cancion.lyrics || cancion.lyrics.length === 0) return;
+
+            cancion.lyrics.forEach((linea, index) => {
+                const p = document.createElement('p');
+                p.className = 'lyric-line';
+                if (linea.text.startsWith('[')) p.classList.add('section-title');
+                p.innerText = linea.text;
+                p.dataset.index = index;
+                container.appendChild(p);
+            });
+        }
+
+        function actualizarLetraAutomatica(tiempoActual, forzar = false) {
+            if (currentSongIndex === -1) return;
+            const cancion = playlist[currentSongIndex];
+            if (!cancion.lyrics) return;
+
+            let activeIndex = -1;
+            for (let i = 0; i < cancion.lyrics.length; i++) {
+                if (tiempoActual >= cancion.lyrics[i].time) {
+                    activeIndex = i;
+                } else {
+                    break;
+                }
+            }
+
+            if (activeIndex !== -1 && (activeIndex !== currentActiveLyricIndex || forzar)) {
+                const container = document.getElementById('lyrics-content');
+                const lines = container.querySelectorAll('.lyric-line');
+                
+                if (lines[currentActiveLyricIndex]) {
+                    lines[currentActiveLyricIndex].classList.remove('active');
+                }
+
+                if (lines[activeIndex]) {
+                    lines[activeIndex].classList.add('active');
+                    
+                    if (autoScrollLyrics) {
+                        const lineElement = lines[activeIndex];
+                        const containerHeight = container.clientHeight;
+                        const lineTop = lineElement.offsetTop;
+                        const lineHeight = lineElement.clientHeight;
+                        
+                        container.scrollTo({
+                            top: lineTop - (containerHeight / 2) + (lineHeight / 2),
+                            behavior: 'smooth'
+                        });
+                    }
+                }
+                currentActiveLyricIndex = activeIndex;
+            }
+        }
+
+        const lyricsContent = document.getElementById('lyrics-content');
+        lyricsContent.addEventListener('touchstart', () => { autoScrollLyrics = false; });
+        lyricsContent.addEventListener('mousedown', () => { autoScrollLyrics = false; });
+        lyricsContent.addEventListener('wheel', () => { autoScrollLyrics = false; });
+
+        let toastTimeout;
+        function mostrarToast() {
+            const toast = document.getElementById('toast');
+            toast.classList.add('show');
+            clearTimeout(toastTimeout);
+            toastTimeout = setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
         }
     </script>
 </body>
