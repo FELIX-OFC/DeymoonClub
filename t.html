@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Neon Music</title>
+    <title>PlassTube</title>
     <style>
         :root {
             --bg-color: #050505;
@@ -30,6 +30,8 @@
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
         h2 { font-size: 1.5rem; margin-bottom: 15px; margin-top: 10px; }
+        .section-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; margin-top: 20px; }
+        .section-header h2 { margin: 0; }
         
         .song-list { display: flex; flex-direction: column; gap: 15px; }
         .song-card { display: flex; align-items: center; background-color: var(--bg-card); padding: 10px; border-radius: 12px; transition: all 0.3s ease; cursor: pointer; border: 1px solid transparent; position: relative; }
@@ -37,12 +39,13 @@
         
         .song-cover { width: 60px; height: 60px; border-radius: 8px; margin-right: 15px; background: linear-gradient(135deg, var(--neon-pink), #2a003f); background-size: cover; background-position: center; display: flex; justify-content: center; align-items: center; font-size: 1.5rem; box-shadow: 0 0 10px var(--neon-pink-glow); flex-shrink: 0; }
         
-        .song-info { flex: 1; overflow: hidden; }
+        .song-info { flex: 1; overflow: hidden; min-width: 0; /* Necesario para que el ellipsis funcione */ }
         .song-title { font-weight: 600; font-size: 1rem; margin-bottom: 5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         .song-artist { font-size: 0.85rem; color: var(--text-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
         /* INDICADOR DE LIKE EN LA LISTA */
-        .like-indicator { position: absolute; right: 15px; top: 50%; transform: translateY(-50%); color: var(--neon-pink); font-size: 1.2rem; display: none; }
+        .like-indicator { position: absolute; right: 15px; top: 50%; transform: translateY(-50%); color: var(--neon-pink); display: none; }
+        .like-indicator svg { width: 20px; height: 20px; fill: currentColor; filter: drop-shadow(0 0 5px var(--neon-pink)); }
         .song-card.liked .like-indicator { display: block; }
 
         /* MINI REPRODUCTOR */
@@ -52,7 +55,10 @@
         .player-controls { flex: 1; overflow: hidden; }
         .playing-title { font-size: 0.9rem; font-weight: bold; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: var(--neon-pink); }
         .playing-artist { font-size: 0.75rem; color: var(--text-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .play-btn { background: var(--neon-pink); border: none; color: white; width: 40px; height: 40px; border-radius: 50%; cursor: pointer; font-size: 1.2rem; display: flex; justify-content: center; align-items: center; box-shadow: 0 0 10px var(--neon-pink-glow); flex-shrink: 0; }
+        
+        /* BOTONES SVG */
+        .play-btn { background: var(--neon-pink); border: none; color: white; width: 40px; height: 40px; border-radius: 50%; cursor: pointer; display: flex; justify-content: center; align-items: center; box-shadow: 0 0 10px var(--neon-pink-glow); flex-shrink: 0; }
+        .play-btn svg { width: 20px; height: 20px; fill: currentColor; }
 
         /* MENÚ INFERIOR */
         #bottom-nav { position: fixed; bottom: 0; left: 0; width: 100%; height: 70px; background-color: var(--bg-card); display: flex; justify-content: space-around; align-items: center; border-top: 1px solid var(--bg-brilloso); z-index: 101; }
@@ -64,22 +70,31 @@
         #full-player { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(to bottom, #1a1a1a, var(--bg-color)); z-index: 200; display: flex; flex-direction: column; padding: 30px 20px; transform: translateY(100%); transition: transform 0.4s cubic-bezier(0.25, 1, 0.5, 1); }
         #full-player.active { transform: translateY(0); }
         
-        .close-btn { background: none; border: none; color: white; font-size: 2rem; cursor: pointer; align-self: flex-start; margin-bottom: 20px; }
+        .close-btn { background: none; border: none; color: white; cursor: pointer; align-self: flex-start; margin-bottom: 20px; }
+        .close-btn svg { width: 30px; height: 30px; fill: currentColor; }
         
         .full-cover-container { width: 100%; aspect-ratio: 1/1; border-radius: 20px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.8), 0 0 20px var(--neon-pink-glow); margin-bottom: 30px; position: relative; }
         .full-cover { width: 100%; height: 100%; background: linear-gradient(135deg, var(--neon-pink), #2a003f); background-size: cover; background-position: center; display: flex; justify-content: center; align-items: center; font-size: 5rem; }
         
         .full-info { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 20px; }
-        .full-texts { flex: 1; overflow: hidden; padding-right: 15px; }
+        .full-texts { flex: 1; overflow: hidden; padding-right: 15px; min-width: 0; }
         .full-title { font-size: 1.5rem; font-weight: bold; margin-bottom: 5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         .full-artist { font-size: 1rem; color: var(--text-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         .credits { font-size: 0.7rem; color: var(--text-muted); margin-top: 5px; opacity: 0.7; }
         
-        /* BOTONES LIKE / DISLIKE */
+        /* BOTONES LIKE / DISLIKE (Ahora con SVG) */
         .feedback-btns { display: flex; gap: 15px; }
-        .feedback-btn { background: transparent; border: 2px solid var(--bg-brilloso); color: var(--text-muted); width: 45px; height: 45px; border-radius: 50%; font-size: 1.2rem; cursor: pointer; display: flex; justify-content: center; align-items: center; transition: all 0.3s; }
-        .feedback-btn.active-like { border-color: var(--neon-pink); color: var(--neon-pink); box-shadow: 0 0 10px var(--neon-pink-glow); }
+        .feedback-btn { background: transparent; border: 2px solid var(--bg-brilloso); color: var(--text-muted); width: 45px; height: 45px; border-radius: 50%; cursor: pointer; display: flex; justify-content: center; align-items: center; transition: all 0.3s; }
+        .feedback-btn svg { width: 22px; height: 22px; fill: currentColor; }
+        
+        /* Brillo del like */
+        .feedback-btn.active-like { border-color: var(--neon-pink); color: var(--neon-pink); box-shadow: 0 0 15px var(--neon-pink), inset 0 0 10px var(--neon-pink-glow); animation: pulseGlow 1.5s infinite alternate; }
         .feedback-btn.active-dislike { border-color: #555; color: #888; background: #222; }
+        
+        @keyframes pulseGlow {
+            from { box-shadow: 0 0 10px var(--neon-pink), inset 0 0 5px var(--neon-pink-glow); }
+            to { box-shadow: 0 0 25px var(--neon-pink), inset 0 0 15px var(--neon-pink-glow); }
+        }
 
         /* BARRA DE PROGRESO */
         .progress-container { width: 100%; margin-bottom: 20px; }
@@ -91,25 +106,41 @@
 
         /* CONTROLES PRINCIPALES */
         .main-controls { display: flex; justify-content: center; align-items: center; gap: 30px; margin-bottom: 30px; }
-        .ctrl-btn { background: none; border: none; color: white; font-size: 2rem; cursor: pointer; transition: color 0.2s; }
+        .ctrl-btn { background: none; border: none; color: white; cursor: pointer; transition: color 0.2s; display: flex; align-items: center; justify-content: center; }
+        .ctrl-btn svg { width: 35px; height: 35px; fill: currentColor; }
         .ctrl-btn:hover { color: var(--neon-pink); }
-        .play-large { background: white; color: black; width: 70px; height: 70px; border-radius: 50%; font-size: 2rem; display: flex; justify-content: center; align-items: center; box-shadow: 0 0 20px rgba(255,255,255,0.2); cursor: pointer; border: none; }
+        .play-large { background: white; color: black; width: 70px; height: 70px; border-radius: 50%; display: flex; justify-content: center; align-items: center; box-shadow: 0 0 20px rgba(255,255,255,0.2); cursor: pointer; border: none; }
+        .play-large svg { width: 35px; height: 35px; fill: currentColor; }
         .play-large:hover { transform: scale(1.05); }
-
-        /* NAV INFERIOR DEL MODAL (DECORATIVO) */
-        .modal-nav { display: flex; justify-content: space-between; padding: 0 20px; margin-top: auto; color: var(--text-muted); font-size: 1.2rem; }
     </style>
 </head>
 <body>
 
     <div id="loading-screen">
         <div class="spinner"></div>
-        <p>CARGANDO NEON...</p>
+        <p>CARGANDO PLASSTUBE...</p>
     </div>
 
+    <!-- VISTA HOME -->
     <div id="view-home" class="view active">
-        <h2>Bienvenido</h2>
-        <div class="section-title"><h2>Tu Playlist</h2></div>
+        <h2>Bienvenido a PlassTube</h2>
+        
+        <!-- CAMBIO: Sección de Recomendados (últimas escuchadas) -->
+        <div class="section-header">
+            <h2>Recomendados</h2>
+        </div>
+        <div class="song-list" id="home-recommended"></div>
+
+        <!-- CAMBIO: Sección de Favoritos -->
+        <div class="section-header">
+            <h2>Favoritos</h2>
+        </div>
+        <div class="song-list" id="home-favorites"></div>
+
+        <!-- Playlist general -->
+        <div class="section-header">
+            <h2>Tu Playlist</h2>
+        </div>
         <div class="song-list" id="home-list"></div>
     </div>
 
@@ -117,7 +148,9 @@
         <h2>Buscar en tu Playlist</h2>
         <div class="search-bar" style="display: flex; background: var(--bg-brilloso); border-radius: 25px; padding: 10px 20px; margin-bottom: 20px; border: 1px solid var(--neon-pink);">
             <input type="text" id="search-input" placeholder="Filtrar por canción o artista..." style="flex: 1; background: none; border: none; color: white; font-size: 1rem; outline: none;">
-            <button id="search-btn" style="background: none; border: none; color: var(--neon-pink); font-weight: bold; cursor: pointer;">🔍</button>
+            <button id="search-btn" style="background: none; border: none; color: var(--neon-pink); font-weight: bold; cursor: pointer; display: flex; align-items: center;">
+                <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
+            </button>
         </div>
         <div class="song-list" id="search-results"></div>
     </div>
@@ -127,7 +160,7 @@
         <div class="settings-container" style="background: var(--bg-card); border-radius: 15px; padding: 20px; border-left: 4px solid var(--neon-pink); box-shadow: -5px 0 15px var(--neon-pink-glow);">
             <div class="setting-item" style="display: flex; justify-content: space-between; padding: 15px 0; border-bottom: 1px solid var(--bg-brilloso);"><span>Canciones escuchadas</span><span class="setting-value" id="stat-played" style="color: var(--neon-pink); font-weight: bold;">0</span></div>
             <div class="setting-item" style="display: flex; justify-content: space-between; padding: 15px 0; border-bottom: 1px solid var(--bg-brilloso);"><span>Almacenamiento en caché</span><span class="setting-value" id="stat-cache" style="color: var(--neon-pink); font-weight: bold;">0 KB</span></div>
-            <div class="setting-item" style="display: flex; justify-content: space-between; padding: 15px 0; border-bottom: none;"><span>Versión</span><span class="setting-value" style="color: var(--neon-pink); font-weight: bold;">1.2.0 Neon (Local)</span></div>
+            <div class="setting-item" style="display: flex; justify-content: space-between; padding: 15px 0; border-bottom: none;"><span>Versión</span><span class="setting-value" style="color: var(--neon-pink); font-weight: bold;">1.3.0 PlassTube</span></div>
         </div>
         <button onclick="localStorage.clear(); location.reload();" style="margin-top: 20px; background: transparent; color: var(--neon-pink); border: 1px solid var(--neon-pink); padding: 10px; border-radius: 8px; width: 100%; cursor: pointer;">Borrar historial</button>
     </div>
@@ -139,7 +172,9 @@
             <div class="playing-title" id="mini-title">Canción</div>
             <div class="playing-artist" id="mini-artist">Artista</div>
         </div>
-        <button class="play-btn" id="mini-play-btn" onclick="event.stopPropagation(); togglePlay()">▶</button>
+        <button class="play-btn" id="mini-play-btn" onclick="event.stopPropagation(); togglePlay()">
+            <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+        </button>
     </div>
     
     <!-- ELEMENTO DE AUDIO OCULTO -->
@@ -147,7 +182,9 @@
 
     <!-- PANTALLA COMPLETA (MODAL) -->
     <div id="full-player">
-        <button class="close-btn" onclick="cerrarPantallaCompleta()">⌄</button>
+        <button class="close-btn" onclick="cerrarPantallaCompleta()">
+            <svg viewBox="0 0 24 24"><path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z"/></svg>
+        </button>
         
         <div class="full-cover-container">
             <div class="full-cover" id="full-cover">🎵</div>
@@ -160,8 +197,13 @@
                 <div class="credits">© Placencio Corporation</div>
             </div>
             <div class="feedback-btns">
-                <button class="feedback-btn" id="btn-dislike" onclick="votar('dislike')">👎</button>
-                <button class="feedback-btn" id="btn-like" onclick="votar('like')">❤️</button>
+                <!-- CAMBIO: Botones SVG para Like/Dislike -->
+                <button class="feedback-btn" id="btn-dislike" onclick="votar('dislike')">
+                    <svg viewBox="0 0 24 24"><path d="M15 3H6c-.83 0-1.54.5-1.84 1.22l-3.02 7.05c-.09.23-.14.47-.14.73v2c0 1.1.9 2 2 2h6.31l-.95 4.57-.03.32c0 .41.17.79.44 1.06L9.83 23l6.59-6.59c.36-.36.58-.86.58-1.41V5c0-1.1-.9-2-2-2zm4 0v12h4V3h-4z"/></svg>
+                </button>
+                <button class="feedback-btn" id="btn-like" onclick="votar('like')">
+                    <svg viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+                </button>
             </div>
         </div>
 
@@ -174,16 +216,18 @@
         </div>
 
         <div class="main-controls">
-            <button class="ctrl-btn" onclick="anteriorCancion()">⏮</button>
-            <button class="play-large" id="full-play-btn" onclick="togglePlay()">▶</button>
-            <button class="ctrl-btn" onclick="siguienteCancion()">⏭</button>
+            <button class="ctrl-btn" onclick="anteriorCancion()">
+                <svg viewBox="0 0 24 24"><path d="M6 6h2v12H6zm3.5 6l8.5 6V6z"/></svg>
+            </button>
+            <button class="play-large" id="full-play-btn" onclick="togglePlay()">
+                <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+            </button>
+            <button class="ctrl-btn" onclick="siguienteCancion()">
+                <svg viewBox="0 0 24 24"><path d="M6 18l8.5-6L6 6v12zM16 6v12h2V6h-2z"/></svg>
+            </button>
         </div>
-
-        <div class="modal-nav">
-            <span>📺</span>
-            <span>🔗</span>
-            <span>☰</span>
-        </div>
+        
+        <!-- CAMBIO: Se eliminaron los 3 botones (span) que estaban aquí abajo -->
     </div>
 
     <div id="bottom-nav">
@@ -199,7 +243,7 @@
     </div>
 
     <script>
-        // --- PLAYLIST COMPLETA (Con espacios para covers) ---
+        // --- PLAYLIST COMPLETA ---
         let playlist = [
             { id: 1, name: "Latin Lover", artist: "Neutro Shorty, Big Soto", url: "https://raw.githubusercontent.com/JTxs00/uploads/main/1775936364197.mpeg", cover: "" },
             { id: 2, name: "El La Engaño Lambada", artist: "Natusha", url: "https://raw.githubusercontent.com/JTxs00/uploads/main/1775936787983.mpeg", cover: "" },
@@ -219,11 +263,10 @@
         let currentSongIndex = -1;
         let isPlaying = false;
         
-        // Cargar orden de la lista y likes del LocalStorage
         let savedOrder = JSON.parse(localStorage.getItem('neon_order')) || [];
         let userVotes = JSON.parse(localStorage.getItem('neon_votes')) || {};
+        let playHistory = JSON.parse(localStorage.getItem('neon_history')) || []; // CAMBIO: Para recomendados
 
-        // Aplicar orden guardado al iniciar
         if (savedOrder.length > 0) {
             playlist.sort((a, b) => {
                 let indexA = savedOrder.indexOf(a.id);
@@ -237,6 +280,7 @@
         // --- INICIALIZACIÓN ---
         window.onload = () => {
             actualizarEstadisticas();
+            renderizarHome();
             renderizarLista(playlist, 'home-list');
 
             setTimeout(() => {
@@ -260,25 +304,49 @@
             }
         }
 
-        // --- RENDERIZAR LISTA ---
+        // --- CAMBIO: RENDERIZADO DINÁMICO DEL HOME ---
+        function renderizarHome() {
+            // Filtrar Recomendados (últimas escuchadas)
+            let recomendados = [];
+            if (playHistory.length > 0) {
+                // Obtenemos las ultimas 5 canciones del historial sin repetir
+                const uniqueIds = [...new Set(playHistory)].slice(0, 5);
+                recomendados = uniqueIds.map(id => playlist.find(c => c.id === id)).filter(Boolean);
+            } else {
+                // Si no hay historial, mostrar las primeras 3 por defecto
+                recomendados = playlist.slice(0, 3);
+            }
+            renderizarLista(recomendados, 'home-recommended');
+
+            // Filtrar Favoritos (los que tienen 'like')
+            const favoritos = playlist.filter(c => userVotes[c.id] === 'like');
+            renderizarLista(favoritos, 'home-favorites');
+            
+            // Si no hay favoritos, mostramos un mensaje (opcional)
+            if (favoritos.length === 0) {
+                document.getElementById('home-favorites').innerHTML = '<p style="color: var(--text-muted); font-size: 0.9rem; padding: 10px;">Dale like a tus canciones para verlas aquí.</p>';
+            }
+        }
+
+        // --- RENDERIZAR LISTA (Ajustado) ---
         function renderizarLista(lista, contenedorId) {
             const container = document.getElementById(contenedorId);
+            if (!container) return;
             container.innerHTML = '';
+
+            if (lista.length === 0) return; // Si está vacío, no renderizar nada
 
             lista.forEach((cancion) => {
                 const div = document.createElement('div');
                 div.className = 'song-card';
                 
-                // Marcar si tiene like
                 if (userVotes[cancion.id] === 'like') div.classList.add('liked');
                 
-                // Al hacer clic, abrir pantalla completa y reproducir
                 div.onclick = () => {
                     abrirPantallaCompleta();
                     reproducirPorId(cancion.id);
                 };
                 
-                // Si tiene cover personalizada, la usamos, si no, el gradiente
                 const coverStyle = cancion.cover ? `background-image: url('${cancion.cover}');` : '';
                 const coverContent = cancion.cover ? '' : '🎵';
 
@@ -288,7 +356,9 @@
                         <div class="song-title">${cancion.name}</div>
                         <div class="song-artist">${cancion.artist}</div>
                     </div>
-                    <div class="like-indicator">❤️</div>
+                    <div class="like-indicator">
+                        <svg viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+                    </div>
                 `;
                 container.appendChild(div);
             });
@@ -316,16 +386,16 @@
             currentSongIndex = index;
             const cancion = playlist[index];
             
-            // Actualizar UI de Mini Player
+            // CAMBIO: Arreglo del bug del minuto final. Reseteamos el tiempo a 0.
+            audio.currentTime = 0; 
+
             document.getElementById('mini-player').classList.add('active');
             document.getElementById('mini-title').innerText = cancion.name;
             document.getElementById('mini-artist').innerText = cancion.artist;
             
-            // Actualizar UI de Pantalla Completa
             document.getElementById('full-title').innerText = cancion.name;
             document.getElementById('full-artist').innerText = cancion.artist;
             
-            // Actualizar Covers
             const coverStyle = cancion.cover ? `background-image: url('${cancion.cover}');` : '';
             const coverContent = cancion.cover ? '' : '🎵';
             
@@ -337,24 +407,22 @@
             fullCover.style.cssText = coverStyle;
             fullCover.innerHTML = coverContent;
 
-            // Cargar y Reproducir Audio
             audio.src = cancion.url;
             audio.play().then(() => {
                 isPlaying = true;
                 actualizarBotonesPlay();
-                guardarEstadisticaPlay();
+                guardarEstadisticaPlay(cancion.id); // CAMBIO: Guardamos ID para recomendados
             }).catch(err => {
                 console.error("Error al reproducir", err);
                 isPlaying = false;
                 actualizarBotonesPlay();
             });
 
-            // Actualizar botones de Like/Dislike
             actualizarBotonesVoto(cancion.id);
         }
 
         function togglePlay() {
-            if (currentSongIndex === -1) return; // No hay canción cargada
+            if (currentSongIndex === -1) return; 
             
             if (isPlaying) {
                 audio.pause();
@@ -365,26 +433,29 @@
             actualizarBotonesPlay();
         }
 
+        // CAMBIO: Actualizar botones con SVG (Play/Pausa)
         function actualizarBotonesPlay() {
-            const icon = isPlaying ? "⏸" : "▶";
-            document.getElementById('mini-play-btn').innerText = icon;
-            document.getElementById('full-play-btn').innerText = icon;
+            const svgPlay = `<svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>`;
+            const svgPause = `<svg viewBox="0 0 24 24"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>`;
+            const icon = isPlaying ? svgPause : svgPlay;
+            
+            document.getElementById('mini-play-btn').innerHTML = icon;
+            document.getElementById('full-play-btn').innerHTML = icon;
         }
 
-        // Autoplay: Pasar a la siguiente al terminar
         audio.onended = () => {
             siguienteCancion();
         };
 
         function siguienteCancion() {
             let nextIndex = currentSongIndex + 1;
-            if (nextIndex >= playlist.length) nextIndex = 0; // Volver al inicio
+            if (nextIndex >= playlist.length) nextIndex = 0; 
             reproducirCancion(nextIndex);
         }
 
         function anteriorCancion() {
             let prevIndex = currentSongIndex - 1;
-            if (prevIndex < 0) prevIndex = playlist.length - 1; // Ir al final
+            if (prevIndex < 0) prevIndex = playlist.length - 1; 
             reproducirCancion(prevIndex);
         }
 
@@ -426,29 +497,27 @@
             document.getElementById('full-player').classList.remove('active');
         }
 
-        // --- SISTEMA DE VOTOS (LIKE/DISLIKE) Y REORDENAMIENTO ---
+        // --- SISTEMA DE VOTOS (LIKE/DISLIKE) ---
         function votar(tipo) {
             if (currentSongIndex === -1) return;
             const cancionId = playlist[currentSongIndex].id;
             
-            // Si ya votó lo mismo, quitamos el voto (toggle)
+            // CAMBIO: Si ya votó lo mismo, quitamos el voto. Si vota distinto, se reemplaza automáticamente.
             if (userVotes[cancionId] === tipo) {
                 delete userVotes[cancionId];
             } else {
                 userVotes[cancionId] = tipo;
             }
 
-            // Guardar en LocalStorage
             localStorage.setItem('neon_votes', JSON.stringify(userVotes));
             
-            // Reordenar la lista visualmente
             aplicarAlgoritmoOrden();
-
-            // Actualizar UI
             actualizarBotonesVoto(cancionId);
             
-            // Re-renderizar las listas (la de home y búsqueda)
+            // Renderizar todo de nuevo para actualizar el Home
+            renderizarHome();
             renderizarLista(playlist, 'home-list');
+            
             const searchVal = document.getElementById('search-input').value.toLowerCase();
             if(searchVal) {
                 const filtradas = playlist.filter(c => c.name.toLowerCase().includes(searchVal) || c.artist.toLowerCase().includes(searchVal));
@@ -466,31 +535,37 @@
             btnDislike.className = 'feedback-btn';
 
             if (userVotes[cancionId] === 'like') {
-                btnLike.classList.add('active-like');
+                btnLike.classList.add('active-like'); // CAMBIO: Aquí se aplica el brillo CSS
             } else if (userVotes[cancionId] === 'dislike') {
                 btnDislike.classList.add('active-dislike');
             }
         }
 
         function aplicarAlgoritmoOrden() {
-            // Separar en grupos: Likes, Neutrales, Dislikes
             const likes = playlist.filter(c => userVotes[c.id] === 'like');
             const neutrales = playlist.filter(c => !userVotes[c.id]);
             const dislikes = playlist.filter(c => userVotes[c.id] === 'dislike');
 
-            // Juntar en el nuevo orden
             playlist = [...likes, ...neutrales, ...dislikes];
 
-            // Guardar el nuevo orden en LocalStorage
             const nuevoOrdenIds = playlist.map(c => c.id);
             localStorage.setItem('neon_order', JSON.stringify(nuevoOrdenIds));
         }
 
         // --- ESTADÍSTICAS ---
-        function guardarEstadisticaPlay() {
+        function guardarEstadisticaPlay(cancionId) { // CAMBIO: Recibe el ID
             let plays = parseInt(localStorage.getItem('neon_plays') || '0');
             localStorage.setItem('neon_plays', plays + 1);
             
+            // Guardar en historial para Recomendados
+            if (cancionId) {
+                playHistory = playHistory.filter(id => id !== cancionId); // Remover si ya existía
+                playHistory.unshift(cancionId); // Poner al inicio
+                if (playHistory.length > 10) playHistory.pop(); // Limitar a 10
+                localStorage.setItem('neon_history', JSON.stringify(playHistory));
+                renderizarHome(); // Actualizar recomendados en tiempo real
+            }
+
             const stringified = JSON.stringify(localStorage);
             const kb = (new Blob([stringified]).size / 1024).toFixed(2);
             localStorage.setItem('neon_cache_size', kb);
