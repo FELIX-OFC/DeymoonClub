@@ -33,17 +33,30 @@
         .section-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; margin-top: 20px; }
         .section-header h2 { margin: 0; }
         
+        /* --- NUEVO: CARRUSEL HORIZONTAL --- */
+        .carousel-container { display: flex; overflow-x: auto; gap: 15px; padding-bottom: 10px; scroll-snap-type: x mandatory; scrollbar-width: none; }
+        .carousel-container::-webkit-scrollbar { display: none; }
+        
+        .big-card { flex: 0 0 150px; scroll-snap-align: start; display: flex; flex-direction: column; cursor: pointer; position: relative; }
+        .big-card-cover { width: 150px; height: 150px; border-radius: 12px; background: linear-gradient(135deg, var(--neon-pink), #2a003f); background-size: cover; background-position: center; display: flex; justify-content: center; align-items: center; font-size: 3rem; box-shadow: 0 4px 15px rgba(0,0,0,0.5); margin-bottom: 8px; position: relative; overflow: hidden; }
+        
+        /* Capa oscura para que el texto se lea mejor en la foto */
+        .big-card-cover::after { content: ''; position: absolute; bottom: 0; left: 0; width: 100%; height: 40%; background: linear-gradient(to top, rgba(0,0,0,0.8), transparent); }
+        
+        .big-card-title { font-weight: 600; font-size: 0.95rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; position: absolute; bottom: 35px; left: 10px; right: 10px; z-index: 1; }
+        .big-card-subtitle { font-size: 0.8rem; color: var(--text-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; position: absolute; bottom: 15px; left: 10px; right: 10px; z-index: 1; }
+
+        /* LISTA NORMAL */
         .song-list { display: flex; flex-direction: column; gap: 15px; }
         .song-card { display: flex; align-items: center; background-color: var(--bg-card); padding: 10px; border-radius: 12px; transition: all 0.3s ease; cursor: pointer; border: 1px solid transparent; position: relative; }
         .song-card:hover { background-color: var(--bg-brilloso); box-shadow: 0 0 10px var(--neon-pink-glow); border: 1px solid var(--neon-pink); }
         
         .song-cover { width: 60px; height: 60px; border-radius: 8px; margin-right: 15px; background: linear-gradient(135deg, var(--neon-pink), #2a003f); background-size: cover; background-position: center; display: flex; justify-content: center; align-items: center; font-size: 1.5rem; box-shadow: 0 0 10px var(--neon-pink-glow); flex-shrink: 0; }
         
-        .song-info { flex: 1; overflow: hidden; min-width: 0; /* Necesario para que el ellipsis funcione */ }
+        .song-info { flex: 1; overflow: hidden; min-width: 0; }
         .song-title { font-weight: 600; font-size: 1rem; margin-bottom: 5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         .song-artist { font-size: 0.85rem; color: var(--text-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
-        /* INDICADOR DE LIKE EN LA LISTA */
         .like-indicator { position: absolute; right: 15px; top: 50%; transform: translateY(-50%); color: var(--neon-pink); display: none; }
         .like-indicator svg { width: 20px; height: 20px; fill: currentColor; filter: drop-shadow(0 0 5px var(--neon-pink)); }
         .song-card.liked .like-indicator { display: block; }
@@ -56,7 +69,6 @@
         .playing-title { font-size: 0.9rem; font-weight: bold; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: var(--neon-pink); }
         .playing-artist { font-size: 0.75rem; color: var(--text-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         
-        /* BOTONES SVG */
         .play-btn { background: var(--neon-pink); border: none; color: white; width: 40px; height: 40px; border-radius: 50%; cursor: pointer; display: flex; justify-content: center; align-items: center; box-shadow: 0 0 10px var(--neon-pink-glow); flex-shrink: 0; }
         .play-btn svg { width: 20px; height: 20px; fill: currentColor; }
 
@@ -82,12 +94,10 @@
         .full-artist { font-size: 1rem; color: var(--text-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         .credits { font-size: 0.7rem; color: var(--text-muted); margin-top: 5px; opacity: 0.7; }
         
-        /* BOTONES LIKE / DISLIKE (Ahora con SVG) */
         .feedback-btns { display: flex; gap: 15px; }
         .feedback-btn { background: transparent; border: 2px solid var(--bg-brilloso); color: var(--text-muted); width: 45px; height: 45px; border-radius: 50%; cursor: pointer; display: flex; justify-content: center; align-items: center; transition: all 0.3s; }
         .feedback-btn svg { width: 22px; height: 22px; fill: currentColor; }
         
-        /* Brillo del like */
         .feedback-btn.active-like { border-color: var(--neon-pink); color: var(--neon-pink); box-shadow: 0 0 15px var(--neon-pink), inset 0 0 10px var(--neon-pink-glow); animation: pulseGlow 1.5s infinite alternate; }
         .feedback-btn.active-dislike { border-color: #555; color: #888; background: #222; }
         
@@ -96,12 +106,70 @@
             to { box-shadow: 0 0 25px var(--neon-pink), inset 0 0 15px var(--neon-pink-glow); }
         }
 
-        /* BARRA DE PROGRESO */
-        .progress-container { width: 100%; margin-bottom: 20px; }
-        input[type=range] { -webkit-appearance: none; width: 100%; background: transparent; }
+        /* --- NUEVO: BARRA DE PROGRESO CON RELLENO NEÓN --- */
+        .progress-container { width: 100%; margin-bottom: 20px; position: relative; }
+        
+        input[type=range] { 
+            -webkit-appearance: none; 
+            width: 100%; 
+            background: transparent; 
+            position: relative;
+            z-index: 2;
+        }
         input[type=range]:focus { outline: none; }
-        input[type=range]::-webkit-slider-runnable-track { width: 100%; height: 6px; cursor: pointer; background: var(--bg-brilloso); border-radius: 3px; }
-        input[type=range]::-webkit-slider-thumb { height: 16px; width: 16px; border-radius: 50%; background: var(--neon-pink); cursor: pointer; -webkit-appearance: none; margin-top: -5px; box-shadow: 0 0 10px var(--neon-pink-glow); }
+        
+        /* Riel base (gris) */
+        input[type=range]::-webkit-slider-runnable-track { 
+            width: 100%; 
+            height: 6px; 
+            cursor: pointer; 
+            background: transparent; 
+            border-radius: 3px; 
+        }
+        
+        /* El circulito (•) */
+        input[type=range]::-webkit-slider-thumb { 
+            height: 16px; 
+            width: 16px; 
+            border-radius: 50%; 
+            background: var(--neon-pink); 
+            cursor: pointer; 
+            -webkit-appearance: none; 
+            margin-top: -5px; 
+            box-shadow: 0 0 10px var(--neon-pink), 0 0 20px var(--neon-pink); 
+            position: relative;
+            z-index: 3;
+        }
+
+        /* El relleno neón (la línea rosada que avanza) */
+        .progress-fill {
+            position: absolute;
+            top: 50%;
+            left: 0;
+            height: 6px;
+            background: var(--neon-pink);
+            border-radius: 3px;
+            transform: translateY(-50%);
+            width: 0%; /* Se actualiza con JS */
+            box-shadow: 0 0 10px var(--neon-pink), 0 0 20px var(--neon-pink);
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        /* Riel base por detrás */
+        .progress-bg {
+            position: absolute;
+            top: 50%;
+            left: 0;
+            width: 100%;
+            height: 6px;
+            background: var(--bg-brilloso);
+            border-radius: 3px;
+            transform: translateY(-50%);
+            z-index: 0;
+            pointer-events: none;
+        }
+
         .time-info { display: flex; justify-content: space-between; font-size: 0.8rem; color: var(--text-muted); margin-top: 8px; }
 
         /* CONTROLES PRINCIPALES */
@@ -125,21 +193,21 @@
     <div id="view-home" class="view active">
         <h2>Bienvenido a PlassTube</h2>
         
-        <!-- CAMBIO: Sección de Recomendados (últimas escuchadas) -->
+        <!-- Recomendados (Carrusel) -->
         <div class="section-header">
             <h2>Recomendados</h2>
         </div>
-        <div class="song-list" id="home-recommended"></div>
+        <div class="carousel-container" id="home-recommended"></div>
 
-        <!-- CAMBIO: Sección de Favoritos -->
+        <!-- Favoritos (Carrusel) -->
         <div class="section-header">
             <h2>Favoritos</h2>
         </div>
-        <div class="song-list" id="home-favorites"></div>
+        <div class="carousel-container" id="home-favorites"></div>
 
-        <!-- Playlist general -->
-        <div class="section-header">
-            <h2>Tu Playlist</h2>
+        <!-- Lista normal (Sin título "Tu Playlist", solo las canciones) -->
+        <div class="section-header" style="margin-top: 30px;">
+            <h2>Todas las canciones</h2>
         </div>
         <div class="song-list" id="home-list"></div>
     </div>
@@ -160,7 +228,7 @@
         <div class="settings-container" style="background: var(--bg-card); border-radius: 15px; padding: 20px; border-left: 4px solid var(--neon-pink); box-shadow: -5px 0 15px var(--neon-pink-glow);">
             <div class="setting-item" style="display: flex; justify-content: space-between; padding: 15px 0; border-bottom: 1px solid var(--bg-brilloso);"><span>Canciones escuchadas</span><span class="setting-value" id="stat-played" style="color: var(--neon-pink); font-weight: bold;">0</span></div>
             <div class="setting-item" style="display: flex; justify-content: space-between; padding: 15px 0; border-bottom: 1px solid var(--bg-brilloso);"><span>Almacenamiento en caché</span><span class="setting-value" id="stat-cache" style="color: var(--neon-pink); font-weight: bold;">0 KB</span></div>
-            <div class="setting-item" style="display: flex; justify-content: space-between; padding: 15px 0; border-bottom: none;"><span>Versión</span><span class="setting-value" style="color: var(--neon-pink); font-weight: bold;">1.3.0 PlassTube</span></div>
+            <div class="setting-item" style="display: flex; justify-content: space-between; padding: 15px 0; border-bottom: none;"><span>Versión</span><span class="setting-value" style="color: var(--neon-pink); font-weight: bold;">1.4.0 PlassTube</span></div>
         </div>
         <button onclick="localStorage.clear(); location.reload();" style="margin-top: 20px; background: transparent; color: var(--neon-pink); border: 1px solid var(--neon-pink); padding: 10px; border-radius: 8px; width: 100%; cursor: pointer;">Borrar historial</button>
     </div>
@@ -197,7 +265,6 @@
                 <div class="credits">© Placencio Corporation</div>
             </div>
             <div class="feedback-btns">
-                <!-- CAMBIO: Botones SVG para Like/Dislike -->
                 <button class="feedback-btn" id="btn-dislike" onclick="votar('dislike')">
                     <svg viewBox="0 0 24 24"><path d="M15 3H6c-.83 0-1.54.5-1.84 1.22l-3.02 7.05c-.09.23-.14.47-.14.73v2c0 1.1.9 2 2 2h6.31l-.95 4.57-.03.32c0 .41.17.79.44 1.06L9.83 23l6.59-6.59c.36-.36.58-.86.58-1.41V5c0-1.1-.9-2-2-2zm4 0v12h4V3h-4z"/></svg>
                 </button>
@@ -207,7 +274,10 @@
             </div>
         </div>
 
+        <!-- Barra de progreso con relleno -->
         <div class="progress-container">
+            <div class="progress-bg"></div>
+            <div class="progress-fill" id="progress-fill"></div>
             <input type="range" id="progress-bar" value="0" min="0" max="100" step="0.1">
             <div class="time-info">
                 <span id="current-time">0:00</span>
@@ -226,8 +296,6 @@
                 <svg viewBox="0 0 24 24"><path d="M6 18l8.5-6L6 6v12zM16 6v12h2V6h-2z"/></svg>
             </button>
         </div>
-        
-        <!-- CAMBIO: Se eliminaron los 3 botones (span) que estaban aquí abajo -->
     </div>
 
     <div id="bottom-nav">
@@ -243,19 +311,19 @@
     </div>
 
     <script>
-        // --- PLAYLIST COMPLETA ---
+        // --- PLAYLIST COMPLETA (Añadida propiedad 'imagen') ---
         let playlist = [
-            { id: 1, name: "Latin Lover", artist: "Neutro Shorty, Big Soto", url: "https://raw.githubusercontent.com/JTxs00/uploads/main/1775936364197.mpeg", cover: "" },
-            { id: 2, name: "El La Engaño Lambada", artist: "Natusha", url: "https://raw.githubusercontent.com/JTxs00/uploads/main/1775936787983.mpeg", cover: "" },
-            { id: 3, name: "Quédate", artist: "Belee", url: "https://raw.githubusercontent.com/JTxs00/uploads/main/1775936643238.mpeg", cover: "" },
-            { id: 4, name: "Odisea", artist: "Ozuna", url: "https://raw.githubusercontent.com/JTxs00/uploads/main/1775935979163.mpeg", cover: "" },
-            { id: 5, name: "Maquiavélico", artist: "Cancerbero", url: "https://raw.githubusercontent.com/JTxs00/uploads/main/1775936827892.mpeg", cover: "" },
-            { id: 6, name: "Eoo", artist: "Bad Bunny", url: "https://raw.githubusercontent.com/JTxs00/uploads/main/1775936322243.mpeg", cover: "" },
-            { id: 7, name: "Los Viejos Me Llaman", artist: "No Name", url: "https://raw.githubusercontent.com/JTxs00/uploads/main/1775936897844.mpeg", cover: "" },
-            { id: 8, name: "Ninfómana", artist: "Jossimar ft El Apóstol", url: "https://raw.githubusercontent.com/JTxs00/uploads/main/1775936920447.mpeg", cover: "" },
-            { id: 9, name: "Eu Já Sofri Por Amor Mas Não Sofro Mais", artist: "TikTokTunes (Brasil)", url: "https://d.uguu.se/FjTEHYFP.mp3", cover: "" },
-            { id: 10, name: "Kamin", artist: "EMIN, JONY", url: "https://n.uguu.se/JSbiiAsL.mp3", cover: "" },
-            { id: 11, name: "No Me Vendo", artist: "RDjavi", url: "https://d.uguu.se/fXbMgFAh.mp3", cover: "" }
+            { id: 1, name: "Latin Lover", artist: "Neutro Shorty, Big Soto", url: "https://raw.githubusercontent.com/JTxs00/uploads/main/1775936364197.mpeg", cover: "", imagen: "" },
+            { id: 2, name: "El La Engaño Lambada", artist: "Natusha", url: "https://raw.githubusercontent.com/JTxs00/uploads/main/1775936787983.mpeg", cover: "", imagen: "" },
+            { id: 3, name: "Quédate", artist: "Belee", url: "https://raw.githubusercontent.com/JTxs00/uploads/main/1775936643238.mpeg", cover: "", imagen: "https://qu.ax/WUxYC" }, // Imagen añadida
+            { id: 4, name: "Odisea", artist: "Ozuna", url: "https://raw.githubusercontent.com/JTxs00/uploads/main/1775935979163.mpeg", cover: "", imagen: "" },
+            { id: 5, name: "Maquiavélico", artist: "Cancerbero", url: "https://raw.githubusercontent.com/JTxs00/uploads/main/1775936827892.mpeg", cover: "", imagen: "" },
+            { id: 6, name: "Eoo", artist: "Bad Bunny", url: "https://raw.githubusercontent.com/JTxs00/uploads/main/1775936322243.mpeg", cover: "", imagen: "" },
+            { id: 7, name: "Los Viejos Me Llaman", artist: "No Name", url: "https://raw.githubusercontent.com/JTxs00/uploads/main/1775936897844.mpeg", cover: "", imagen: "" },
+            { id: 8, name: "Ninfómana", artist: "Jossimar ft El Apóstol", url: "https://raw.githubusercontent.com/JTxs00/uploads/main/1775936920447.mpeg", cover: "", imagen: "" },
+            { id: 9, name: "Eu Já Sofri Por Amor Mas Não Sofro Mais", artist: "TikTokTunes (Brasil)", url: "https://d.uguu.se/FjTEHYFP.mp3", cover: "", imagen: "" },
+            { id: 10, name: "Kamin", artist: "EMIN, JONY", url: "https://n.uguu.se/JSbiiAsL.mp3", cover: "", imagen: "" },
+            { id: 11, name: "No Me Vendo", artist: "RDjavi", url: "https://d.uguu.se/fXbMgFAh.mp3", cover: "", imagen: "" }
         ];
 
         // --- ESTADO GLOBAL ---
@@ -265,7 +333,7 @@
         
         let savedOrder = JSON.parse(localStorage.getItem('neon_order')) || [];
         let userVotes = JSON.parse(localStorage.getItem('neon_votes')) || {};
-        let playHistory = JSON.parse(localStorage.getItem('neon_history')) || []; // CAMBIO: Para recomendados
+        let playHistory = JSON.parse(localStorage.getItem('neon_history')) || [];
 
         if (savedOrder.length > 0) {
             playlist.sort((a, b) => {
@@ -304,37 +372,66 @@
             }
         }
 
-        // --- CAMBIO: RENDERIZADO DINÁMICO DEL HOME ---
+        // --- RENDERIZADO DINÁMICO DEL HOME ---
         function renderizarHome() {
-            // Filtrar Recomendados (últimas escuchadas)
+            // Recomendados
             let recomendados = [];
             if (playHistory.length > 0) {
-                // Obtenemos las ultimas 5 canciones del historial sin repetir
                 const uniqueIds = [...new Set(playHistory)].slice(0, 5);
                 recomendados = uniqueIds.map(id => playlist.find(c => c.id === id)).filter(Boolean);
             } else {
-                // Si no hay historial, mostrar las primeras 3 por defecto
                 recomendados = playlist.slice(0, 3);
             }
-            renderizarLista(recomendados, 'home-recommended');
+            renderizarCarrusel(recomendados, 'home-recommended');
 
-            // Filtrar Favoritos (los que tienen 'like')
+            // Favoritos
             const favoritos = playlist.filter(c => userVotes[c.id] === 'like');
-            renderizarLista(favoritos, 'home-favorites');
+            renderizarCarrusel(favoritos, 'home-favorites');
             
-            // Si no hay favoritos, mostramos un mensaje (opcional)
             if (favoritos.length === 0) {
-                document.getElementById('home-favorites').innerHTML = '<p style="color: var(--text-muted); font-size: 0.9rem; padding: 10px;">Dale like a tus canciones para verlas aquí.</p>';
+                document.getElementById('home-favorites').innerHTML = '<p style="color: var(--text-muted); font-size: 0.9rem; padding: 10px; width: 100%;">Dale like a tus canciones para verlas aquí.</p>';
             }
         }
 
-        // --- RENDERIZAR LISTA (Ajustado) ---
+        // --- NUEVO: RENDERIZAR CARRUSEL (Cuadros Grandes) ---
+        function renderizarCarrusel(lista, contenedorId) {
+            const container = document.getElementById(contenedorId);
+            if (!container) return;
+            container.innerHTML = '';
+
+            if (lista.length === 0) return;
+
+            lista.forEach((cancion) => {
+                const div = document.createElement('div');
+                div.className = 'big-card';
+                
+                div.onclick = () => {
+                    abrirPantallaCompleta();
+                    reproducirPorId(cancion.id);
+                };
+                
+                // Usamos la propiedad 'imagen' o el gradiente por defecto
+                const coverStyle = cancion.imagen ? `background-image: url('${cancion.imagen}');` : '';
+                const coverContent = cancion.imagen ? '' : '🎵';
+
+                div.innerHTML = `
+                    <div class="big-card-cover" style="${coverStyle}">
+                        ${coverContent}
+                        <div class="big-card-title">${cancion.name}</div>
+                        <div class="big-card-subtitle">${cancion.artist}</div>
+                    </div>
+                `;
+                container.appendChild(div);
+            });
+        }
+
+        // --- RENDERIZAR LISTA NORMAL ---
         function renderizarLista(lista, contenedorId) {
             const container = document.getElementById(contenedorId);
             if (!container) return;
             container.innerHTML = '';
 
-            if (lista.length === 0) return; // Si está vacío, no renderizar nada
+            if (lista.length === 0) return;
 
             lista.forEach((cancion) => {
                 const div = document.createElement('div');
@@ -347,8 +444,8 @@
                     reproducirPorId(cancion.id);
                 };
                 
-                const coverStyle = cancion.cover ? `background-image: url('${cancion.cover}');` : '';
-                const coverContent = cancion.cover ? '' : '🎵';
+                const coverStyle = cancion.imagen ? `background-image: url('${cancion.imagen}');` : '';
+                const coverContent = cancion.imagen ? '' : '🎵';
 
                 div.innerHTML = `
                     <div class="song-cover" style="${coverStyle}">${coverContent}</div>
@@ -386,7 +483,6 @@
             currentSongIndex = index;
             const cancion = playlist[index];
             
-            // CAMBIO: Arreglo del bug del minuto final. Reseteamos el tiempo a 0.
             audio.currentTime = 0; 
 
             document.getElementById('mini-player').classList.add('active');
@@ -396,8 +492,8 @@
             document.getElementById('full-title').innerText = cancion.name;
             document.getElementById('full-artist').innerText = cancion.artist;
             
-            const coverStyle = cancion.cover ? `background-image: url('${cancion.cover}');` : '';
-            const coverContent = cancion.cover ? '' : '🎵';
+            const coverStyle = cancion.imagen ? `background-image: url('${cancion.imagen}');` : '';
+            const coverContent = cancion.imagen ? '' : '🎵';
             
             const miniCover = document.getElementById('mini-cover');
             miniCover.style.cssText = coverStyle;
@@ -411,7 +507,7 @@
             audio.play().then(() => {
                 isPlaying = true;
                 actualizarBotonesPlay();
-                guardarEstadisticaPlay(cancion.id); // CAMBIO: Guardamos ID para recomendados
+                guardarEstadisticaPlay(cancion.id);
             }).catch(err => {
                 console.error("Error al reproducir", err);
                 isPlaying = false;
@@ -433,7 +529,6 @@
             actualizarBotonesPlay();
         }
 
-        // CAMBIO: Actualizar botones con SVG (Play/Pausa)
         function actualizarBotonesPlay() {
             const svgPlay = `<svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>`;
             const svgPause = `<svg viewBox="0 0 24 24"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>`;
@@ -459,8 +554,9 @@
             reproducirCancion(prevIndex);
         }
 
-        // --- BARRA DE PROGRESO ---
+        // --- BARRA DE PROGRESO ACTUALIZADA (El relleno neón) ---
         const progressBar = document.getElementById('progress-bar');
+        const progressFill = document.getElementById('progress-fill');
         const currentTimeEl = document.getElementById('current-time');
         const totalTimeEl = document.getElementById('total-time');
 
@@ -468,6 +564,9 @@
             if (!isNaN(audio.duration)) {
                 const percent = (audio.currentTime / audio.duration) * 100;
                 progressBar.value = percent;
+                // Actualiza el ancho de la línea rosada
+                progressFill.style.width = `${percent}%`;
+                
                 currentTimeEl.innerText = formatTime(audio.currentTime);
                 totalTimeEl.innerText = formatTime(audio.duration);
             }
@@ -477,6 +576,8 @@
             if (audio.duration) {
                 const seekTime = (progressBar.value / 100) * audio.duration;
                 audio.currentTime = seekTime;
+                // Actualiza el relleno visualmente al arrastrar
+                progressFill.style.width = `${progressBar.value}%`;
             }
         });
 
@@ -497,12 +598,11 @@
             document.getElementById('full-player').classList.remove('active');
         }
 
-        // --- SISTEMA DE VOTOS (LIKE/DISLIKE) ---
+        // --- SISTEMA DE VOTOS ---
         function votar(tipo) {
             if (currentSongIndex === -1) return;
             const cancionId = playlist[currentSongIndex].id;
             
-            // CAMBIO: Si ya votó lo mismo, quitamos el voto. Si vota distinto, se reemplaza automáticamente.
             if (userVotes[cancionId] === tipo) {
                 delete userVotes[cancionId];
             } else {
@@ -514,7 +614,6 @@
             aplicarAlgoritmoOrden();
             actualizarBotonesVoto(cancionId);
             
-            // Renderizar todo de nuevo para actualizar el Home
             renderizarHome();
             renderizarLista(playlist, 'home-list');
             
@@ -535,7 +634,7 @@
             btnDislike.className = 'feedback-btn';
 
             if (userVotes[cancionId] === 'like') {
-                btnLike.classList.add('active-like'); // CAMBIO: Aquí se aplica el brillo CSS
+                btnLike.classList.add('active-like');
             } else if (userVotes[cancionId] === 'dislike') {
                 btnDislike.classList.add('active-dislike');
             }
@@ -553,17 +652,16 @@
         }
 
         // --- ESTADÍSTICAS ---
-        function guardarEstadisticaPlay(cancionId) { // CAMBIO: Recibe el ID
+        function guardarEstadisticaPlay(cancionId) {
             let plays = parseInt(localStorage.getItem('neon_plays') || '0');
             localStorage.setItem('neon_plays', plays + 1);
             
-            // Guardar en historial para Recomendados
             if (cancionId) {
-                playHistory = playHistory.filter(id => id !== cancionId); // Remover si ya existía
-                playHistory.unshift(cancionId); // Poner al inicio
-                if (playHistory.length > 10) playHistory.pop(); // Limitar a 10
+                playHistory = playHistory.filter(id => id !== cancionId);
+                playHistory.unshift(cancionId);
+                if (playHistory.length > 10) playHistory.pop();
                 localStorage.setItem('neon_history', JSON.stringify(playHistory));
-                renderizarHome(); // Actualizar recomendados en tiempo real
+                renderizarHome();
             }
 
             const stringified = JSON.stringify(localStorage);
