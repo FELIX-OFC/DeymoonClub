@@ -55,11 +55,18 @@
         #mini-player { position: fixed; bottom: 70px; left: 10px; right: 10px; background: rgba(20, 20, 20, 0.95); backdrop-filter: blur(10px); border-radius: 15px; padding: 10px 15px; display: none; align-items: center; border: 1px solid var(--neon-pink); box-shadow: 0 0 20px var(--neon-pink-glow); z-index: 100; cursor: pointer; }
         #mini-player.active { display: flex; }
         .player-cover { width: 40px; height: 40px; border-radius: 5px; margin-right: 10px; background: linear-gradient(135deg, var(--neon-pink), #2a003f); background-size: cover; background-position: center; display: flex; justify-content: center; align-items: center; flex-shrink: 0;}
-        .player-controls { flex: 1; overflow: hidden; }
+        
+        .player-controls { flex: 1; overflow: hidden; margin-right: 10px; }
         .playing-title { font-size: 0.9rem; font-weight: bold; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: var(--neon-pink); }
         .playing-artist { font-size: 0.75rem; color: var(--text-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .play-btn { background: var(--neon-pink); border: none; color: white; width: 40px; height: 40px; border-radius: 50%; cursor: pointer; display: flex; justify-content: center; align-items: center; box-shadow: 0 0 10px var(--neon-pink-glow); flex-shrink: 0; }
-        .play-btn svg { width: 20px; height: 20px; fill: currentColor; }
+        .mini-time { font-size: 0.7rem; color: var(--text-muted); margin-top: 2px; font-variant-numeric: tabular-nums; }
+
+        .mini-actions { display: flex; align-items: center; gap: 10px; }
+        .play-btn { background: var(--neon-pink); border: none; color: white; width: 35px; height: 35px; border-radius: 50%; cursor: pointer; display: flex; justify-content: center; align-items: center; box-shadow: 0 0 10px var(--neon-pink-glow); flex-shrink: 0; }
+        .play-btn svg { width: 18px; height: 18px; fill: currentColor; }
+        .close-mini-btn { background: transparent; border: none; color: var(--text-muted); cursor: pointer; display: flex; justify-content: center; align-items: center; padding: 5px; transition: color 0.3s; }
+        .close-mini-btn:hover { color: var(--neon-pink); }
+        .close-mini-btn svg { width: 20px; height: 20px; fill: currentColor; }
 
         #bottom-nav { position: fixed; bottom: 0; left: 0; width: 100%; height: 70px; background-color: var(--bg-card); display: flex; justify-content: space-around; align-items: center; border-top: 1px solid var(--bg-brilloso); z-index: 101; }
         .nav-item { display: flex; flex-direction: column; align-items: center; color: var(--text-muted); text-decoration: none; font-size: 0.7rem; cursor: pointer; transition: color 0.3s; }
@@ -117,8 +124,7 @@
         .lyrics-content { flex: 1; overflow-y: auto; padding: 20px 0; scroll-behavior: smooth; text-align: center; }
         .lyrics-content::-webkit-scrollbar { width: 4px; }
         .lyrics-content::-webkit-scrollbar-thumb { background: var(--neon-pink); border-radius: 4px; }
-        .lyric-line { font-size: 1.1rem; color: var(--text-muted); margin: 15px 0; transition: all 0.3s ease; opacity: 0.5; }
-        .lyric-line.active { font-size: 1.4rem; color: var(--neon-pink); font-weight: bold; opacity: 1; text-shadow: 0 0 10px var(--neon-pink), 0 0 20px var(--neon-pink); transform: scale(1.05); }
+        .lyric-line { font-size: 1.1rem; color: var(--text-muted); margin: 15px 0; transition: all 0.3s ease; }
         .lyric-line.section-title { font-size: 0.9rem; color: var(--neon-pink); opacity: 0.7; margin-top: 30px; font-weight: bold; text-transform: uppercase; }
 
         #toast { position: fixed; bottom: 100px; left: 50%; transform: translateX(-50%) translateY(20px); background: var(--bg-brilloso); color: white; padding: 12px 24px; border-radius: 25px; border: 1px solid var(--neon-pink); box-shadow: 0 0 15px var(--neon-pink-glow); font-size: 0.9rem; z-index: 9999; opacity: 0; transition: all 0.3s ease; pointer-events: none; text-align: center; width: 80%; max-width: 300px; }
@@ -167,7 +173,7 @@
         <div class="settings-container" style="background: var(--bg-card); border-radius: 15px; padding: 20px; border-left: 4px solid var(--neon-pink); box-shadow: -5px 0 15px var(--neon-pink-glow);">
             <div class="setting-item" style="display: flex; justify-content: space-between; padding: 15px 0; border-bottom: 1px solid var(--bg-brilloso);"><span>Canciones escuchadas</span><span class="setting-value" id="stat-played" style="color: var(--neon-pink); font-weight: bold;">0</span></div>
             <div class="setting-item" style="display: flex; justify-content: space-between; padding: 15px 0; border-bottom: 1px solid var(--bg-brilloso);"><span>Almacenamiento en caché</span><span class="setting-value" id="stat-cache" style="color: var(--neon-pink); font-weight: bold;">0 KB</span></div>
-            <div class="setting-item" style="display: flex; justify-content: space-between; padding: 15px 0; border-bottom: none;"><span>Versión</span><span class="setting-value" style="color: var(--neon-pink); font-weight: bold;">1.5.0 PlassTube</span></div>
+            <div class="setting-item" style="display: flex; justify-content: space-between; padding: 15px 0; border-bottom: none;"><span>Versión</span><span class="setting-value" style="color: var(--neon-pink); font-weight: bold;">1.6.0 PlassTube</span></div>
         </div>
         <button onclick="localStorage.clear(); location.reload();" style="margin-top: 20px; background: transparent; color: var(--neon-pink); border: 1px solid var(--neon-pink); padding: 10px; border-radius: 8px; width: 100%; cursor: pointer;">Borrar historial</button>
     </div>
@@ -177,10 +183,16 @@
         <div class="player-controls">
             <div class="playing-title" id="mini-title">Canción</div>
             <div class="playing-artist" id="mini-artist">Artista</div>
+            <div class="mini-time" id="mini-time">0:00 / 0:00</div>
         </div>
-        <button class="play-btn" id="mini-play-btn" onclick="event.stopPropagation(); togglePlay()">
-            <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
-        </button>
+        <div class="mini-actions">
+            <button class="play-btn" id="mini-play-btn" onclick="event.stopPropagation(); togglePlay()">
+                <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+            </button>
+            <button class="close-mini-btn" onclick="event.stopPropagation(); cerrarMiniPlayer()">
+                <svg viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+            </button>
+        </div>
     </div>
     
     <audio id="audio-element"></audio>
@@ -262,53 +274,24 @@
 
     <script>
         const lyricsQueDate = [
-            { time: 0, text: "[Verso 1]" },
-            { time: 8, text: "¿Cómo le explico al corazón que quieres irte?" },
-            { time: 13, text: "Si tienes dudas, mami, no te estoy mintiendo" },
-            { time: 18, text: "Mira mis ojos mientras mi alma se desviste" },
-            { time: 23, text: "Los que miras justo cuando me estoy viniendo" },
-            { time: 28, text: "Cómo quisiera que estuvieras aquí" },
-            { time: 32, text: "Me sintieras a mí al ladito tuyo" },
-            { time: 37, text: "Pa' que veas que yo no puedo fingir" },
-            { time: 41, text: "Y me puedo morir por los besos tuyos" },
-            { time: 48, text: "[Coro]" },
-            { time: 50, text: "Ven quédate, quédate" },
-            { time: 55, text: "No puedo estar sin ti" },
-            { time: 59, text: "Quédate, quédate" },
-            { time: 64, text: "Oh-oh, no puedo estar sin ti" },
-            { time: 69, text: "Oh, no-no-no" },
-            { time: 73, text: "Oh, no-no-no" },
-            { time: 80, text: "[Verso 2]" },
-            { time: 82, text: "Este que está aquí a ti no te quiere dejar" },
-            { time: 87, text: "Este que está aquí también se deja llevar" },
-            { time: 92, text: "Estamo' destinados a juntos celebrar la Navidad" },
-            { time: 97, text: "Esto nunca tuvo sentido, fuimos en contra de la Ley Universal" },
-            { time: 103, text: "Qué visaje, cule' viaje" },
-            { time: 106, text: "Dime cómo evitamos las señales" },
-            { time: 110, text: "A veces yo quisiera que no pare" },
-            { time: 113, text: "Pero esto me va a matar" },
-            { time: 117, text: "Quiero ver qué responde, no me tira ni: \"Hola\"" },
-            { time: 121, text: "Y yo aquí con cule' bartola" },
-            { time: 124, text: "Pensando en toda' las noche' que estuvimos a solas" },
-            { time: 128, text: "Y no le parábamos bolas" },
-            { time: 131, text: "Chingando con un feeling, somos Reyes de las Olas" },
-            { time: 135, text: "Estoy frente a tu alma, porfa, ma', déjame entrar" },
-            { time: 140, text: "Permíteme que entienda' que no existe nadie más" },
-            { time: 145, text: "Y si me quedo contigo es porque tú eres la mondá" },
-            { time: 152, text: "[Coro Final]" },
-            { time: 155, text: "Ven quédate (quédate), quédate (quédate)" },
-            { time: 161, text: "No puedo estar sin ti (sin ti)" },
-            { time: 165, text: "No, no puedo estar sin ti" },
-            { time: 170, text: "Quédate (alright, alright)" }
+            { time: 0, text: "[Verso 1]" }, { time: 8, text: "¿Cómo le explico al corazón que quieres irte?" }, { time: 13, text: "Si tienes dudas, mami, no te estoy mintiendo" }, { time: 18, text: "Mira mis ojos mientras mi alma se desviste" }, { time: 23, text: "Los que miras justo cuando me estoy viniendo" }, { time: 28, text: "Cómo quisiera que estuvieras aquí" }, { time: 32, text: "Me sintieras a mí al ladito tuyo" }, { time: 37, text: "Pa' que veas que yo no puedo fingir" }, { time: 41, text: "Y me puedo morir por los besos tuyos" }, { time: 48, text: "[Coro]" }, { time: 50, text: "Ven quédate, quédate" }, { time: 55, text: "No puedo estar sin ti" }, { time: 59, text: "Quédate, quédate" }, { time: 64, text: "Oh-oh, no puedo estar sin ti" }, { time: 69, text: "Oh, no-no-no" }, { time: 73, text: "Oh, no-no-no" }, { time: 80, text: "[Verso 2]" }, { time: 82, text: "Este que está aquí a ti no te quiere dejar" }, { time: 87, text: "Este que está aquí también se deja llevar" }, { time: 92, text: "Estamo' destinados a juntos celebrar la Navidad" }, { time: 97, text: "Esto nunca tuvo sentido, fuimos en contra de la Ley Universal" }, { time: 103, text: "Qué visaje, cule' viaje" }, { time: 106, text: "Dime cómo evitamos las señales" }, { time: 110, text: "A veces yo quisiera que no pare" }, { time: 113, text: "Pero esto me va a matar" }, { time: 117, text: "Quiero ver qué responde, no me tira ni: \"Hola\"" }, { time: 121, text: "Y yo aquí con cule' bartola" }, { time: 124, text: "Pensando en toda' las noche' que estuvimos a solas" }, { time: 128, text: "Y no le parábamos bolas" }, { time: 131, text: "Chingando con un feeling, somos Reyes de las Olas" }, { time: 135, text: "Estoy frente a tu alma, porfa, ma', déjame entrar" }, { time: 140, text: "Permíteme que entienda' que no existe nadie más" }, { time: 145, text: "Y si me quedo contigo es porque tú eres la mondá" }, { time: 152, text: "[Coro Final]" }, { time: 155, text: "Ven quédate (quédate), quédate (quédate)" }, { time: 161, text: "No puedo estar sin ti (sin ti)" }, { time: 165, text: "No, no puedo estar sin ti" }, { time: 170, text: "Quédate (alright, alright)" }
+        ];
+
+        const lyricsMaquiavelico = [
+            { time: 0, text: "[Verso 1]" }, { time: 8, text: "De no ser por esas veces en que cometo la gran" }, { time: 11, text: "Barbaridad de ponerme a pensar" }, { time: 14, text: "O por esas otras veces en que cometo la gran" }, { time: 17, text: "Estupidez de no olvidar" }, { time: 20, text: "De meditar mirando al techo al despertar" }, { time: 23, text: "De imaginar cualquier cosa" }, { time: 26, text: "De no ser por esas veces en que suelo respirar" }, { time: 30, text: "Podría jurar que no te recuerdo nada" }, { time: 35, text: "Y lo peor es que yo te conozco tanto" }, { time: 39, text: "Que podría recordarte quién eres por si lo olvidas" }, { time: 44, text: "Y lo peor del caso es que de ti sé tanto" }, { time: 48, text: "Que podría dictar clases intensivas de tu vida" }, { time: 53, text: "Por eso casi sé cuándo me estás pensando" }, { time: 57, text: "Por eso creo saber cuándo de mí te olvidas" }, { time: 62, text: "Y sé que como yo quisieras poder sólo parpadeando" }, { time: 67, text: "Echar el tiempo atrás en nuestras vidas" }, { time: 72, text: "El único detalle es que la ciencia no ha podido" }, { time: 76, text: "Crear esas maquinitas del tiempo" }, { time: 80, text: "Por eso creo que nos resulte un poquitico bien jodido" }, { time: 85, text: "Volver a los días en que tu cuerpo" }, { time: 89, text: "Estaba convertido en río sobre el mío" }, { time: 93, text: "Dejando escapar seguido esos orgasmitos lentos" }, { time: 98, text: "Que cabe acotar nacían al mismo tiempo" }, { time: 102, text: "Hasta que un cigarrillo daba fecha de fallecimiento" }, { time: 110, text: "[Estribillo]" }, { time: 114, text: "Es maquiavélico meditar" }, { time: 118, text: "A solas donde tú viviste todo con ella" }, { time: 123, text: "Como una voz que te dice que a las estrellas" }, { time: 127, text: "Un dedo no puede ocultar, no" }, { time: 135, text: "[Verso 2]" }, { time: 138, text: "Escribo sólo versos tristes" }, { time: 141, text: "En algún patético me convertiste" }, { time: 144, text: "Releo lo que escribiste" }, { time: 147, text: "Cuando éramos felices, o más o menos felices" }, { time: 151, text: "Y sentía como mariposas lo que hoy sé que son lombrices" }, { time: 156, text: "Estoy en esos tiempos en que gota a gota" }, { time: 160, text: "La mente se agota, pasan los días y apenas lo notas" }, { time: 165, text: "La rutina es implacable, el mal humor te arropa" }, { time: 169, text: "Y luces como un don Nadie con cualquier ropa" }, { time: 174, text: "¡Pero te juro que estoy harto!" }, { time: 177, text: "Hoy voy comenzar a escapar de mi cuarto" }, { time: 180, text: "Ya estoy harto" }, { time: 182, text: "Hoy solo quiero pensar en cosas que me hagan reír" }, { time: 186, text: "Sí, que me hagan ser feliz" }, { time: 189, text: "Dejar de mirar gris y en nubes de paz revolcarme" }, { time: 193, text: "Arrancar de raíz todo recuerdo infeliz" }, { time: 197, text: "Y ahora si te preguntan di que estoy pensando en mí" }, { time: 202, text: "Y aunque sobren rimas de nostalgia que deba cantar" }, { time: 207, text: "Aunque el clima se me ponga gris, arriba mi frente va a estar" }, { time: 212, text: "Aunque el tiempo se niegue a esperarme" }, { time: 216, text: "Yo nadaré contra corriente aun sabiendo que..." }, { time: 222, text: "[Puente]" }, { time: 226, text: "El porqué de por qué llegamos a este punto es muy difícil de decir" }, { time: 232, text: "Cómo determinar causas de que ya no estemos, aunque nos queramos así" }, { time: 238, text: "Pudo haber sido por mí, pudo haber sido por ti, pudo haber sido cualquier cosa" }, { time: 244, text: "Pudo haber sido incluso el aleteo de una mariposa" }, { time: 250, text: "El hecho es que nos perdimos para siempre (ba-ba-ba-ba-bye)" }, { time: 255, text: "El hecho es que nos perdimos para siempre (eh, ba-ba-ba-ba-bye)" }, { time: 260, text: "El hecho es que nuestro amor llegó a su muerte" }
+        ];
+
+        const lyricsEoo = [
+            { time: 0, text: "[Intro]" }, { time: 4, text: "Ella viene por ahí y nunca llega sola, so-so-so-so—" }, { time: 8, text: "Ella nunca llega sola" }, { time: 11, text: "To' los bandi-bandido' le sueltan las pistola', pa-pa-pa-pa—" }, { time: 15, text: "Esta es noche lo que hay-hay-hay-hay-hay (Dice)" }, { time: 20, text: "[Coro]" }, { time: 23, text: "Perreo, baby (Sobeteo, baby)" }, { time: 26, text: "Tra-tra, baby (Hasta abajo, baby)" }, { time: 29, text: "En la disco, baby (Yo te cojo, baby)" }, { time: 32, text: "Tra-tra, baby (Tra-tra, baby)" }, { time: 35, text: "Perreo, baby (Sobeteo, baby)" }, { time: 38, text: "Tra-tra, baby (Hasta abajo, baby)" }, { time: 41, text: "En la disco, baby (Yo te cojo, baby)" }, { time: 44, text: "Ey (Tra-tra, baby), ey (Tra-tra, baby)" }, { time: 50, text: "[Verso 1]" }, { time: 53, text: "Yo se la mamo y se pone contenta" }, { time: 56, text: "Está wheeleá' y ya cumplió los 30" }, { time: 59, text: "Después de las 12 no los cuenta" }, { time: 62, text: "No la llame' en el jangueo si no quiere' que mienta" }, { time: 66, text: "'Tás escuchando al número uno en venta'" }, { time: 69, text: "Por eso con nosotro' nadie inventa" }, { time: 72, text: "Me siento como un bichote en los 90" }, { time: 75, text: "Lo tengo para'o, ven pa' que lo sienta'" }, { time: 78, text: "Dale, mami, pégate (¡Ah!), vírate" }, { time: 82, text: "Si me mira' mucho, sabe' que voy a besarte" }, { time: 86, text: "Dale, mami, pégate (¡Ah!), vírate" }, { time: 89, text: "Si te beso y me lo agarra', entonce' vo'a llevarte" }, { time: 95, text: "[Puente]" }, { time: 98, text: "Mira, puñeta, no me quiten el pe-pe-pe-pe-pe-pe-pe—" }, { time: 105, text: "[Interludio]" }, { time: 108, text: "Mami, yo sé que tú te vuelve' loca cuando el perreo te azota" }, { time: 113, text: "Pero obliga'o tú te acuerda' de mí si me ve' por ahí" }, { time: 118, text: "Mami, yo sé que tú te vuelve' loca cuando el perreo te azota" }, { time: 123, text: "Pero obliga'o tú te acuerda' de mí, de cuando te di" }, { time: 128, text: "[Coro]" }, { time: 130, text: "Perreo, baby, tra-tra, baby" }, { time: 133, text: "En la disco, baby, vamo' a darle, baby" }, { time: 136, text: "Hasta abajo, baby, no te quite', baby" }, { time: 139, text: "Bellaqueo, baby, tú y yo solos, baby" }, { time: 142, text: "Perreo, baby, tra-tra, baby" }, { time: 145, text: "En la disco, baby, te lo meto, baby" }, { time: 148, text: "Aquí mismo, baby, delante de tu baby" }, { time: 151, text: "Te compro la BM y también el AP" }, { time: 156, text: "[Verso 2]" }, { time: 159, text: "Ey, te doy de'o bailando, mami, estoy testing (Dale), ey" }, { time: 163, text: "Tráete a tu bestie (Uh), que a la do' le bajamo' el panty (Tra)" }, { time: 168, text: "Tiene a 20 en lista 'e waiting (Dale)" }, { time: 171, text: "Te lo tiro en la espalda, body painting (¡Oh!)" }, { time: 175, text: "Rompiendo la calle desde los twenty" }, { time: 178, text: "Anda cazando, no está dating" }, { time: 181, text: "Rompe la calle siempre que sale" }, { time: 184, text: "Mami, tú 'tá fit, vo'a lamberte lo' abdominale'" }, { time: 188, text: "Rompe la calle siempre que sale" }, { time: 191, text: "Me gusta' porque tú y yo somo' iguale'" }, { time: 195, text: "[Puente]" }, { time: 198, text: "Siempre queremo' perreo, -eo" }, { time: 201, text: "Tú y yo 'tamo envuelto' en el bellaqueo" }, { time: 205, text: "Cuando nos ponen perreo, -eo, ey" }, { time: 209, text: "No me ronquen, cabrone', que acá no lo' veo" }, { time: 215, text: "[Outro]" }, { time: 218, text: "'Tás escuchando música de Puerto Rico, cabrón" }, { time: 222, text: "Nosotro' nos criamo' escuchando y cantando esto" }, { time: 226, text: "En los caserío', en los barrio'" }, { time: 230, text: "Desde los 90 hasta el 2000 por siempre" }, { time: 234, text: "Y ando con el mejor de to' los tiempo, Tainy" }, { time: 238, text: "Y yo no tengo que roncar, ustedes saben ya" }, { time: 242, text: "Yeah-yeah-yeah-yeah, yeah-yeah-yeah-yeah" }, { time: 246, text: "Bad Bunny, baby, Bad Bunny, baby, eh" }, { time: 250, text: "Tainy, Tainy, Tainy, Tainy" }, { time: 254, text: "Chequéate la historia" }
         ];
 
         let playlist = [
-            { id: 1, name: "Latin Lover", artist: "Neutro Shorty, Big Soto", url: "https://raw.githubusercontent.com/JTxs00/uploads/main/1775936364197.mpeg", cover: "", imagen: "", lyrics: null },
+            { id: 1, name: "Latin Lover", artist: "Neutro Shorty, Big Soto", url: "https://raw.githubusercontent.com/JTxs00/uploads/main/1775936364197.mpeg", cover: "", imagen: "https://h.uguu.se/KTwLUUiF.jpg", lyrics: null },
             { id: 2, name: "El La Engaño Lambada", artist: "Natusha", url: "https://raw.githubusercontent.com/JTxs00/uploads/main/1775936787983.mpeg", cover: "", imagen: "", lyrics: null },
             { id: 3, name: "Quédate", artist: "Belee", url: "https://raw.githubusercontent.com/JTxs00/uploads/main/1775936643238.mpeg", cover: "", imagen: "https://d.uguu.se/bCnKHBzl.jpg", lyrics: lyricsQueDate },
             { id: 4, name: "Odisea", artist: "Ozuna", url: "https://raw.githubusercontent.com/JTxs00/uploads/main/1775935979163.mpeg", cover: "", imagen: "", lyrics: null },
-            { id: 5, name: "Maquiavélico", artist: "Cancerbero", url: "https://raw.githubusercontent.com/JTxs00/uploads/main/1775936827892.mpeg", cover: "", imagen: "", lyrics: null },
-            { id: 6, name: "Eoo", artist: "Bad Bunny", url: "https://raw.githubusercontent.com/JTxs00/uploads/main/1775936322243.mpeg", cover: "", imagen: "", lyrics: null },
+            { id: 5, name: "Maquiavélico", artist: "Cancerbero", url: "https://raw.githubusercontent.com/JTxs00/uploads/main/1775936827892.mpeg", cover: "", imagen: "https://d.uguu.se/smXJaZnd.jpg", lyrics: lyricsMaquiavelico },
+            { id: 6, name: "Eoo", artist: "Bad Bunny", url: "https://raw.githubusercontent.com/JTxs00/uploads/main/1775936322243.mpeg", cover: "", imagen: "https://n.uguu.se/DhnPDxEF.jpg", lyrics: lyricsEoo },
             { id: 7, name: "Los Viejos Me Llaman", artist: "No Name", url: "https://raw.githubusercontent.com/JTxs00/uploads/main/1775936897844.mpeg", cover: "", imagen: "", lyrics: null },
             { id: 8, name: "Ninfómana", artist: "Jossimar ft El Apóstol", url: "https://raw.githubusercontent.com/JTxs00/uploads/main/1775936920447.mpeg", cover: "", imagen: "", lyrics: null }
         ];
@@ -503,6 +486,16 @@
             renderizarLetra(cancion);
         }
 
+        function cerrarMiniPlayer() {
+            audio.pause();
+            audio.currentTime = 0;
+            audio.src = "";
+            isPlaying = false;
+            currentSongIndex = -1;
+            document.getElementById('mini-player').classList.remove('active');
+            actualizarBotonesPlay();
+        }
+
         function actualizarBotonLetra(cancion) {
             const btnLyrics = document.getElementById('btn-lyrics');
             if (cancion.lyrics && cancion.lyrics.length > 0) {
@@ -553,6 +546,7 @@
         const progressFill = document.getElementById('progress-fill');
         const currentTimeEl = document.getElementById('current-time');
         const totalTimeEl = document.getElementById('total-time');
+        const miniTimeEl = document.getElementById('mini-time');
 
         audio.addEventListener('timeupdate', () => {
             if (!isNaN(audio.duration)) {
@@ -560,8 +554,12 @@
                 progressBar.value = percent;
                 progressFill.style.width = `${percent}%`;
                 
-                currentTimeEl.innerText = formatTime(audio.currentTime);
-                totalTimeEl.innerText = formatTime(audio.duration);
+                const curTime = formatTime(audio.currentTime);
+                const totTime = formatTime(audio.duration);
+                
+                currentTimeEl.innerText = curTime;
+                totalTimeEl.innerText = totTime;
+                miniTimeEl.innerText = `${curTime} / ${totTime}`;
 
                 if (document.getElementById('lyrics-modal').classList.contains('active')) {
                     actualizarLetraAutomatica(audio.currentTime);
@@ -718,28 +716,20 @@
                 }
             }
 
-            if (activeIndex !== -1 && (activeIndex !== currentActiveLyricIndex || forzar)) {
+            if (activeIndex !== -1 && activeIndex !== currentActiveLyricIndex) {
                 const container = document.getElementById('lyrics-content');
                 const lines = container.querySelectorAll('.lyric-line');
                 
-                if (lines[currentActiveLyricIndex]) {
-                    lines[currentActiveLyricIndex].classList.remove('active');
-                }
-
-                if (lines[activeIndex]) {
-                    lines[activeIndex].classList.add('active');
+                if (autoScrollLyrics) {
+                    const lineElement = lines[activeIndex];
+                    const containerHeight = container.clientHeight;
+                    const lineTop = lineElement.offsetTop;
+                    const lineHeight = lineElement.clientHeight;
                     
-                    if (autoScrollLyrics) {
-                        const lineElement = lines[activeIndex];
-                        const containerHeight = container.clientHeight;
-                        const lineTop = lineElement.offsetTop;
-                        const lineHeight = lineElement.clientHeight;
-                        
-                        container.scrollTo({
-                            top: lineTop - (containerHeight / 2) + (lineHeight / 2),
-                            behavior: 'smooth'
-                        });
-                    }
+                    container.scrollTo({
+                        top: lineTop - (containerHeight / 2) + (lineHeight / 2),
+                        behavior: 'smooth'
+                    });
                 }
                 currentActiveLyricIndex = activeIndex;
             }
